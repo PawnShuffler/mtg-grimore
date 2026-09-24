@@ -1,0 +1,1321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MTG Grimoire &middot; Scryfall</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      /* MTG Dark Fantasy Palette */
+      --bg: #111012; /* Deep dark background */
+      --surface: #1e1b1e; /* Card background */
+      --panel: #141315; /* Inset panels */
+      --accent: #d4af37; /* Mythic Gold */
+      --accent-dark: #a68420;
+      --text: #e8e4db; /* Off-white parchment text */
+      --text-dim: #9a9387; 
+      --border: #443c34; 
+      --success: #5d8a57; /* Forest / Green Mana */
+      --warn: #c2833a; /* Artifact / Red Mana */
+      --error: #a83b3b; /* Red Mana */
+      --font-mono: "Consolas", "Courier New", monospace;
+      --font-head: "Palatino Linotype", "Book Antiqua", Palatino, serif;
+      --font-body: "Segoe UI", system-ui, sans-serif;
+    }
+    body {
+      background: var(--bg);
+      background-image: radial-gradient(circle at top, #2a2528 0%, var(--bg) 60%);
+      color: var(--text);
+      font-family: var(--font-body);
+      min-height: 100vh; display: flex; flex-direction: column;
+      align-items: center; padding: 2rem 1rem; gap: 1.5rem;
+    }
+    h1 { 
+      font-family: var(--font-head); 
+      font-size: 2.2rem; font-weight: normal; color: var(--text); 
+      letter-spacing: 1px; text-transform: uppercase;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+    }
+    h1 span { color: var(--accent); }
+    .subtitle { color: var(--text-dim); font-size: 0.95rem; margin-top: 0.4rem; font-style: italic; font-family: var(--font-head); }
+
+    /* ── TABS ── */
+    .tabs {
+      display: flex; gap: 0; width: 100%; max-width: 900px;
+      border-bottom: 2px solid var(--border);
+    }
+    .tab-btn {
+      background: transparent; border: none; border-bottom: 2px solid transparent;
+      margin-bottom: -2px; padding: 0.8rem 1.6rem;
+      font-family: var(--font-head); font-size: 1.05rem; color: var(--text-dim);
+      cursor: pointer; transition: color 0.2s, border-color 0.2s;
+      text-transform: uppercase; letter-spacing: 1px;
+    }
+    .tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
+    .tab-btn:hover:not(.active) { color: var(--text); }
+    .tab-panel { display: none; width: 100%; flex-direction: column; align-items: center; gap: 1.5rem; }
+    .tab-panel.active { display: flex; }
+
+    /* ── CARD PANELS ── */
+    .card {
+      background: var(--surface); 
+      border: 1px solid var(--border);
+      border-radius: 4px; padding: 1.5rem; width: 100%; max-width: 900px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.4), inset 0 0 0 1px rgba(255,255,255,0.02);
+    }
+    label {
+      display: block; font-size: 0.8rem; font-family: var(--font-head);
+      color: var(--accent); text-transform: uppercase;
+      letter-spacing: 1px; margin-bottom: 0.5rem;
+    }
+    textarea {
+      width: 100%; height: 260px; background: var(--panel);
+      border: 1px solid var(--border); border-radius: 2px;
+      color: var(--text); font-family: var(--font-mono);
+      font-size: 0.85rem; line-height: 1.6; padding: 0.85rem 1rem;
+      resize: vertical; outline: none; transition: border-color 0.2s, box-shadow 0.2s;
+      box-shadow: inset 0 2px 6px rgba(0,0,0,0.3);
+    }
+    textarea:focus { border-color: var(--accent); box-shadow: inset 0 2px 6px rgba(0,0,0,0.3), 0 0 0 1px var(--accent); }
+    .btn-row { display: flex; gap: 0.75rem; margin-top: 1rem; flex-wrap: wrap; align-items: center; }
+    
+    button {
+      cursor: pointer; border: none; border-radius: 3px;
+      font-family: var(--font-head); font-size: 0.95rem; text-transform: uppercase; letter-spacing: 1px;
+      padding: 0.6rem 1.4rem; transition: all 0.15s;
+    }
+    button:active { transform: translateY(1px); }
+    button:disabled { opacity: 0.5; cursor: not-allowed; filter: grayscale(100%); }
+    
+    .btn-primary { 
+      background: linear-gradient(180deg, var(--accent) 0%, var(--accent-dark) 100%);
+      color: #111; font-weight: bold; border: 1px solid #ffe8a1;
+      text-shadow: 0 1px 0 rgba(255,255,255,0.3);
+      box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    }
+    .btn-primary:hover:not(:disabled) { filter: brightness(1.1); }
+    
+    .btn-secondary { 
+      background: var(--panel); color: var(--text); 
+      border: 1px solid var(--border);
+    }
+    .btn-secondary:hover:not(:disabled) { border-color: var(--text-dim); }
+    
+    .btn-ghost { background: transparent; color: var(--text-dim); border: 1px solid transparent; }
+    .btn-ghost:hover:not(:disabled) { color: var(--text); border: 1px solid var(--border); }
+    
+    .eff-badge {
+      font-size: 0.75rem; padding: 0.3rem 0.8rem; border-radius: 2px;
+      background: var(--panel); border: 1px solid var(--border);
+      color: var(--text-dim); margin-left: auto; font-family: var(--font-head);
+    }
+    .eff-badge strong { color: var(--accent); }
+
+    /* ── PROGRESS ── */
+    .progress-wrap { display: none; margin-top: 1rem; }
+    .progress-wrap.visible { display: block; }
+    .progress-label {
+      font-size: 0.82rem; color: var(--text-dim); margin-bottom: 0.4rem;
+      display: flex; justify-content: space-between; font-family: var(--font-head);
+    }
+    .progress-bar-bg {
+      background: var(--panel); border-radius: 2px; height: 8px;
+      overflow: hidden; border: 1px solid var(--border);
+      box-shadow: inset 0 1px 3px rgba(0,0,0,0.5);
+    }
+    .progress-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent-dark), var(--accent));
+      transition: width 0.3s ease; width: 0%;
+      box-shadow: inset 0 0 4px rgba(255,255,255,0.4);
+    }
+
+    /* ── OUTPUT ── */
+    .output-section { display: none; }
+    .output-section.visible { display: block; }
+    .output-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem; }
+    .output-header h2 { font-size: 1.1rem; font-weight: normal; color: var(--accent); font-family: var(--font-head); letter-spacing: 1px; }
+    .badge { font-size: 0.75rem; padding: 0.2rem 0.6rem; border-radius: 2px; font-weight: bold; text-transform: uppercase; font-family: var(--font-head); }
+    .badge-ok   { background: var(--success); color: #fff; border: 1px solid #7ab86b; }
+    .badge-warn { background: var(--warn); color: #fff; border: 1px solid #e09f53; }
+    #output-box, #extract-output-box {
+      width: 100%; height: 380px; background: var(--panel);
+      border: 1px solid var(--border); border-radius: 2px; color: var(--text);
+      font-family: var(--font-mono); font-size: 0.82rem; line-height: 1.7;
+      padding: 0.75rem 1rem; resize: vertical; outline: none;
+      white-space: pre; overflow: auto; box-shadow: inset 0 2px 6px rgba(0,0,0,0.3);
+    }
+    .stats-row { display: flex; gap: 1rem; flex-wrap: wrap; margin-top: 0.75rem; }
+    .stat {
+      background: var(--panel); border: 1px solid var(--border);
+      border-radius: 2px; padding: 0.6rem 1rem;
+      font-size: 0.75rem; color: var(--text-dim);
+      font-family: var(--font-head); text-transform: uppercase;
+    }
+    .stat strong { color: var(--text); font-size: 1.1rem; display: block; font-family: var(--font-body); }
+    .stat.highlight { border-color: var(--accent); }
+    .stat.highlight strong { color: var(--accent); }
+    
+    .sort-select {
+      background: var(--panel); color: var(--text); border: 1px solid var(--border);
+      padding: 0.3rem 0.5rem; font-family: var(--font-head); font-size: 0.85rem;
+      border-radius: 2px; outline: none; cursor: pointer;
+    }
+    .sort-select:focus { border-color: var(--accent); }
+    .btn-sm { font-size: 0.8rem; padding: 0.4rem 0.8rem; }
+
+    .errors-section { display: none; }
+    .errors-section.visible { display: block; margin-top: 1rem; }
+    .errors-section h3 {
+      font-size: 0.9rem; font-weight: normal; color: var(--error); margin-bottom: 0.5rem; font-family: var(--font-head); text-transform: uppercase; letter-spacing: 1px;
+    }
+    .error-list { list-style: none; display: flex; flex-direction: column; gap: 0.4rem; }
+    .error-list li {
+      font-size: 0.85rem; color: #d6893c;
+      background: var(--panel); border: 1px solid rgba(214,137,60,0.3);
+      border-radius: 2px; padding: 0.4rem 0.8rem; font-family: var(--font-mono);
+      border-left: 3px solid var(--warn);
+    }
+
+    /* ── EXTRACT-SPECIFIC ── */
+    .format-row {
+      display: flex; gap: 1rem; align-items: center;
+      margin-top: 0.75rem; flex-wrap: wrap;
+    }
+    .format-row label { margin: 0; text-transform: uppercase; font-size: 0.8rem; letter-spacing: 1px; }
+    .radio-group { display: flex; gap: 0.5rem; }
+    .radio-group label {
+      display: flex; align-items: center; gap: 0.4rem;
+      padding: 0.4rem 1rem; border-radius: 2px; cursor: pointer;
+      border: 1px solid var(--border); background: var(--panel);
+      font-size: 0.85rem; font-family: var(--font-head); color: var(--text-dim);
+      transition: all 0.2s; text-transform: none;
+    }
+    .radio-group input[type=radio] { accent-color: var(--accent); width: 14px; height: 14px; }
+    .radio-group label:has(input:checked) { border-color: var(--accent); color: var(--accent); background: rgba(212, 175, 55, 0.05); }
+    
+    .found-count {
+      font-size: 0.85rem; color: var(--text-dim); margin-top: 0.75rem; min-height: 1.2em; font-style: italic; font-family: var(--font-head);
+    }
+    .found-count strong { color: var(--accent); font-style: normal; }
+
+    footer {
+      color: var(--border); font-size: 0.8rem; font-family: var(--font-head);
+      text-align: center; margin-top: auto; padding-top: 2rem;
+    }
+    footer a { color: var(--text-dim); text-decoration: none; transition: color 0.2s; }
+    footer a:hover { color: var(--accent); }
+    .split-pane { display: flex; gap: 1rem; width: 100%; flex-wrap: wrap; }
+    .split-pane > div { flex: 1; min-width: 250px; display: flex; flex-direction: column; }
+  </style>
+</head>
+<body>
+
+<div style="text-align:center">
+  <h1>MTG <span>Grimoire</span></h1>
+  <p class="subtitle">Batch Scryfall enrichment &middot; Text-to-Grimoire extraction &middot; List Comparison</p>
+  <button id="btn-download-logs" class="btn-ghost btn-sm" style="margin-top:0.5rem; display:none;">🐛 Download Logs</button>
+</div>
+
+<!-- TAB BAR -->
+<div class="tabs">
+  <button class="tab-btn active" data-tab="enrich">✦ Enrich Grimoire</button>
+  <button class="tab-btn" data-tab="extract">📜 Extract from Text</button>
+  <button class="tab-btn" data-tab="compare">⚖️ Compare Lists</button>
+</div>
+
+<!-- ════════════════════════════════════════════════════
+     TAB 1 — ENRICH (existing, unchanged)
+     ════════════════════════════════════════════════════ -->
+<div class="tab-panel active" id="tab-enrich">
+
+  <div class="card">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 0.5rem;">
+      <label for="deck-input" style="margin-bottom:0;">Paste Grimoire</label>
+      <input type="file" id="file-tab1" accept=".txt,.csv,.dec" style="display:none">
+      <button class="btn-ghost" style="padding:0.2rem 0.6rem; font-size:0.75rem; border-radius:4px;" onclick="document.getElementById('file-tab1').click()">📁 Upload File</button>
+    </div>
+    <textarea id="deck-input" spellcheck="false" placeholder="1 Hire a Crew (MSH) 134
+1 Frozen in Ice (MSH) 54
+2 Widow's Bite (MSH) 122
+1 Kitsune, Dragon's Daughter (TMT) 41
+..."></textarea>
+
+    <div class="btn-row">
+      <button class="btn-primary" id="btn-enrich">✦ Enrich Grimoire</button>
+      <button class="btn-ghost" id="btn-clear">✕ Clear</button>
+      <span class="eff-badge" id="eff-badge" style="display:none">
+        <strong id="eff-requests">&#8212;</strong> req for <strong id="eff-cards">&#8212;</strong> cards
+      </span>
+    </div>
+
+    <div class="progress-wrap" id="progress-wrap">
+      <div class="progress-label">
+        <span id="progress-text">Preparing batches...</span>
+        <span id="progress-count">0 / 0</span>
+      </div>
+      <div class="progress-bar-bg"><div class="progress-bar-fill" id="progress-fill"></div></div>
+    </div>
+  </div>
+
+  <div class="card output-section" id="output-section">
+    <div class="output-header" style="flex-wrap: wrap; gap: 0.5rem;">
+      <div style="display:flex; align-items:center; gap: 0.8rem; flex-wrap: wrap;">
+        <h2>Enriched Output</h2>
+        <select id="sort-enrich" class="sort-select">
+          <option value="original">Original Order</option>
+          <option value="name">Sort by Name</option>
+          <option value="price">Sort by Price</option>
+          <option value="mv">Sort by Mana Value</option>
+          <option value="type">Sort by Type</option>
+        </select>
+        <span class="badge badge-ok" id="status-badge">Done</span>
+      </div>
+      <div style="display:flex; gap: 0.4rem;">
+        <button class="btn-secondary btn-sm" id="btn-copy" disabled>📜 Copy</button>
+        <button class="btn-secondary btn-sm" id="btn-download" disabled>💾 Download .txt</button>
+      </div>
+    </div>
+    <textarea id="output-box" readonly></textarea>
+    <div class="stats-row" id="stats-row"></div>
+    <div class="errors-section" id="errors-section">
+      <h3>&#9888; Cards not found / errors</h3>
+      <ul class="error-list" id="error-list"></ul>
+    </div>
+  </div>
+
+</div><!-- /tab-enrich -->
+
+<!-- TAB 2: EXTRACT FROM TEXT -->
+<div class="tab-panel" id="tab-extract">
+
+  <div class="card">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 0.5rem;">
+      <label for="extract-input" style="margin-bottom:0;">Paste Plain Text (article, AI response, notes...)</label>
+      <input type="file" id="file-tab2" accept=".txt,.csv,.dec" style="display:none">
+      <button class="btn-ghost" style="padding:0.2rem 0.6rem; font-size:0.75rem; border-radius:4px;" onclick="document.getElementById('file-tab2').click()">📁 Upload File</button>
+    </div>
+    <textarea id="extract-input" spellcheck="false" style="height:320px"
+      placeholder="Paste any text containing card references like:
+  1 Jet, Freedom Fighter (TLA) 229 (Repeatable creature removal on ETB)
+  1 Raphael, Tough Turtle (TMT) 104 (Alliance: pings for 1 on entry)
+  12 Plains
+
+This tool will scan every line, pull out the card references,
+and produce a clean grimoire list — optionally enriched with mana cost and oracle text."></textarea>
+
+    <div class="format-row">
+      <span style="font-size:0.85rem;color:var(--text-dim);font-weight:600">Output:</span>
+      <div class="radio-group">
+        <label><input type="radio" name="extract-fmt" value="simple" checked> Simple list</label>
+        <label><input type="radio" name="extract-fmt" value="enriched"> Enriched (Scryfall lookup)</label>
+      </div>
+    </div>
+
+    <div class="found-count" id="extract-found"></div>
+
+    <div class="btn-row">
+      <button class="btn-primary" id="btn-extract">📖 Extract Grimoire</button>
+      <button class="btn-ghost" id="btn-extract-clear">✕ Clear</button>
+      <span class="eff-badge" id="extract-eff-badge" style="display:none">
+        <strong id="extract-eff-req">&#8212;</strong> req for <strong id="extract-eff-cards">&#8212;</strong> cards
+      </span>
+    </div>
+
+    <div class="progress-wrap" id="extract-progress-wrap">
+      <div class="progress-label">
+        <span id="extract-progress-text">Preparing extraction...</span>
+        <span id="extract-progress-count">0 / 0</span>
+      </div>
+      <div class="progress-bar-bg"><div class="progress-bar-fill" id="extract-progress-fill"></div></div>
+    </div>
+  </div>
+
+  <div class="card output-section" id="extract-output-section">
+    <div class="output-header" style="flex-wrap: wrap; gap: 0.5rem;">
+      <div style="display:flex; align-items:center; gap: 0.8rem; flex-wrap: wrap;">
+        <h2>Extracted Grimoire</h2>
+        <select id="sort-extract" class="sort-select">
+          <option value="original">Original Order</option>
+          <option value="name">Sort by Name</option>
+          <option value="price">Sort by Price</option>
+          <option value="mv">Sort by Mana Value</option>
+          <option value="type">Sort by Type</option>
+        </select>
+        <span class="badge badge-ok" id="extract-status-badge">Done</span>
+      </div>
+      <div style="display:flex; gap: 0.4rem;">
+        <button class="btn-secondary btn-sm" id="btn-extract-copy" disabled>📜 Copy</button>
+        <button class="btn-secondary btn-sm" id="btn-extract-download" disabled>💾 Download .txt</button>
+      </div>
+    </div>
+    <textarea id="extract-output-box" readonly></textarea>
+    <div class="stats-row" id="extract-stats-row"></div>
+    <div class="errors-section" id="extract-errors-section">
+      <h3>&#9888; Not found</h3>
+      <ul class="error-list" id="extract-error-list"></ul>
+    </div>
+  </div>
+
+</div><!-- /tab-extract -->
+
+<!-- ════════════════════════════════════════════════════
+     TAB 3 — COMPARE LISTS
+     ════════════════════════════════════════════════════ -->
+<div class="tab-panel" id="tab-compare">
+  <div class="card">
+    <p style="font-size: 0.85rem; color: var(--text-dim); margin-bottom: 1rem;">
+      Find the intersection of two lists (e.g. check a friend's bulk for cards you need). Accepts Moxfield, Arena, basic text, or CSV.
+    </p>
+    <div class="split-pane">
+      <div>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 0.5rem;">
+          <label for="compare-input-a" style="margin-bottom:0;">List A (Cards You Want)</label>
+          <input type="file" id="file-compare-a" accept=".txt,.csv,.dec" style="display:none">
+          <button class="btn-ghost" style="padding:0.2rem 0.6rem; font-size:0.75rem; border-radius:4px;" onclick="document.getElementById('file-compare-a').click()">📁 Upload</button>
+        </div>
+        <textarea id="compare-input-a" spellcheck="false" placeholder="1 Agate Instigator..."></textarea>
+      </div>
+      <div>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 0.5rem;">
+          <label for="compare-input-b" style="margin-bottom:0;">List B (Friend's Bulk/Collection)</label>
+          <input type="file" id="file-compare-b" accept=".txt,.csv,.dec" style="display:none">
+          <button class="btn-ghost" style="padding:0.2rem 0.6rem; font-size:0.75rem; border-radius:4px;" onclick="document.getElementById('file-compare-b').click()">📁 Upload</button>
+        </div>
+        <textarea id="compare-input-b" spellcheck="false" placeholder="1,Agate Instigator,BLC,..."></textarea>
+      </div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn-primary" id="btn-compare">⚖️ Compare & Enrich Cost</button>
+      <button class="btn-secondary" id="btn-compare-copy" disabled>📋 Copy Output</button>
+      <button class="btn-ghost" id="btn-compare-clear">✕ Clear</button>
+    </div>
+
+    <div class="progress-wrap" id="compare-progress-wrap">
+      <div class="progress-label">
+        <span id="compare-progress-text">Fetching...</span>
+        <span id="compare-progress-count">0 / 0</span>
+      </div>
+      <div class="progress-bar-bg"><div class="progress-bar-fill" id="compare-progress-fill"></div></div>
+    </div>
+  </div>
+
+  <div class="card output-section" id="compare-output-section">
+    <div class="output-header" style="flex-wrap: wrap; gap: 0.5rem;">
+      <div style="display:flex; align-items:center; gap: 0.8rem; flex-wrap: wrap;">
+        <h2>Matching Cards (Intersection)</h2>
+        <span class="badge badge-ok" id="compare-status-badge">Done</span>
+      </div>
+    </div>
+    <textarea id="compare-output-box" readonly></textarea>
+    <div class="stats-row" id="compare-stats-row"></div>
+  </div>
+</div><!-- /tab-compare -->
+
+<footer>
+  <a href="https://scryfall.com/docs/api/cards/collection" target="_blank" rel="noopener">POST /cards/collection</a>
+  &mdash; 75 cards/request &middot; rate limit 2/s &middot;
+  Card data &copy; <a href="https://scryfall.com" target="_blank" rel="noopener">Scryfall</a>
+</footer>
+
+<script>
+// --- SHARED CONSTANTS & UTILITIES ---
+const BATCH_SIZE     = 75;
+const BATCH_DELAY_MS = 500;
+const API_URL        = 'https://api.scryfall.com/cards/collection';
+const sleep          = ms => new Promise(r => setTimeout(r, ms));
+const $              = id => document.getElementById(id);
+
+function downloadTxt(filename, text) {
+  const blob = new Blob([text], { type: 'text/plain' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+const LOGS = [];
+function addLog(msg, data = null) {
+  const ts = new Date().toISOString().substring(11, 23);
+  let line = `[${ts}] ${msg}`;
+  if (data) {
+    if (typeof data === 'string') line += `\n${data}`;
+    else line += `\n${JSON.stringify(data, null, 2)}`;
+  }
+  LOGS.push(line);
+  $('btn-download-logs').style.display = 'inline-block';
+}
+
+function clearLogs() {
+  LOGS.length = 0;
+  $('btn-download-logs').style.display = 'none';
+}
+
+$('btn-download-logs').addEventListener('click', () => {
+  downloadTxt('Grimoire_Logs.txt', LOGS.join('\n\n'));
+});
+
+// Standard deck-list line: optional qty, name, (SET), number, optional suffix
+const CARD_RE  = /^\s*[-*\u2022]?\s*(?:(\d{1,4})x?\s+)?(.+?)\s+\(([A-Za-z0-9_]{2,6})\)\s+(\d+[a-z]?)(?:\s.*)?$/i;
+// Basic lands without set codes
+const BASIC_RE = /^\s*[-*\u2022]?\s*(?:(\d{1,4})x?\s+)?((?:Snow-Covered\s+)?(?:Plains|Island|Swamp|Mountain|Forest|Wastes))(?:\s.*)?$/i;
+// Loose name only
+const LOOSE_RE = /^\s*[-*\u2022]?\s*(?:(\d{1,4})x?\s+)?(.+)$/i;
+
+function normalizeCardName(name) {
+  return name.replace(/\s*\/\s*/g, ' // ');
+}
+
+function parseStandardLine(raw) {
+  let line = raw.trim();
+  line = line.replace(/\s*<-\s*NOT FOUND.*$/i, ''); // Strip previous error markers
+  if (!line || line.startsWith('//') || line.startsWith('#')) return null;
+  
+  const m = line.match(CARD_RE);
+  if (m) return { raw: line, qty: m[1] || '1', name: normalizeCardName(m[2].trim()), set: m[3].toLowerCase(), number: m[4], flags: '', isBasic: false };
+
+  const mb = line.match(BASIC_RE);
+  if (mb) return { raw: line, qty: mb[1] || '1', name: mb[2], set: null, number: null, flags: '', isBasic: true };
+
+  const nm = line.match(LOOSE_RE);
+  if (nm) return { raw: line, qty: nm[1] || '1', name: normalizeCardName(nm[2].trim()), set: null, number: null, flags: '', isBasic: false };
+
+  return { raw: line, error: true };
+}
+
+function parseAnyLine(raw) {
+  let line = raw.trim();
+  line = line.replace(/\s*<-\s*NOT FOUND.*$/i, ''); // Strip previous error markers
+  if (!line || line.startsWith('//') || line.startsWith('#') || /^(deck|commander|sideboard|maybeboard|companion)$/i.test(line)) return null;
+
+  // Try CSV format (e.g. 1,"Card Name",setname,setcode,...)
+  if (line.includes(',')) {
+    const cols = line.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/).map(s => s.replace(/^"(.*)"$/, '$1').trim());
+    if (cols.length >= 2) {
+      if (/^\d+$/.test(cols[0]) && cols[1]) {
+        return { qty: parseInt(cols[0], 10), name: normalizeCardName(cols[1]), set: (cols[3]||'').toLowerCase(), number: cols[9]||null };
+      }
+    }
+  }
+
+  // Fallback to standard formats
+  const m = line.match(CARD_RE);
+  if (m) return { qty: parseInt(m[1]||1, 10), name: normalizeCardName(m[2].trim()), set: m[3].toLowerCase(), number: m[4] };
+  
+  const mb = line.match(BASIC_RE);
+  if (mb) return { qty: parseInt(mb[1]||1, 10), name: mb[2], set: null, number: null };
+  
+  const nm = line.match(LOOSE_RE);
+  if (nm) return { qty: parseInt(nm[1]||1, 10), name: normalizeCardName(nm[2].trim()), set: null, number: null };
+
+  return null;
+}
+
+function getCardKey(p) {
+  if (p.key) return p.key; // Tab 2 sets p.key directly
+  if (p.isBasic && !p.set) return 'name/' + p.name.toLowerCase();
+  if (p.set && p.number) return p.set.toLowerCase() + '/' + p.number;
+  return 'name/' + p.name.toLowerCase();
+}
+
+function extractCardsFromText(text) {
+  const results = [];
+  const seen = new Map();
+
+  function addOrUpdate(p) {
+    if (seen.has(p.key)) {
+      const existing = seen.get(p.key);
+      existing.qty = String((parseInt(existing.qty, 10) || 1) + (parseInt(p.qty, 10) || 1));
+    } else {
+      seen.set(p.key, p);
+      results.push(p);
+    }
+  }
+
+  const lines = text.split('\n');
+  for (let rawLine of lines) {
+    let line = rawLine.trim();
+    line = line.replace(/\s*<-\s*NOT FOUND.*$/i, ''); // Strip previous error markers
+    if (!line) continue;
+    
+    // Strip out common markdown list bullets so they don't mess up name parsing
+    line = line.replace(/^[-*•]\s+/, '');
+    
+    // Skip obvious table headers or list section headers like "1. Commander (1 Card)"
+    if (line.toLowerCase() === 'card name') continue;
+    if (line.match(/^\d+\.\s+[A-Za-z]/)) continue; 
+    if (line.match(/\(\d+\s+Cards?\)/i)) continue;
+
+    // 1. Try Full Format (Strict Line) -> e.g. "Jet, Freedom Fighter (TLA) 229"
+    const mFull = line.match(CARD_RE);
+    if (mFull) {
+      addOrUpdate({ 
+        qty: mFull[1] || '1', 
+        name: normalizeCardName(mFull[2].trim()), 
+        set: mFull[3].toLowerCase(), 
+        number: mFull[4], 
+        isBasic: false, 
+        key: mFull[3].toLowerCase() + '/' + mFull[4] 
+      });
+      continue;
+    }
+
+    // 2. Try Basic Land Format (Strict Line)
+    const mBasic = line.match(BASIC_RE);
+    if (mBasic) {
+      const name = mBasic[2];
+      addOrUpdate({ 
+        qty: mBasic[1] || '1', 
+        name: name, 
+        set: null, 
+        number: null, 
+        isBasic: true, 
+        key: 'name/' + name.toLowerCase() 
+      });
+      continue;
+    }
+
+    // 3. Fallback: Loose name format (Strict Line)
+    // Only apply if the line is short and doesn't look like an English sentence
+    if (line.length > 1 && line.length < 60) {
+      if (!line.match(/[.!?]$/) && !line.match(/\s{3,}/) && line.split(/\s+/).length <= 8) {
+        const mLoose = line.match(LOOSE_RE);
+        if (mLoose) {
+          const qty = mLoose[1] || '1';
+          const name = normalizeCardName(mLoose[2].trim());
+          const isBasic = /^(?:Snow-Covered\s+)?(?:Plains|Island|Swamp|Mountain|Forest|Wastes)$/i.test(name);
+          const key = 'name/' + name.toLowerCase();
+          addOrUpdate({ qty, name, set: null, number: null, isBasic, key });
+          continue;
+        }
+      }
+    }
+
+    // 4. Embedded Prose Extraction (If line is prose, search inside it)
+    // e.g., "The deck relies on Jet, Freedom Fighter (TLA) 229 to win."
+    const PROSE_CARD_RE = /(?:(?:^|\s)(\d{1,4})x?\s+)?([A-Z\u00C0-\u024F][^\n(]{0,80}?)\s+\(([A-Za-z0-9]{2,6})\)\s+(\d+[a-z]?)\b/g;
+    for (const m of line.matchAll(PROSE_CARD_RE)) {
+      const qty = m[1] || '1';
+      const name = normalizeCardName(m[2].trim().replace(/^[^A-Z\u00C0-\u024F]+/, '')); 
+      const set = m[3].toLowerCase();
+      const num = m[4];
+      addOrUpdate({ qty, name, set, number: num, isBasic: false, key: set + '/' + num });
+    }
+    
+    const PROSE_BASIC_RE = /(?:(?:^|\s)(\d{1,4})x?\s+)?\b((?:Snow-Covered\s+)?(?:Plains|Island|Swamp|Mountain|Forest|Wastes))\b(?![ \t]*\()/gi;
+    for (const m of line.matchAll(PROSE_BASIC_RE)) {
+      const name = m[2];
+      addOrUpdate({ qty: m[1] || '1', name: name, set: null, number: null, isBasic: true, key: 'name/' + name.toLowerCase() });
+    }
+  }
+
+  return results;
+}
+
+async function fetchBatch(items) {
+  const identifiers = items.map(i => {
+    if (i.set && i.number) return { set: i.set, collector_number: i.number };
+    // Scryfall's collection endpoint only supports front-face names for split/MDFC cards
+    return { name: i.name.split('//')[0].trim() };
+  });
+
+  addLog(`fetchBatch sending identifiers:`, identifiers);
+
+  const maxRetries = 3;
+  let delay = 1000;
+  let lastErr = null;
+
+  for (let attempt = 1; attempt <= maxRetries; attempt++) {
+    try {
+      const res = await fetch(API_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify({ identifiers }),
+      });
+      if (!res.ok) {
+        if (res.status === 429 || res.status >= 500) {
+          addLog(`HTTP ${res.status} on attempt ${attempt}. Retrying in ${delay}ms...`);
+          if (attempt < maxRetries) {
+            await sleep(delay);
+            delay *= 2;
+            continue;
+          }
+        }
+        const body = await res.json().catch(() => ({}));
+        addLog(`HTTP Error: ${res.status}`, body);
+        return { found: new Map(), notFound: new Set(items.map(getCardKey)), fetchError: body.details || 'HTTP '+res.status };
+      }
+      const data = await res.json();
+      
+      if (data.not_found && data.not_found.length > 0) {
+        addLog(`Scryfall API returned ${data.not_found.length} items not found:`, data.not_found);
+      }
+
+      const found = new Map();
+      for (const card of (data.data || [])) {
+        found.set(card.set + '/' + card.collector_number, card);
+        found.set('name/' + card.name.toLowerCase(), card);
+        
+        if (card.name.includes('//')) {
+          found.set('name/' + card.name.split('//')[0].trim().toLowerCase(), card);
+        }
+      }
+      const notFound = new Set();
+      for (const nf of (data.not_found || [])) {
+        if (nf.set && nf.collector_number) {
+          notFound.add(nf.set.toLowerCase() + '/' + nf.collector_number);
+        }
+        if (nf.name) {
+          const orig = items.find(i => i.name.split('//')[0].trim().toLowerCase() === nf.name.toLowerCase());
+          if (orig) notFound.add('name/' + orig.name.toLowerCase());
+          else notFound.add('name/' + nf.name.toLowerCase());
+        }
+      }
+      return { found, notFound, fetchError: null };
+    } catch(e) {
+      lastErr = e.message;
+      addLog(`Fetch attempt ${attempt} failed with exception: ${e.message}`);
+      if (attempt < maxRetries) {
+        await sleep(delay);
+        delay *= 2;
+        continue;
+      }
+    }
+  }
+  return { found: new Map(), notFound: new Set(items.map(getCardKey)), fetchError: lastErr || 'Fetch failed' };
+}
+
+function getCardPriceVal(card) {
+  if (!card || !card.prices) return 0;
+  let p = card.prices.usd || card.prices.usd_foil || card.prices.usd_etched;
+  return parseFloat(p) || 0;
+}
+
+function extractFields(card) {
+  let priceStr = '';
+  let priceVal = getCardPriceVal(card);
+  if (priceVal > 0) priceStr = '$' + priceVal.toFixed(2);
+
+  if (card.card_faces && card.card_faces.length > 0) {
+    const faces = card.card_faces;
+    return {
+      manaCost:   faces.map(f => f.mana_cost   || '').filter(Boolean).join(' // '),
+      typeLine:   faces.map(f => f.type_line    || '').filter(Boolean).join(' // '),
+      oracleText: faces.map(f => f.oracle_text  || '').filter(Boolean).join(' / '),
+      price: priceStr
+    };
+  }
+  return { manaCost: card.mana_cost||'', typeLine: card.type_line||'', oracleText: card.oracle_text||'', price: priceStr };
+}
+
+function buildEnrichedLine(p, card) {
+  const { manaCost, typeLine, oracleText, price } = extractFields(card);
+  const setCode = (p.set || card.set).toUpperCase();
+  const colNum  = p.number || card.collector_number;
+  const cardName = card.name || p.name; // Always prefer Scryfall's official casing and cleaner name
+  const base   = p.qty + ' ' + cardName + ' (' + setCode + ') ' + colNum;
+  const flags  = p.flags ? ' ' + p.flags : '';
+  const oracle = oracleText.replace(/\n/g, ' / ') || '\u2014';
+  const priceTag = price ? ' - ' + price : '';
+  return base + flags + priceTag + ' - ' + (manaCost||'(no cost)') + ' - ' + typeLine + ' - ' + oracle;
+}
+
+function buildSimpleLine(p) {
+  if (p.isBasic) return p.qty + ' ' + p.name;
+  if (!p.set) return p.qty + ' ' + p.name;
+  return p.qty + ' ' + p.name + ' (' + p.set.toUpperCase() + ') ' + p.number;
+}
+
+async function runBatchFetch(toFetch, onProgress) {
+  const batches  = [];
+  for (let i = 0; i < toFetch.length; i += BATCH_SIZE) batches.push(toFetch.slice(i, i+BATCH_SIZE));
+
+  addLog(`Prepared ${batches.length} batches for ${toFetch.length} unique cards.`);
+
+  const cardMap = new Map();
+  const notFoundKeys = new Set();
+
+  for (let i = 0; i < batches.length; i++) {
+    onProgress(i, batches.length, 'Batch ' + (i+1) + ' of ' + batches.length + ' (' + batches[i].length + ' cards)...');
+    
+    addLog(`Sending Batch ${i+1}/${batches.length} with ${batches[i].length} cards...`);
+    const result = await fetchBatch(batches[i]);
+    
+    if (result.fetchError) {
+      addLog(`Batch ${i+1} failed completely: ${result.fetchError}`, batches[i].map(getCardKey));
+    } else {
+      addLog(`Batch ${i+1} success: ${result.found.size} found, ${result.notFound.size} not found`);
+    }
+
+    for (const [k,v] of result.found)  cardMap.set(k, v);
+    for (const k of result.notFound)   notFoundKeys.add(k);
+    onProgress(i+1, batches.length, '');
+    if (i < batches.length - 1) await sleep(BATCH_DELAY_MS);
+  }
+  
+  addLog(`Batch fetching complete. Total found: ${cardMap.size}, Total missing: ${notFoundKeys.size}`);
+  return { cardMap, notFoundKeys, batchCount: batches.length };
+}
+
+// --- TAB SWITCHING ---
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+    $('tab-' + btn.dataset.tab).classList.add('active');
+  });
+});
+
+// --- TAB 1: ENRICH DECKLIST ---
+const deckInput     = $('deck-input');
+const btnEnrich     = $('btn-enrich');
+const btnCopy       = $('btn-copy');
+const btnClear      = $('btn-clear');
+const btnDownload   = $('btn-download');
+const sortEnrich    = $('sort-enrich');
+const effBadge      = $('eff-badge');
+const effRequests   = $('eff-requests');
+const effCards      = $('eff-cards');
+const progressWrap  = $('progress-wrap');
+const progressText  = $('progress-text');
+const progressCount = $('progress-count');
+const progressFill  = $('progress-fill');
+const outputSection = $('output-section');
+const outputBox     = $('output-box');
+const statusBadge   = $('status-badge');
+const statsRow      = $('stats-row');
+const errorsSection = $('errors-section');
+const errorList     = $('error-list');
+
+let currentTab1State = { cards: [], parsed: [] };
+
+function renderTab1Output() {
+  const mode = sortEnrich.value;
+  let sorted = [...currentTab1State.cards];
+  
+  if (mode === 'name') {
+    sorted.sort((a,b) => a.name.localeCompare(b.name));
+  } else if (mode === 'price') {
+    sorted.sort((a,b) => b.price - a.price);
+  } else if (mode === 'mv') {
+    sorted.sort((a,b) => b.cmc - a.cmc);
+  } else if (mode === 'type') {
+    sorted.sort((a,b) => a.type.localeCompare(b.type));
+  }
+  
+  const resultLines = [];
+  for (const c of sorted) {
+    resultLines.push(c.lineStr);
+  }
+  
+  for (const p of currentTab1State.parsed) {
+    if (p === null) { resultLines.push(''); continue; }
+    if (p && p.error) { resultLines.push('# UNPARSEABLE: ' + p.raw); continue; }
+  }
+  
+  outputBox.value = resultLines.join('\n');
+}
+
+sortEnrich.addEventListener('change', renderTab1Output);
+
+function setProgress(fill, text, count, done, total) {
+  fill.style.width = (total ? Math.round(done/total*100) : 0) + '%';
+  count.textContent = done + ' / ' + total;
+  if (text) text.textContent = arguments[5] || '';
+}
+
+deckInput.addEventListener('input', () => {
+  const cards = deckInput.value.split('\n').map(parseStandardLine).filter(p => p && !p.error).length;
+  const reqs  = Math.ceil(cards / BATCH_SIZE);
+  effBadge.style.display = cards > 0 ? '' : 'none';
+  effRequests.textContent = reqs;
+  effCards.textContent    = cards;
+});
+
+btnEnrich.addEventListener('click', async () => {
+  clearLogs();
+  addLog("--- Starting Tab 1 Enrichment ---");
+  const rawText = deckInput.value.trim();
+  if (!rawText) return;
+
+  const lines  = rawText.split('\n');
+  const parsed = lines.map(parseStandardLine);
+  
+  const parseErrors = parsed.filter(p => p && p.error);
+  if (parseErrors.length > 0) {
+    addLog(`Encountered ${parseErrors.length} unparseable lines:`, parseErrors.map(p => p.raw));
+  }
+
+  const cardLines = parsed.filter(p => p && !p.error);
+  addLog(`Successfully parsed ${cardLines.length} valid card lines:`, cardLines.map(c => 
+    `${c.qty}x [${c.name}] (set: ${c.set || 'none'}, num: ${c.number || 'none'})`
+  ));
+  
+  const uniqueMap = new Map();
+  for (const p of cardLines) {
+    const k = getCardKey(p);
+    if (uniqueMap.has(k)) {
+      const existing = uniqueMap.get(k);
+      existing.qty = String((parseInt(existing.qty, 10) || 1) + (parseInt(p.qty, 10) || 1));
+    } else {
+      uniqueMap.set(k, { ...p });
+    }
+  }
+
+  outputBox.value = ''; errorList.innerHTML = '';
+  errorsSection.classList.remove('visible'); outputSection.classList.remove('visible');
+  progressWrap.classList.add('visible');
+  btnEnrich.disabled = btnCopy.disabled = btnDownload.disabled = true;
+  progressFill.style.width = '0%'; progressCount.textContent = '0 / 0';
+
+  const { cardMap, notFoundKeys, batchCount } = await runBatchFetch(
+    [...uniqueMap.values()],
+    (done, total, msg) => {
+      progressFill.style.width = (total ? Math.round(done/total*100) : 0) + '%';
+      progressCount.textContent = done + ' / ' + total;
+      if (msg) progressText.textContent = msg;
+    }
+  );
+
+  const errors = [];
+  let totalQty = 0, enriched = 0, totalCost = 0;
+  
+  currentTab1State.parsed = parsed;
+  currentTab1State.cards = [];
+  let originalIndex = 0;
+
+  for (const p of uniqueMap.values()) {
+    const key = getCardKey(p);
+    const card = cardMap.get(key);
+    
+    let lineStr = '';
+    let price = 0;
+    let cmc = 0;
+    let type = '';
+    let name = p.name;
+
+    if (card) {
+      const qty = parseInt(p.qty,10)||1;
+      totalQty += qty; enriched++;
+      price = getCardPriceVal(card);
+      totalCost += price * qty;
+      cmc = card.cmc || 0;
+      type = card.type_line || '';
+      name = card.name;
+      lineStr = buildEnrichedLine(p, card);
+    } else {
+      lineStr = p.raw + '  <- NOT FOUND';
+      errors.push(p.raw + '  ->  ' + (notFoundKeys.has(key) ? 'Not in Scryfall' : 'Fetch error'));
+    }
+    
+    currentTab1State.cards.push({ originalIndex: originalIndex++, name, price, cmc, type, lineStr });
+  }
+
+  progressWrap.classList.remove('visible');
+  renderTab1Output();
+  outputSection.classList.add('visible');
+  btnCopy.disabled = btnDownload.disabled = btnEnrich.disabled = false;
+
+  statsRow.innerHTML = [
+    '<div class="stat"><strong>' + totalQty + '</strong>Cards (w/ qty)</div>',
+    '<div class="stat"><strong>' + uniqueMap.size + '</strong>Unique cards</div>',
+    totalCost > 0 ? '<div class="stat highlight"><strong>$' + totalCost.toFixed(2) + '</strong>Est. Cost</div>' : '',
+    '<div class="stat highlight"><strong>' + batchCount + '</strong>API requests</div>',
+    '<div class="stat"><strong>' + enriched + '</strong>Enriched</div>',
+    errors.length ? '<div class="stat"><strong style="color:var(--warn)">' + errors.length + '</strong>Not found</div>' : ''
+  ].join('');
+
+  if (errors.length === 0) {
+    statusBadge.textContent = 'Done \u2713'; statusBadge.className = 'badge badge-ok';
+  } else {
+    statusBadge.textContent = errors.length + ' error(s)'; statusBadge.className = 'badge badge-warn';
+    errors.forEach(e => { const li = document.createElement('li'); li.textContent = e; errorList.appendChild(li); });
+    errorsSection.classList.add('visible');
+  }
+  progressText.textContent = 'Preparing batches...';
+});
+
+btnCopy.addEventListener('click', async () => {
+  try {
+    await navigator.clipboard.writeText(outputBox.value);
+    const prev = btnCopy.textContent;
+    btnCopy.textContent = '✦ Copied!';
+    setTimeout(() => { btnCopy.textContent = prev; }, 1800);
+  } catch { outputBox.select(); document.execCommand('copy'); }
+});
+
+btnDownload.addEventListener('click', () => {
+  downloadTxt('Grimoire_Enriched.txt', outputBox.value);
+});
+
+btnClear.addEventListener('click', () => {
+  deckInput.value = outputBox.value = '';
+  ['output-section','progress-wrap','errors-section'].forEach(id => $(id).classList.remove('visible'));
+  effBadge.style.display = 'none'; btnCopy.disabled = btnDownload.disabled = true; statsRow.innerHTML = '';
+});
+
+// --- TAB 2: EXTRACT FROM TEXT ---
+const extractInput       = $('extract-input');
+const btnExtract         = $('btn-extract');
+const btnExtractCopy     = $('btn-extract-copy');
+const btnExtractClear    = $('btn-extract-clear');
+const extractEffBadge    = $('extract-eff-badge');
+const extractEffReq      = $('extract-eff-req');
+const extractEffCards    = $('extract-eff-cards');
+const extractProgressWrap= $('extract-progress-wrap');
+const extractProgressTxt = $('extract-progress-text');
+const extractProgressCnt = $('extract-progress-count');
+const extractProgressFill= $('extract-progress-fill');
+const extractOutputSec   = $('extract-output-section');
+const extractOutputBox   = $('extract-output-box');
+const extractStatusBadge = $('extract-status-badge');
+const extractStatsRow    = $('extract-stats-row');
+const extractErrorsSec   = $('extract-errors-section');
+const extractErrorList   = $('extract-error-list');
+const extractFound       = $('extract-found');
+const btnExtractDownload = $('btn-extract-download');
+const sortExtract        = $('sort-extract');
+
+let currentTab2State = { cards: [] };
+
+function renderTab2Output() {
+  const mode = sortExtract.value;
+  let sorted = [...currentTab2State.cards];
+  
+  if (mode === 'name') {
+    sorted.sort((a,b) => a.name.localeCompare(b.name));
+  } else if (mode === 'price') {
+    sorted.sort((a,b) => b.price - a.price);
+  } else if (mode === 'mv') {
+    sorted.sort((a,b) => b.cmc - a.cmc);
+  } else if (mode === 'type') {
+    sorted.sort((a,b) => a.type.localeCompare(b.type));
+  }
+  
+  const resultLines = [];
+  for (const c of sorted) {
+    resultLines.push(c.lineStr);
+  }
+  
+  extractOutputBox.value = resultLines.join('\n');
+}
+
+sortExtract.addEventListener('change', renderTab2Output);
+
+// Live preview: show how many cards detected and how many requests needed
+extractInput.addEventListener('input', () => {
+  const cards  = extractCardsFromText(extractInput.value);
+  const nonBasic = cards.filter(c => !c.isBasic);
+  const fmt = document.querySelector('input[name="extract-fmt"]:checked').value;
+  if (cards.length === 0) {
+    extractFound.innerHTML = '';
+    extractEffBadge.style.display = 'none';
+    return;
+  }
+  extractFound.innerHTML = 'Found <strong>' + cards.length + '</strong> unique card'
+    + (cards.length !== 1 ? 's' : '') + ' (' + nonBasic.length + ' with set codes, '
+    + (cards.length - nonBasic.length) + ' basic lands)';
+  if (fmt === 'enriched' && cards.length > 0) {
+    const reqs = Math.ceil(cards.length / BATCH_SIZE);
+    extractEffBadge.style.display = '';
+    extractEffReq.textContent    = reqs;
+    extractEffCards.textContent  = cards.length;
+  } else {
+    extractEffBadge.style.display = 'none';
+  }
+});
+
+// Update badge when format changes
+document.querySelectorAll('input[name="extract-fmt"]').forEach(r => {
+  r.addEventListener('change', () => extractInput.dispatchEvent(new Event('input')));
+});
+
+btnExtract.addEventListener('click', async () => {
+  clearLogs();
+  addLog("--- Starting Tab 2 Extraction ---");
+  const rawText = extractInput.value.trim();
+  if (!rawText) return;
+
+  const cards    = extractCardsFromText(rawText);
+  const fmt      = document.querySelector('input[name="extract-fmt"]:checked').value;
+
+  if (cards.length === 0) {
+    addLog("No cards extracted from text.");
+    extractFound.innerHTML = '<span style="color:var(--warn)">No card references found in the text.</span>';
+    return;
+  }
+  
+  addLog(`Successfully extracted ${cards.length} unique cards from prose/list:`, cards.map(c => 
+    `${c.qty}x [${c.name}] (set: ${c.set || 'none'}, num: ${c.number || 'none'})`
+  ));
+
+  // Reset output
+  extractOutputBox.value = ''; extractErrorList.innerHTML = '';
+  extractErrorsSec.classList.remove('visible'); extractOutputSec.classList.remove('visible');
+  btnExtract.disabled = btnExtractCopy.disabled = btnExtractDownload.disabled = true;
+
+  let cardMap = new Map(), notFoundKeys = new Set(), batchCount = 0;
+
+  if (fmt === 'enriched' && cards.length > 0) {
+    extractProgressWrap.classList.add('visible');
+    extractProgressFill.style.width = '0%'; extractProgressCnt.textContent = '0 / 0';
+
+    const result = await runBatchFetch(cards, (done, total, msg) => {
+      extractProgressFill.style.width = (total ? Math.round(done/total*100) : 0) + '%';
+      extractProgressCnt.textContent  = done + ' / ' + total;
+      if (msg) extractProgressTxt.textContent = msg;
+    });
+    cardMap      = result.cardMap;
+    notFoundKeys = result.notFoundKeys;
+    batchCount   = result.batchCount;
+    extractProgressWrap.classList.remove('visible');
+  }
+
+  const errors = [];
+  let totalQty = 0, totalCost = 0;
+  
+  currentTab2State.cards = [];
+  let originalIndex = 0;
+
+  for (const card of cards) {
+    let lineStr = '';
+    let price = 0;
+    let cmc = 0;
+    let type = '';
+    let name = card.name;
+
+    if (fmt === 'simple') {
+      lineStr = buildSimpleLine(card);
+      totalQty += parseInt(card.qty,10)||1;
+    } else {
+      const data = cardMap.get(card.key);
+      if (data) {
+        const qty = parseInt(card.qty,10)||1;
+        lineStr = buildEnrichedLine(card, data);
+        totalQty += qty;
+        price = getCardPriceVal(data);
+        totalCost += price * qty;
+        cmc = data.cmc || 0;
+        type = data.type_line || '';
+        name = data.name;
+      } else {
+        lineStr = buildSimpleLine(card) + '  <- NOT FOUND';
+        errors.push(buildSimpleLine(card) + '  ->  ' + (notFoundKeys.has(card.key) ? 'Not in Scryfall' : 'Fetch error'));
+      }
+    }
+    currentTab2State.cards.push({ originalIndex: originalIndex++, name, price, cmc, type, lineStr });
+  }
+
+  renderTab2Output();
+  extractOutputSec.classList.add('visible');
+  btnExtractCopy.disabled = btnExtractDownload.disabled = btnExtract.disabled = false;
+
+  const enrichedCount = fmt === 'enriched' ? (cards.length - errors.length) : 0;
+  extractStatsRow.innerHTML = [
+    '<div class="stat"><strong>' + totalQty + '</strong>Cards (w/ qty)</div>',
+    '<div class="stat"><strong>' + cards.length + '</strong>Unique cards extracted</div>',
+    totalCost > 0 ? '<div class="stat highlight"><strong>$' + totalCost.toFixed(2) + '</strong>Est. Cost</div>' : '',
+    fmt === 'enriched' && batchCount > 0 ? '<div class="stat highlight"><strong>' + batchCount + '</strong>API requests</div>' : '',
+    fmt === 'enriched' ? '<div class="stat"><strong>' + enrichedCount + '</strong>Enriched</div>' : '',
+    errors.length ? '<div class="stat"><strong style="color:var(--warn)">' + errors.length + '</strong>Not found</div>' : ''
+  ].join('');
+
+  if (errors.length === 0) {
+    extractStatusBadge.textContent = 'Done \u2713'; extractStatusBadge.className = 'badge badge-ok';
+  } else {
+    extractStatusBadge.textContent = errors.length + ' error(s)'; extractStatusBadge.className = 'badge badge-warn';
+    errors.forEach(e => { const li = document.createElement('li'); li.textContent = e; extractErrorList.appendChild(li); });
+    extractErrorsSec.classList.add('visible');
+  }
+  extractProgressTxt.textContent = 'Fetching...';
+});
+
+btnExtractCopy.addEventListener('click', async () => {
+  try {
+    await navigator.clipboard.writeText(extractOutputBox.value);
+    const prev = btnExtractCopy.textContent;
+    btnExtractCopy.textContent = '✦ Copied!';
+    setTimeout(() => { btnExtractCopy.textContent = prev; }, 1800);
+  } catch { extractOutputBox.select(); document.execCommand('copy'); }
+});
+
+btnExtractDownload.addEventListener('click', () => {
+  downloadTxt('Grimoire_Extracted.txt', extractOutputBox.value);
+});
+
+btnExtractClear.addEventListener('click', () => {
+  extractInput.value = extractOutputBox.value = '';
+  extractFound.innerHTML = '';
+  extractEffBadge.style.display = 'none';
+  ['extract-output-section','extract-progress-wrap','extract-errors-section'].forEach(id => $(id).classList.remove('visible'));
+  btnExtractCopy.disabled = btnExtractDownload.disabled = true; extractStatsRow.innerHTML = '';
+});
+
+// ═══════════════════════════════════════════════
+//  TAB 3 — COMPARE LISTS
+// ═══════════════════════════════════════════════
+const compareInputA   = $('compare-input-a');
+const compareInputB   = $('compare-input-b');
+const btnCompare      = $('btn-compare');
+const btnCompareCopy  = $('btn-compare-copy');
+const btnCompareClear = $('btn-compare-clear');
+const compareOutputSec= $('compare-output-section');
+const compareOutputBox= $('compare-output-box');
+const compareStatsRow = $('compare-stats-row');
+const compareProgWrap = $('compare-progress-wrap');
+const compareProgFill = $('compare-progress-fill');
+const compareProgCnt  = $('compare-progress-count');
+const compareProgTxt  = $('compare-progress-text');
+const compareStatus   = $('compare-status-badge');
+
+function parseCompareList(text) {
+  const map = new Map();
+  const lines = text.split('\n');
+  for (const line of lines) {
+    const p = parseAnyLine(line);
+    if (p) {
+      const key = p.name.toLowerCase();
+      if (map.has(key)) {
+        map.get(key).qty += p.qty;
+      } else {
+        map.set(key, p);
+      }
+    }
+  }
+  return map;
+}
+
+btnCompare.addEventListener('click', async () => {
+  clearLogs();
+  addLog("--- Starting Tab 3 Comparison ---");
+  const textA = compareInputA.value.trim();
+  const textB = compareInputB.value.trim();
+  
+  if (!textA || !textB) {
+    alert("Please paste lists into both boxes to compare.");
+    return;
+  }
+
+  const mapA = parseCompareList(textA);
+  const mapB = parseCompareList(textB);
+  
+  addLog(`Parsed ${mapA.size} unique cards from List A and ${mapB.size} unique cards from List B.`);
+
+  const matches = [];
+  for (const [nameKey, cardA] of mapA) {
+    if (mapB.has(nameKey)) {
+      const cardB = mapB.get(nameKey);
+      const matchedQty = Math.min(cardA.qty, cardB.qty);
+      const set = cardB.set || cardA.set;
+      const num = cardB.number || cardA.number;
+      matches.push({
+        qty: matchedQty,
+        name: cardA.name,
+        set: set,
+        number: num,
+        key: set && num ? `${set}/${num}` : `name/${cardA.name.toLowerCase()}`,
+        isBasic: false
+      });
+    }
+  }
+
+  if (matches.length === 0) {
+    compareOutputBox.value = "No overlapping cards found between the two lists.";
+    compareOutputSec.classList.add('visible');
+    compareStatsRow.innerHTML = '';
+    return;
+  }
+
+  addLog(`Found ${matches.length} matching cards. Fetching prices...`);
+
+  compareOutputBox.value = '';
+  compareOutputSec.classList.remove('visible');
+  btnCompare.disabled = btnCompareCopy.disabled = true;
+  compareProgWrap.classList.add('visible');
+  compareProgFill.style.width = '0%'; compareProgCnt.textContent = '0 / 0';
+  
+  const result = await runBatchFetch(matches, (done, total, msg) => {
+    compareProgFill.style.width = (total ? Math.round(done/total*100) : 0) + '%';
+    compareProgCnt.textContent  = done + ' / ' + total;
+    if (msg) compareProgTxt.textContent = msg;
+  });
+
+  compareProgWrap.classList.remove('visible');
+
+  let totalQty = 0;
+  let totalCost = 0;
+  const resultLines = [];
+
+  for (const m of matches) {
+    const data = result.cardMap.get(m.key);
+    totalQty += m.qty;
+    if (data) {
+      const price = getCardPriceVal(data);
+      totalCost += (price * m.qty);
+      const priceStr = price > 0 ? `$${price.toFixed(2)}` : 'N/A';
+      const setStr = data.set ? ` (${data.set.toUpperCase()}) ${data.collector_number || ''}` : '';
+      resultLines.push(`${m.qty} ${data.name}${setStr} - ${priceStr}`);
+    } else {
+      resultLines.push(`${m.qty} ${m.name} - Not Found`);
+    }
+  }
+
+  compareOutputBox.value = resultLines.join('\n');
+  compareOutputSec.classList.add('visible');
+  btnCompare.disabled = btnCompareCopy.disabled = false;
+
+  compareStatsRow.innerHTML = [
+    `<div class="stat"><strong>${matches.length}</strong>Unique Matches</div>`,
+    `<div class="stat"><strong>${totalQty}</strong>Total Cards</div>`,
+    totalCost > 0 ? `<div class="stat highlight"><strong>$${totalCost.toFixed(2)}</strong>Est. Value</div>` : ''
+  ].join('');
+});
+
+btnCompareCopy.addEventListener('click', async () => {
+  try {
+    await navigator.clipboard.writeText(compareOutputBox.value);
+    const prev = btnCompareCopy.textContent;
+    btnCompareCopy.textContent = '✦ Copied!';
+    setTimeout(() => { btnCompareCopy.textContent = prev; }, 1800);
+  } catch { compareOutputBox.select(); document.execCommand('copy'); }
+});
+
+btnCompareClear.addEventListener('click', () => {
+  compareInputA.value = compareInputB.value = compareOutputBox.value = '';
+  compareOutputSec.classList.remove('visible');
+  btnCompareCopy.disabled = true; compareStatsRow.innerHTML = '';
+});
+
+// ═══════════════════════════════════════════════
+//  FILE UPLOAD HANDLING
+// ═══════════════════════════════════════════════
+function setupFileUpload(inputId, fileId) {
+  const fileIn = $(fileId);
+  const textIn = $(inputId);
+  if (!fileIn || !textIn) return;
+  fileIn.addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      textIn.value = ev.target.result;
+      textIn.dispatchEvent(new Event('input')); // trigger reactive UI
+      addLog(`Loaded file ${file.name} (${file.size} bytes) into ${inputId}`);
+    };
+    reader.readAsText(file);
+    fileIn.value = ''; // Reset so same file can be selected again
+  });
+}
+
+setupFileUpload('deck-input', 'file-tab1');
+setupFileUpload('extract-input', 'file-tab2');
+setupFileUpload('compare-input-a', 'file-compare-a');
+setupFileUpload('compare-input-b', 'file-compare-b');
+</script>
+</body>
+</html>

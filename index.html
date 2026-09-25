@@ -492,6 +492,17 @@ function parseAnyLine(raw) {
   line = line.replace(/\s*<-\s*NOT FOUND.*$/i, ''); // Strip previous error markers
   if (!line || line.startsWith('//') || line.startsWith('#') || /^(deck|commander|sideboard|maybeboard|companion)$/i.test(line)) return null;
 
+  // Try Moxfield table copy-paste (Tab-separated)
+  if (line.includes('\t')) {
+    const parts = line.split('\t').map(s => s.trim()).filter(Boolean);
+    if (parts.length >= 2 && /^\d+x?$/.test(parts[0])) {
+      let cleanName = parts[1].replace(/(?:\([^)]+\))?\s*#.*$/, '').trim();
+      if (cleanName) {
+        return { qty: parseInt(parts[0], 10), name: normalizeCardName(cleanName), set: null, number: null };
+      }
+    }
+  }
+
   // Try CSV format (e.g. 1,"Card Name",setname,setcode,...)
   if (line.includes(',')) {
     const cols = line.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/).map(s => s.replace(/^"(.*)"$/, '$1').trim());

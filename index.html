@@ -561,6 +561,33 @@ function extractCardsFromText(text) {
     if (line.match(/^\d+\.\s+[A-Za-z]/)) continue; 
     if (line.match(/\(\d+\s+Cards?\)/i)) continue;
 
+    // 0. Try Moxfield table copy-paste (Tab-separated)
+    if (line.includes('\t')) {
+      const parts = line.split('\t').map(s => s.trim()).filter(Boolean);
+      if (parts.length >= 2 && /^\d+x?$/.test(parts[0])) {
+        let cleanName = parts[1].replace(/(?:\([^)]+\))?\s*#.*$/, '').trim();
+        if (cleanName) {
+          const isBasic = /^(?:Snow-Covered\s+)?(?:Plains|Island|Swamp|Mountain|Forest|Wastes)$/i.test(cleanName);
+          addOrUpdate({ qty: parts[0].replace('x',''), name: normalizeCardName(cleanName), set: null, number: null, isBasic, key: 'name/' + cleanName.toLowerCase() });
+          continue;
+        }
+      }
+    }
+
+    // 0.5 Try CSV format
+    if (line.includes(',')) {
+      const cols = line.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/).map(s => s.replace(/^"(.*)"$/, '$1').trim());
+      if (cols.length >= 2 && /^\d+$/.test(cols[0]) && cols[1] && line.length < 300) {
+        const cleanName = normalizeCardName(cols[1]);
+        const setCode = (cols[3] || '').toLowerCase();
+        const num = cols[9] || null;
+        const isBasic = /^(?:Snow-Covered\s+)?(?:Plains|Island|Swamp|Mountain|Forest|Wastes)$/i.test(cleanName);
+        const key = setCode && num ? setCode + '/' + num : 'name/' + cleanName.toLowerCase();
+        addOrUpdate({ qty: cols[0], name: cleanName, set: setCode || null, number: num, isBasic, key });
+        continue;
+      }
+    }
+
     // 1. Try Full Format (Strict Line) -> e.g. "Jet, Freedom Fighter (TLA) 229"
     const mFull = line.match(CARD_RE);
     if (mFull) {

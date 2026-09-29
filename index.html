@@ -42,7 +42,7 @@
 
     /* ── TABS ── */
     .tabs {
-      display: flex; gap: 0; width: 100%; max-width: 900px;
+      display: flex; justify-content: center; gap: 0; width: 100%; max-width: 900px;
       border-bottom: 2px solid var(--border);
     }
     .tab-btn {
@@ -208,6 +208,32 @@
     footer a:hover { color: var(--accent); }
     .split-pane { display: flex; gap: 1rem; width: 100%; flex-wrap: wrap; }
     .split-pane > div { flex: 1; min-width: 250px; display: flex; flex-direction: column; }
+
+    /* ── MOBILE RESPONSIVENESS ── */
+    @media (max-width: 768px) {
+      body { padding: 1rem 0.5rem; gap: 1rem; }
+      h1 { font-size: 1.8rem; }
+      .subtitle { font-size: 0.85rem; }
+      
+      .tabs { flex-wrap: wrap; justify-content: center; }
+      .tab-btn { padding: 0.6rem 0.75rem; font-size: 0.85rem; flex: 1 1 auto; text-align: center; }
+      
+      .card { padding: 1rem; }
+      textarea { height: 180px; }
+      #output-box, #extract-output-box, #compare-output-box { height: 280px; }
+      
+      .btn-row { flex-direction: column; align-items: stretch; gap: 0.5rem; }
+      .btn-row button { width: 100%; padding: 0.75rem 1rem; }
+      .eff-badge { margin-left: 0; text-align: center; width: 100%; }
+      
+      .stats-row { flex-direction: column; }
+      .stat { width: 100%; display: flex; justify-content: space-between; align-items: center; }
+      .stat strong { display: inline-block; font-size: 1rem; }
+      
+      .split-pane > div { min-width: 100%; }
+      .radio-group { flex-direction: column; align-items: stretch; width: 100%; }
+      .radio-group label { width: 100%; text-align: center; justify-content: center; }
+    }
   </style>
 </head>
 <body>
@@ -467,7 +493,7 @@ const BASIC_RE = /^\s*[-*\u2022]?\s*(?:(\d{1,4})x?\s+)?((?:Snow-Covered\s+)?(?:P
 const LOOSE_RE = /^\s*[-*\u2022]?\s*(?:(\d{1,4})x?\s+)?(.+)$/i;
 
 function normalizeCardName(name) {
-  return name.replace(/\s*\/\s*/g, ' // ');
+  return name.replace(/\s*\/+\s*/g, ' // ');
 }
 
 function parseStandardLine(raw) {

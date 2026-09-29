@@ -258,15 +258,17 @@
 
   <div class="card">
     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 0.5rem;">
-      <label for="deck-input" style="margin-bottom:0;">Paste Grimoire</label>
-      <input type="file" id="file-tab1" accept=".txt,.csv,.dec" style="display:none">
-      <button class="btn-ghost" style="padding:0.2rem 0.6rem; font-size:0.75rem; border-radius:4px;" onclick="document.getElementById('file-tab1').click()">📁 Upload File</button>
+      <label for="deck-input" style="margin-bottom:0;">Paste Grimoire (or upload multiple files)</label>
+      <input type="file" id="file-tab1" multiple accept=".txt,.csv,.dec" style="display:none">
+      <button class="btn-ghost" style="padding:0.2rem 0.6rem; font-size:0.75rem; border-radius:4px;" onclick="document.getElementById('file-tab1').click()">📁 Upload Files</button>
     </div>
-    <textarea id="deck-input" spellcheck="false" placeholder="1 Hire a Crew (MSH) 134
-1 Frozen in Ice (MSH) 54
-2 Widow's Bite (MSH) 122
-1 Kitsune, Dragon's Daughter (TMT) 41
-..."></textarea>
+    <textarea id="deck-input" spellcheck="false" placeholder="Paste your decklist or raw CSV files here...
+
+Supported formats:
+• Standard: 1 Kitsune, Dragon's Daughter (TMT) 41
+• Basic Lands: 12 Plains
+• Split Cards: 1 Woodwork Prodigy // Soul Tether (FRA) 165
+• CSV Exports: Moxfield, Deckbox, and ManaBox CSVs are automatically parsed!"></textarea>
 
     <div class="btn-row">
       <button class="btn-primary" id="btn-enrich">✦ Enrich Grimoire</button>
@@ -318,18 +320,19 @@
 
   <div class="card">
     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 0.5rem;">
-      <label for="extract-input" style="margin-bottom:0;">Paste Plain Text (article, AI response, notes...)</label>
-      <input type="file" id="file-tab2" accept=".txt,.csv,.dec" style="display:none">
-      <button class="btn-ghost" style="padding:0.2rem 0.6rem; font-size:0.75rem; border-radius:4px;" onclick="document.getElementById('file-tab2').click()">📁 Upload File</button>
+      <label for="extract-input" style="margin-bottom:0;">Paste Plain Text (article, AI response, multi-CSV merge...)</label>
+      <input type="file" id="file-tab2" multiple accept=".txt,.csv,.dec" style="display:none">
+      <button class="btn-ghost" style="padding:0.2rem 0.6rem; font-size:0.75rem; border-radius:4px;" onclick="document.getElementById('file-tab2').click()">📁 Upload Files</button>
     </div>
     <textarea id="extract-input" spellcheck="false" style="height:320px"
-      placeholder="Paste any text containing card references like:
+      placeholder="Paste any text or upload multiple CSVs (ManaBox, Moxfield) to extract and merge cards...
+
+Example prose format:
   1 Jet, Freedom Fighter (TLA) 229 (Repeatable creature removal on ETB)
   1 Raphael, Tough Turtle (TMT) 104 (Alliance: pings for 1 on entry)
   12 Plains
 
-This tool will scan every line, pull out the card references,
-and produce a clean grimoire list — optionally enriched with mana cost and oracle text."></textarea>
+The tool will scan every line (ignoring CSV headers or conversational fluff), pull out the card references, and produce a clean grimoire list — optionally enriched with mana cost and oracle text."></textarea>
 
     <div class="format-row">
       <span style="font-size:0.85rem;color:var(--text-dim);font-weight:600">Output:</span>
@@ -392,24 +395,24 @@ and produce a clean grimoire list — optionally enriched with mana cost and ora
 <div class="tab-panel" id="tab-compare">
   <div class="card">
     <p style="font-size: 0.85rem; color: var(--text-dim); margin-bottom: 1rem;">
-      Find the intersection of two lists (e.g. check a friend's bulk for cards you need). Accepts Moxfield, Arena, basic text, or CSV.
+      Find the intersection of two lists (e.g. check a friend's bulk for cards you need). Accepts multiple CSV uploads (ManaBox, Moxfield), MTG Arena exports, or raw text.
     </p>
     <div class="split-pane">
       <div>
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 0.5rem;">
           <label for="compare-input-a" style="margin-bottom:0;">List A (Cards You Want)</label>
-          <input type="file" id="file-compare-a" accept=".txt,.csv,.dec" style="display:none">
-          <button class="btn-ghost" style="padding:0.2rem 0.6rem; font-size:0.75rem; border-radius:4px;" onclick="document.getElementById('file-compare-a').click()">📁 Upload</button>
+          <input type="file" id="file-compare-a" multiple accept=".txt,.csv,.dec" style="display:none">
+          <button class="btn-ghost" style="padding:0.2rem 0.6rem; font-size:0.75rem; border-radius:4px;" onclick="document.getElementById('file-compare-a').click()">📁 Upload Files</button>
         </div>
-        <textarea id="compare-input-a" spellcheck="false" placeholder="1 Agate Instigator..."></textarea>
+        <textarea id="compare-input-a" spellcheck="false" placeholder="Upload want-list CSVs or paste cards here..."></textarea>
       </div>
       <div>
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 0.5rem;">
           <label for="compare-input-b" style="margin-bottom:0;">List B (Friend's Bulk/Collection)</label>
-          <input type="file" id="file-compare-b" accept=".txt,.csv,.dec" style="display:none">
-          <button class="btn-ghost" style="padding:0.2rem 0.6rem; font-size:0.75rem; border-radius:4px;" onclick="document.getElementById('file-compare-b').click()">📁 Upload</button>
+          <input type="file" id="file-compare-b" multiple accept=".txt,.csv,.dec" style="display:none">
+          <button class="btn-ghost" style="padding:0.2rem 0.6rem; font-size:0.75rem; border-radius:4px;" onclick="document.getElementById('file-compare-b').click()">📁 Upload Files</button>
         </div>
-        <textarea id="compare-input-b" spellcheck="false" placeholder="1,Agate Instigator,BLC,..."></textarea>
+        <textarea id="compare-input-b" spellcheck="false" placeholder="Upload collection CSVs or paste bulk here..."></textarea>
       </div>
     </div>
 
@@ -499,8 +502,45 @@ function normalizeCardName(name) {
 function parseStandardLine(raw) {
   let line = raw.trim();
   line = line.replace(/\s*<-\s*NOT FOUND.*$/i, ''); // Strip previous error markers
-  if (!line || line.startsWith('//') || line.startsWith('#')) return null;
+  if (!line || line.startsWith('//') || line.startsWith('#') || /^(name|count|quantity|qty),/i.test(line)) return null;
   
+  // 1. Try CSV formats
+  if (line.includes(',')) {
+    const cols = line.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/).map(s => s.replace(/^"(.*)"$/, '$1').trim());
+    
+    // Format A: Standard/Deckbox (Quantity, Name, SetName, SetCode, ...)
+    if (cols.length >= 2 && /^\d+$/.test(cols[0]) && cols[1] && line.length < 300) {
+      const qty = cols[0];
+      const name = normalizeCardName(cols[1]);
+      const setCode = (cols[3] || '').toLowerCase();
+      const num = cols[9] || null;
+      const isBasic = /^(?:Snow-Covered\s+)?(?:Plains|Island|Swamp|Mountain|Forest|Wastes)$/i.test(name);
+      return { raw: line, qty, name, set: setCode || null, number: num, flags: '', isBasic };
+    }
+    
+    // Format B: ManaBox (Name, Set code, Set name, Collector number, Foil, Rarity, Quantity, ...)
+    if (cols.length >= 10 && /^\d+$/.test(cols[6]) && /^[a-zA-Z0-9]{2,5}$/.test(cols[1]) && line.length < 500) {
+      const name = normalizeCardName(cols[0]);
+      const setCode = cols[1].toLowerCase();
+      const num = cols[3];
+      const qty = cols[6];
+      const isBasic = /^(?:Snow-Covered\s+)?(?:Plains|Island|Swamp|Mountain|Forest|Wastes)$/i.test(name);
+      return { raw: line, qty, name, set: setCode || null, number: num, flags: '', isBasic };
+    }
+  }
+
+  // 2. Try Moxfield table copy-paste (Tab-separated)
+  if (line.includes('\t')) {
+    const parts = line.split('\t').map(s => s.trim()).filter(Boolean);
+    if (parts.length >= 2 && /^\d+x?$/.test(parts[0])) {
+      let cleanName = parts[1].replace(/(?:\([^)]+\))?\s*#.*$/, '').trim();
+      if (cleanName) {
+        const isBasic = /^(?:Snow-Covered\s+)?(?:Plains|Island|Swamp|Mountain|Forest|Wastes)$/i.test(cleanName);
+        return { raw: line, qty: parts[0].replace('x',''), name: normalizeCardName(cleanName), set: null, number: null, flags: '', isBasic };
+      }
+    }
+  }
+
   const m = line.match(CARD_RE);
   if (m) return { raw: line, qty: m[1] || '1', name: normalizeCardName(m[2].trim()), set: m[3].toLowerCase(), number: m[4], flags: '', isBasic: false };
 
@@ -514,42 +554,10 @@ function parseStandardLine(raw) {
 }
 
 function parseAnyLine(raw) {
-  let line = raw.trim();
-  line = line.replace(/\s*<-\s*NOT FOUND.*$/i, ''); // Strip previous error markers
-  if (!line || line.startsWith('//') || line.startsWith('#') || /^(deck|commander|sideboard|maybeboard|companion)$/i.test(line)) return null;
-
-  // Try Moxfield table copy-paste (Tab-separated)
-  if (line.includes('\t')) {
-    const parts = line.split('\t').map(s => s.trim()).filter(Boolean);
-    if (parts.length >= 2 && /^\d+x?$/.test(parts[0])) {
-      let cleanName = parts[1].replace(/(?:\([^)]+\))?\s*#.*$/, '').trim();
-      if (cleanName) {
-        return { qty: parseInt(parts[0], 10), name: normalizeCardName(cleanName), set: null, number: null };
-      }
-    }
-  }
-
-  // Try CSV format (e.g. 1,"Card Name",setname,setcode,...)
-  if (line.includes(',')) {
-    const cols = line.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/).map(s => s.replace(/^"(.*)"$/, '$1').trim());
-    if (cols.length >= 2) {
-      if (/^\d+$/.test(cols[0]) && cols[1]) {
-        return { qty: parseInt(cols[0], 10), name: normalizeCardName(cols[1]), set: (cols[3]||'').toLowerCase(), number: cols[9]||null };
-      }
-    }
-  }
-
-  // Fallback to standard formats
-  const m = line.match(CARD_RE);
-  if (m) return { qty: parseInt(m[1]||1, 10), name: normalizeCardName(m[2].trim()), set: m[3].toLowerCase(), number: m[4] };
-  
-  const mb = line.match(BASIC_RE);
-  if (mb) return { qty: parseInt(mb[1]||1, 10), name: mb[2], set: null, number: null };
-  
-  const nm = line.match(LOOSE_RE);
-  if (nm) return { qty: parseInt(nm[1]||1, 10), name: normalizeCardName(nm[2].trim()), set: null, number: null };
-
-  return null;
+  if (!raw || /^(deck|commander|sideboard|maybeboard|companion)$/i.test(raw.trim())) return null;
+  const p = parseStandardLine(raw);
+  if (!p || p.error) return null;
+  return { qty: parseInt(p.qty, 10) || 1, name: p.name, set: p.set, number: p.number };
 }
 
 function getCardKey(p) {
@@ -603,6 +611,8 @@ function extractCardsFromText(text) {
     // 0.5 Try CSV format
     if (line.includes(',')) {
       const cols = line.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/).map(s => s.replace(/^"(.*)"$/, '$1').trim());
+      
+      // Format A: Standard/Deckbox (Quantity, Name, SetName, SetCode, ...)
       if (cols.length >= 2 && /^\d+$/.test(cols[0]) && cols[1] && line.length < 300) {
         const cleanName = normalizeCardName(cols[1]);
         const setCode = (cols[3] || '').toLowerCase();
@@ -610,6 +620,17 @@ function extractCardsFromText(text) {
         const isBasic = /^(?:Snow-Covered\s+)?(?:Plains|Island|Swamp|Mountain|Forest|Wastes)$/i.test(cleanName);
         const key = setCode && num ? setCode + '/' + num : 'name/' + cleanName.toLowerCase();
         addOrUpdate({ qty: cols[0], name: cleanName, set: setCode || null, number: num, isBasic, key });
+        continue;
+      }
+
+      // Format B: ManaBox (Name, Set code, Set name, Collector number, Foil, Rarity, Quantity, ...)
+      if (cols.length >= 10 && /^\d+$/.test(cols[6]) && /^[a-zA-Z0-9]{2,5}$/.test(cols[1]) && line.length < 500) {
+        const cleanName = normalizeCardName(cols[0]);
+        const setCode = cols[1].toLowerCase();
+        const num = cols[3] || null;
+        const isBasic = /^(?:Snow-Covered\s+)?(?:Plains|Island|Swamp|Mountain|Forest|Wastes)$/i.test(cleanName);
+        const key = setCode && num ? setCode + '/' + num : 'name/' + cleanName.toLowerCase();
+        addOrUpdate({ qty: cols[6], name: cleanName, set: setCode || null, number: num, isBasic, key });
         continue;
       }
     }
@@ -1362,17 +1383,30 @@ function setupFileUpload(inputId, fileId) {
   const fileIn = $(fileId);
   const textIn = $(inputId);
   if (!fileIn || !textIn) return;
-  fileIn.addEventListener('change', (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = (ev) => {
-      textIn.value = ev.target.result;
+  fileIn.addEventListener('change', async (e) => {
+    const files = Array.from(e.target.files);
+    if (!files.length) return;
+    
+    try {
+      const texts = await Promise.all(files.map(file => {
+        return new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = ev => resolve(ev.target.result);
+          reader.onerror = () => reject(new Error('Failed to read ' + file.name));
+          reader.readAsText(file);
+        });
+      }));
+      
+      textIn.value = texts.join('\n\n');
       textIn.dispatchEvent(new Event('input')); // trigger reactive UI
-      addLog(`Loaded file ${file.name} (${file.size} bytes) into ${inputId}`);
-    };
-    reader.readAsText(file);
-    fileIn.value = ''; // Reset so same file can be selected again
+      const totalSize = files.reduce((acc, f) => acc + f.size, 0);
+      addLog(`Loaded ${files.length} file(s) (${totalSize} bytes total) into ${inputId}`);
+    } catch(err) {
+      console.error(err);
+      addLog(`Error reading files: ${err.message}`);
+    }
+    
+    fileIn.value = ''; // Reset so same files can be selected again
   });
 }
 

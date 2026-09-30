@@ -238,6 +238,20 @@
 </head>
 <body>
 
+<!-- CONSENT MODAL -->
+<div id="consent-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:9999; justify-content:center; align-items:center; padding: 1rem;">
+  <div class="card" style="max-width:500px; text-align:center; border-color: var(--accent2);">
+    <h3 style="margin-bottom: 0.75rem;">🌐 Network Privacy Notice</h3>
+    <p style="font-size:0.9rem; color:var(--text-dim); margin-bottom:1.5rem; line-height:1.5;">
+      To browse and load live precons, this tool connects directly to <strong>MTGJSON.com</strong> (a trusted, open-source MTG database). No personal data or decklists are sent, but your browser will make a public network request to fetch the lists.
+    </p>
+    <div class="btn-row" style="justify-content:center;">
+      <button class="btn-primary" id="btn-consent-accept">Accept & Connect</button>
+      <button class="btn-ghost" id="btn-consent-decline">Decline</button>
+    </div>
+  </div>
+</div>
+
 <div style="text-align:center">
   <h1>MTG <span>Grimoire</span></h1>
   <p class="subtitle">Batch Scryfall enrichment &middot; Text-to-Grimoire extraction &middot; List Comparison</p>
@@ -249,6 +263,7 @@
   <button class="tab-btn active" data-tab="enrich">✦ Enrich Grimoire</button>
   <button class="tab-btn" data-tab="extract">📜 Extract from Text</button>
   <button class="tab-btn" data-tab="compare">⚖️ Compare Lists</button>
+  <button class="tab-btn" data-tab="diff">🔄 Diff Precon</button>
 </div>
 
 <!-- ════════════════════════════════════════════════════
@@ -442,6 +457,66 @@ The tool will scan every line (ignoring CSV headers or conversational fluff), pu
     <div class="stats-row" id="compare-stats-row"></div>
   </div>
 </div><!-- /tab-compare -->
+
+<!-- ════════════════════════════════════════════════════
+     TAB 4 — DIFF PRECON
+     ════════════════════════════════════════════════════ -->
+<div class="tab-panel" id="tab-diff">
+  <div class="card">
+    <p style="font-size: 0.85rem; color: var(--text-dim); margin-bottom: 1rem;">
+      Compare your modified decklist against the original precon to instantly see which cards you cut and which ones you added. (Set codes are ignored for comparison).
+    </p>
+    <div class="split-pane">
+      <div>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 0.5rem;">
+          <label for="diff-input-a" style="margin-bottom:0;">My Deck (Modified)</label>
+          <input type="file" id="file-diff-a" multiple accept=".txt,.csv,.dec" style="display:none">
+          <button class="btn-ghost" style="padding:0.2rem 0.6rem; font-size:0.75rem; border-radius:4px;" onclick="document.getElementById('file-diff-a').click()">📁 Upload Files</button>
+        </div>
+        <textarea id="diff-input-a" spellcheck="false" placeholder="Paste your modified decklist here..."></textarea>
+      </div>
+      <div>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 0.5rem;">
+          <label for="diff-input-b" style="margin-bottom:0;">Original Precon</label>
+          <div style="display: flex; gap: 0.4rem;">
+            <button class="btn-ghost" style="padding:0.2rem 0.6rem; font-size:0.75rem; border-radius:4px;" id="btn-browse-precons">🔍 Browse Precons</button>
+            <input type="file" id="file-diff-b" multiple accept=".txt,.csv,.dec" style="display:none">
+            <button class="btn-ghost" style="padding:0.2rem 0.6rem; font-size:0.75rem; border-radius:4px;" onclick="document.getElementById('file-diff-b').click()">📁 Upload</button>
+          </div>
+        </div>
+        <div id="precon-search-container" style="display:none; margin-bottom: 0.5rem;">
+          <input type="text" id="precon-input" list="precon-datalist" autocomplete="off" placeholder="Type to search (e.g. Fallout) or double-click to view all precons..." style="width:100%; padding: 0.5rem; border-radius: 4px; background: var(--bg); color: var(--text); border: 1px solid var(--border); font-family: var(--font-mono); font-size: 0.82rem; outline: none;">
+          <datalist id="precon-datalist"></datalist>
+        </div>
+        <textarea id="diff-input-b" spellcheck="false" placeholder="Paste the original precon decklist here..."></textarea>
+      </div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn-primary" id="btn-diff">🔄 Calculate Diff</button>
+      <button class="btn-secondary" id="btn-diff-copy" disabled>📋 Copy Output</button>
+      <button class="btn-ghost" id="btn-diff-clear">✕ Clear</button>
+    </div>
+  </div>
+
+  <div class="card output-section" id="diff-output-section">
+    <div class="output-header">
+      <h2>Decklist Diff</h2>
+      <span class="badge badge-ok" id="diff-status-badge">Done</span>
+    </div>
+    <div class="split-pane">
+      <div style="flex: 1;">
+        <label style="color: var(--success); font-size: 0.85rem; margin-bottom: 0.4rem;">Cards Added</label>
+        <textarea id="diff-output-added" readonly style="height: 300px; border-color: var(--success); background: rgba(93, 138, 87, 0.05);"></textarea>
+      </div>
+      <div style="flex: 1;">
+        <label style="color: var(--warn); font-size: 0.85rem; margin-bottom: 0.4rem;">Cards Cut</label>
+        <textarea id="diff-output-cut" readonly style="height: 300px; border-color: var(--warn); background: rgba(194, 131, 58, 0.05);"></textarea>
+      </div>
+    </div>
+    <div class="stats-row" id="diff-stats-row"></div>
+  </div>
+</div><!-- /tab-diff -->
 
 <footer>
   <a href="https://scryfall.com/docs/api/cards/collection" target="_blank" rel="noopener">POST /cards/collection</a>
@@ -1410,10 +1485,219 @@ function setupFileUpload(inputId, fileId) {
   });
 }
 
+// ═══════════════════════════════════════════════
+//  TAB 4 - DIFF PRECON
+// ═══════════════════════════════════════════════
+const diffInputA       = $('diff-input-a');
+const diffInputB       = $('diff-input-b');
+const btnDiff          = $('btn-diff');
+const btnDiffCopy      = $('btn-diff-copy');
+const btnDiffClear     = $('btn-diff-clear');
+const diffOutputSec    = $('diff-output-section');
+const diffOutputCut    = $('diff-output-cut');
+const diffOutputAdded  = $('diff-output-added');
+const diffStatsRow     = $('diff-stats-row');
+
+btnDiff.addEventListener('click', () => {
+  const rawA = diffInputA.value.trim();
+  const rawB = diffInputB.value.trim();
+  
+  if (!rawA || !rawB) {
+    alert('Please provide both the modified decklist and the original precon list.');
+    return;
+  }
+
+  const parsedA = rawA.split('\n').map(parseAnyLine).filter(Boolean);
+  const parsedB = rawB.split('\n').map(parseAnyLine).filter(Boolean);
+
+  const mapA = new Map();
+  const mapB = new Map();
+  const displayNames = new Map();
+
+  // Aggregate quantities by normalized name (ignoring set code)
+  parsedA.forEach(p => {
+    const key = p.name.toLowerCase();
+    displayNames.set(key, p.name);
+    mapA.set(key, (mapA.get(key) || 0) + (parseInt(p.qty, 10) || 1));
+  });
+
+  parsedB.forEach(p => {
+    const key = p.name.toLowerCase();
+    displayNames.set(key, p.name);
+    mapB.set(key, (mapB.get(key) || 0) + (parseInt(p.qty, 10) || 1));
+  });
+
+  const allKeys = new Set([...mapA.keys(), ...mapB.keys()]);
+  const added = [];
+  const cut = [];
+  let addedCount = 0;
+  let cutCount = 0;
+
+  allKeys.forEach(k => {
+    const qtyA = mapA.get(k) || 0; // Modified
+    const qtyB = mapB.get(k) || 0; // Original Precon
+    const diff = qtyA - qtyB;
+
+    if (diff > 0) {
+      added.push(`${diff} ${displayNames.get(k)}`);
+      addedCount += diff;
+    } else if (diff < 0) {
+      cut.push(`${Math.abs(diff)} ${displayNames.get(k)}`);
+      cutCount += Math.abs(diff);
+    }
+  });
+
+  added.sort();
+  cut.sort();
+
+  diffOutputCut.value = cut.length > 0 ? cut.join('\n') : '(None)';
+  diffOutputAdded.value = added.length > 0 ? added.join('\n') : '(None)';
+
+  diffOutputSec.classList.add('visible');
+  btnDiffCopy.disabled = false;
+
+  diffStatsRow.innerHTML = [
+    `<div class="stat"><strong>${addedCount}</strong>Cards Added</div>`,
+    `<div class="stat"><strong>${cutCount}</strong>Cards Cut</div>`,
+    `<div class="stat"><strong>${parsedA.length}</strong>Total in Modified</div>`,
+    `<div class="stat"><strong>${parsedB.length}</strong>Total in Precon</div>`
+  ].join('');
+});
+
+btnDiffCopy.addEventListener('click', async () => {
+  const textToCopy = `Cards that have been added:\n${diffOutputAdded.value}\n\nCards that have been cut:\n${diffOutputCut.value}`;
+  try {
+    await navigator.clipboard.writeText(textToCopy);
+    const prev = btnDiffCopy.textContent;
+    btnDiffCopy.textContent = '✓ Copied!';
+    setTimeout(() => { btnDiffCopy.textContent = prev; }, 1800);
+  } catch { 
+    // Fallback if clipboard API fails (rare on modern browsers)
+    alert("Copy failed, please select and copy manually.");
+  }
+});
+
+btnDiffClear.addEventListener('click', () => {
+  diffInputA.value = diffInputB.value = diffOutputCut.value = diffOutputAdded.value = '';
+  diffOutputSec.classList.remove('visible');
+  btnDiffCopy.disabled = true; 
+  diffStatsRow.innerHTML = '';
+});
+
+// ═══════════════════════════════════════════════
+//  PRECON BROWSER (MTGJSON)
+// ═══════════════════════════════════════════════
+const consentModal      = $('consent-modal');
+const btnConsentAccept  = $('btn-consent-accept');
+const btnConsentDecline = $('btn-consent-decline');
+const btnBrowsePrecons  = $('btn-browse-precons');
+const preconSearchContainer = $('precon-search-container');
+const preconInput       = $('precon-input');
+const preconDatalist    = $('precon-datalist');
+const preconMap         = new Map();
+let preconConsentGranted = false;
+
+btnBrowsePrecons.addEventListener('click', () => {
+  if (!preconConsentGranted) {
+    consentModal.style.display = 'flex';
+  } else {
+    loadPreconList();
+  }
+});
+
+btnConsentDecline.addEventListener('click', () => {
+  consentModal.style.display = 'none';
+});
+
+btnConsentAccept.addEventListener('click', () => {
+  preconConsentGranted = true;
+  consentModal.style.display = 'none';
+  loadPreconList();
+});
+
+async function loadPreconList() {
+  if (preconMap.size > 0) {
+    preconSearchContainer.style.display = 'block';
+    return;
+  }
+  
+  const prevText = btnBrowsePrecons.textContent;
+  btnBrowsePrecons.textContent = '⏳ Loading...';
+  btnBrowsePrecons.disabled = true;
+
+  try {
+    const res = await fetch('https://mtgjson.com/api/v5/DeckList.json');
+    if (!res.ok) throw new Error('Failed to fetch MTGJSON DeckList');
+    const json = await res.json();
+    
+    const decks = json.data.filter(d => 
+      d.type === 'Commander Deck' || d.type === 'Brawl Deck' || 
+      d.type === 'Pioneer Challenger Deck' || d.type === 'Challenger Deck' || 
+      d.type === 'Duel Deck'
+    );
+    decks.sort((a, b) => new Date(b.releaseDate || '1970-01-01') - new Date(a.releaseDate || '1970-01-01'));
+    
+    decks.forEach(d => {
+      const year = d.releaseDate ? d.releaseDate.substring(0, 4) : '????';
+      const display = `[${d.code} - ${year}] ${d.name}`;
+      preconMap.set(display, d.fileName);
+      
+      const opt = document.createElement('option');
+      opt.value = display;
+      preconDatalist.appendChild(opt);
+    });
+    
+    preconSearchContainer.style.display = 'block';
+  } catch (err) {
+    alert('Error loading precons: ' + err.message);
+  } finally {
+    btnBrowsePrecons.textContent = prevText;
+    btnBrowsePrecons.disabled = false;
+  }
+}
+
+preconInput.addEventListener('input', async (e) => {
+  const display = e.target.value;
+  const fileName = preconMap.get(display);
+  if (!fileName) return; // User is still typing or entry is invalid
+  
+  preconInput.disabled = true;
+  const prevPlaceholder = preconInput.placeholder;
+  preconInput.value = '';
+  preconInput.placeholder = '⏳ Fetching decklist...';
+
+  try {
+    const res = await fetch(`https://mtgjson.com/api/v5/decks/${fileName}.json`);
+    if (!res.ok) throw new Error('Failed to fetch deck');
+    const json = await res.json();
+    
+    const deck = json.data;
+    const allCards = [];
+    
+    if (deck.commander) {
+      deck.commander.forEach(c => allCards.push(`${c.count} ${c.name}`));
+    }
+    if (deck.mainBoard) {
+      deck.mainBoard.forEach(c => allCards.push(`${c.count} ${c.name}`));
+    }
+    
+    diffInputB.value = allCards.join('\n');
+    
+  } catch (err) {
+    alert('Error loading specific deck: ' + err.message);
+  } finally {
+    preconInput.disabled = false;
+    preconInput.placeholder = prevPlaceholder;
+    preconInput.value = display;
+  }
+});
+
 setupFileUpload('deck-input', 'file-tab1');
 setupFileUpload('extract-input', 'file-tab2');
 setupFileUpload('compare-input-a', 'file-compare-a');
 setupFileUpload('compare-input-b', 'file-compare-b');
+setupFileUpload('diff-input-a', 'file-diff-a');
+setupFileUpload('diff-input-b', 'file-diff-b');
 </script>
 </body>
 </html>

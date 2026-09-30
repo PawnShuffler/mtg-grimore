@@ -27,7 +27,12 @@ A zero-dependency, single-file browser utility for Magic: The Gathering decklist
 * **Robust Multi-Format Parsing:** Recognizes standard text lists, `.dec` files, MTG Arena exports, and directly parses native CSV exports from **ManaBox**, **Moxfield**, and **Deckbox**.
 * **Value Calculation:** Aggregates matching card counts, resolved quantities, and estimated total financial value using real-time Scryfall market data.
 
-### 4. Resilient Networking & Debugging
+### 4. Diff Precon (Upgrade Tracker)
+* **Precon Upgrade Analysis:** Paste your modified decklist and instantly compare it against the original preconstructed deck to see exactly which cards you cut and which ones you added.
+* **Live MTGJSON Integration:** Search and fetch the official decklist for every Commander, Brawl, and Challenger precon ever printed using a native, searchable dropdown powered by MTGJSON—no third-party proxies or backend required.
+* **Set-Agnostic Matching:** Intelligently ignores set codes and collector numbers during the comparison, so upgrading a basic land or swapping a card's art version won't falsely flag as a "cut" and "addition."
+
+### 5. Resilient Networking & Debugging
 * **Rate-Limit Safe:** Automatic 500ms delay between batches and exponential backoff retry on HTTP 429 or 5xx responses.
 * **Session Logs:** Downloadable in-memory operation logs (`Grimoire_Logs.txt`) capturing batch requests, HTTP status codes, and unparsed lines.
 

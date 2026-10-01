@@ -234,6 +234,82 @@
       .radio-group { flex-direction: column; align-items: stretch; width: 100%; }
       .radio-group label { width: 100%; text-align: center; justify-content: center; }
     }
+
+    /* ── MANA CURVE VISUALIZER ── */
+    .mana-curve-section { margin-top: 1.25rem; }
+    .mana-curve-title {
+      font-size: 0.78rem; color: var(--accent); font-family: var(--font-head);
+      text-transform: uppercase; letter-spacing: 1px; margin-bottom: 0.6rem;
+    }
+    .curve-bars {
+      display: flex; align-items: flex-end; gap: 6px; padding-bottom: 1px;
+    }
+    .curve-col {
+      display: flex; flex-direction: column; align-items: center; gap: 3px; flex: 1;
+    }
+    .curve-count {
+      font-size: 0.68rem; color: var(--text-dim); font-family: var(--font-mono); line-height: 1;
+    }
+    .curve-bar {
+      width: 100%; min-height: 3px;
+      background: linear-gradient(180deg, var(--accent) 0%, var(--accent-dark) 100%);
+      border-radius: 2px 2px 0 0;
+    }
+    .curve-labels {
+      display: flex; gap: 6px; padding-top: 4px; border-top: 1px solid var(--border);
+    }
+    .curve-label {
+      flex: 1; text-align: center; font-size: 0.68rem;
+      color: var(--text-dim); font-family: var(--font-mono);
+    }
+    .curve-lands {
+      font-size: 0.75rem; color: var(--text-dim); font-family: var(--font-head);
+      font-style: italic; margin-top: 0.5rem; text-align: right;
+    }
+
+    /* ── WANTED LIST (TAB 5) ── */
+    .wanted-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+      gap: 0.75rem; padding-top: 0.5rem;
+    }
+    .wanted-card {
+      position: relative; background: var(--panel);
+      border: 1px solid var(--border); border-radius: 4px;
+      overflow: hidden; display: flex; flex-direction: column;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .wanted-card.clickable { cursor: pointer; }
+    .wanted-card.clickable:hover {
+      border-color: var(--accent);
+      box-shadow: 0 0 10px rgba(212, 175, 55, 0.2);
+    }
+    .wanted-card img { width: 100%; display: block; }
+    .wanted-card-placeholder {
+      width: 100%; aspect-ratio: 146 / 204;
+      display: flex; align-items: center; justify-content: center;
+      padding: 0.5rem; font-size: 0.65rem; color: var(--text-dim);
+      font-family: var(--font-mono); text-align: center;
+      background: var(--bg); word-break: break-word;
+    }
+    .wanted-card-name {
+      font-size: 0.62rem; font-family: var(--font-head); color: var(--text-dim);
+      padding: 0.25rem 0.35rem 0.35rem; text-align: center;
+      word-break: break-word; line-height: 1.3;
+    }
+    .wanted-qty {
+      position: absolute; top: 4px; right: 4px;
+      background: rgba(0,0,0,0.82); color: var(--accent);
+      font-size: 0.68rem; font-family: var(--font-mono); font-weight: bold;
+      padding: 1px 5px; border-radius: 2px; line-height: 1.5;
+    }
+    .wanted-status-bar {
+      font-size: 0.85rem; font-family: var(--font-head); font-style: italic;
+      color: var(--text-dim); margin-top: 0.75rem; min-height: 1.2em;
+    }
+    @media (max-width: 768px) {
+      .wanted-grid { grid-template-columns: repeat(auto-fill, minmax(85px, 1fr)); gap: 0.5rem; }
+    }
   </style>
 </head>
 <body>
@@ -256,6 +332,7 @@
   <h1>MTG <span>Grimoire</span></h1>
   <p class="subtitle">Batch Scryfall enrichment &middot; Text-to-Grimoire extraction &middot; List Comparison</p>
   <button id="btn-download-logs" class="btn-ghost btn-sm" style="margin-top:0.5rem; display:none;">🐛 Download Logs</button>
+  <button id="btn-clear-cache"  class="btn-ghost btn-sm" style="margin-top:0.5rem; display:none;">🗑 Clear Cache</button>
 </div>
 
 <!-- TAB BAR -->
@@ -264,6 +341,7 @@
   <button class="tab-btn" data-tab="extract">📜 Extract from Text</button>
   <button class="tab-btn" data-tab="compare">⚖️ Compare Lists</button>
   <button class="tab-btn" data-tab="diff">🔄 Diff Precon</button>
+  <button class="tab-btn" data-tab="wanted">🛒 Wanted List</button>
 </div>
 
 <!-- ════════════════════════════════════════════════════
@@ -322,6 +400,7 @@ Supported formats:
     </div>
     <textarea id="output-box" readonly></textarea>
     <div class="stats-row" id="stats-row"></div>
+    <div id="mana-curve-wrap" style="display:none;"></div>
     <div class="errors-section" id="errors-section">
       <h3>&#9888; Cards not found / errors</h3>
       <ul class="error-list" id="error-list"></ul>
@@ -518,6 +597,68 @@ The tool will scan every line (ignoring CSV headers or conversational fluff), pu
   </div>
 </div><!-- /tab-diff -->
 
+<!-- ════════════════════════════════════════════════════
+     TAB 5 — WANTED LIST
+     ════════════════════════════════════════════════════ -->
+<div class="tab-panel" id="tab-wanted">
+
+  <div class="card">
+    <p style="font-size:0.85rem; color:var(--text-dim); line-height:1.6; margin-bottom:1rem;">
+      Paste a card list to build a <strong style="color:var(--text)">Wanted List</strong>. Instantly copy card images as a visual grid directly to your clipboard to paste into Discord, Notion, or Docs. Or, export it as an Excel (.xlsx) file featuring embedded card art, Scryfall links, and a <em>Bought</em> Yes/No dropdown to track your purchases.
+    </p>
+
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.5rem;">
+      <label for="wanted-input" style="margin-bottom:0;">Card List (Wanted)</label>
+      <input type="file" id="file-wanted" multiple accept=".txt,.csv,.dec" style="display:none">
+      <button class="btn-ghost" style="padding:0.2rem 0.6rem; font-size:0.75rem; border-radius:4px;"
+              onclick="document.getElementById('file-wanted').click()">📁 Upload Files</button>
+    </div>
+    <textarea id="wanted-input" spellcheck="false"
+      placeholder="Paste your wanted card list here…
+
+Example:
+4 Sol Ring
+1 Command Tower (CMM) 496
+1 Rhystic Study
+3 Counterspell
+
+Supports all formats: qty + name, CSV exports, Moxfield copy-paste, ManaBox, Deckbox."></textarea>
+
+    <div class="btn-row">
+      <button class="btn-primary" id="btn-wanted">🔍 Load Wanted List</button>
+      <button class="btn-ghost"   id="btn-wanted-clear">✕ Clear</button>
+    </div>
+
+    <div class="progress-wrap" id="wanted-progress-wrap">
+      <div class="progress-label">
+        <span id="wanted-progress-text">Preparing…</span>
+        <span id="wanted-progress-count">0 / 0</span>
+      </div>
+      <div class="progress-bar-bg"><div class="progress-bar-fill" id="wanted-progress-fill"></div></div>
+    </div>
+
+    <div class="wanted-status-bar" id="wanted-status"></div>
+  </div>
+
+  <div class="card output-section" id="wanted-preview-section">
+    <div class="output-header" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.5rem;">
+      <div>
+        <h2 style="display:inline-block; margin-right: 1rem;">Card Preview</h2>
+        <span class="badge badge-ok" id="wanted-preview-badge"></span>
+      </div>
+      <div style="display:flex; gap: 0.4rem; flex-wrap:wrap;">
+        <button class="btn-ghost btn-sm" id="btn-wanted-copy-arts">📋 Copy Arts</button>
+        <button class="btn-ghost btn-sm" id="btn-wanted-copy-full">📋 Copy Names + Arts</button>
+        <button class="btn-ghost btn-sm" id="btn-wanted-copy-links">📋 Copy Names + Links</button>
+        <button class="btn-primary btn-sm" id="btn-wanted-dl-xlsx">💾 Download .xlsx</button>
+      </div>
+    </div>
+    <div id="wanted-preview" class="wanted-grid"></div>
+  </div>
+
+</div><!-- /tab-wanted -->
+
+
 <footer>
   <a href="https://scryfall.com/docs/api/cards/collection" target="_blank" rel="noopener">POST /cards/collection</a>
   &mdash; 75 cards/request &middot; rate limit 2/s &middot;
@@ -563,6 +704,12 @@ $('btn-download-logs').addEventListener('click', () => {
   downloadTxt('Grimoire_Logs.txt', LOGS.join('\n\n'));
 });
 
+$('btn-clear-cache').addEventListener('click', async () => {
+  if (!confirm('Clear the local Scryfall card cache?\n\nThe next enrichment will re-fetch all cards from the API.')) return;
+  await clearCacheDB();
+  $('btn-clear-cache').style.display = 'none';
+});
+
 // Standard deck-list line: optional qty, name, (SET), number, optional suffix
 const CARD_RE  = /^\s*[-*\u2022]?\s*(?:(\d{1,4})x?\s+)?(.+?)\s+\(([A-Za-z0-9_]{2,6})\)\s+(\d+[a-z]?)(?:\s.*)?$/i;
 // Basic lands without set codes
@@ -574,10 +721,24 @@ function normalizeCardName(name) {
   return name.replace(/\s*\/+\s*/g, ' // ');
 }
 
+function isCategoryHeader(line) {
+  // Strip common leading quantities or bullets
+  let s = line.replace(/^\s*[-*\u2022]?\s*(?:\d+x?\s+)?/i, '').trim();
+  // Strip trailing colon often found in headers like "Stworzenia (11):"
+  s = s.replace(/:$/, '').trim();
+  // Strip trailing count like "(11)" to isolate the base word
+  const baseWord = s.replace(/\s*\(\d+\)$/, '').trim();
+  
+  const words = /^(?:Creatures?|Artifacts?|Enchantments?|Instants?|Sorceries?|Planeswalkers?|Battles?|Lands?|Sideboard|Maybeboard|Commander|Maindeck|Deck|Spells?|Other|Stworzenia|Artefakty|Instanty|Zakl[ęe]cia|Ziemie|L[ąa]dy|Planeswalkerzy|Kraje|Karty)(?:\s+(?:and|i|or|&)\s+[a-z\u00C0-\u024F]+)?$/i;
+  return words.test(baseWord);
+}
+
 function parseStandardLine(raw) {
   let line = raw.trim();
   line = line.replace(/\s*<-\s*NOT FOUND.*$/i, ''); // Strip previous error markers
   if (!line || line.startsWith('//') || line.startsWith('#') || /^(name|count|quantity|qty),/i.test(line)) return null;
+  
+  if (isCategoryHeader(line)) return null;
   
   // 1. Try CSV formats
   if (line.includes(',')) {
@@ -669,6 +830,7 @@ function extractCardsFromText(text) {
     if (line.toLowerCase() === 'card name') continue;
     if (line.match(/^\d+\.\s+[A-Za-z]/)) continue; 
     if (line.match(/\(\d+\s+Cards?\)/i)) continue;
+    if (isCategoryHeader(line)) continue;
 
     // 0. Try Moxfield table copy-paste (Tab-separated)
     if (line.includes('\t')) {
@@ -890,36 +1052,206 @@ function buildSimpleLine(p) {
   return p.qty + ' ' + p.name + ' (' + p.set.toUpperCase() + ') ' + p.number;
 }
 
+// ── INDEXEDDB SCRYFALL CACHE ──────────────────────────────────────────────────
+const CACHE_DB_NAME = 'GrimoireCache';
+const CACHE_DB_VER  = 1;
+const CACHE_STORE   = 'cards';
+const CACHE_TTL_MS  = 7 * 24 * 60 * 60 * 1000; // 7 days
+
+let _cacheDbPromise = null;
+function openCacheDB() {
+  if (_cacheDbPromise) return _cacheDbPromise;
+  _cacheDbPromise = new Promise((resolve, reject) => {
+    const req = indexedDB.open(CACHE_DB_NAME, CACHE_DB_VER);
+    req.onupgradeneeded = e => {
+      const db = e.target.result;
+      if (!db.objectStoreNames.contains(CACHE_STORE)) {
+        db.createObjectStore(CACHE_STORE, { keyPath: 'key' });
+      }
+    };
+    req.onsuccess = e => resolve(e.target.result);
+    req.onerror   = e => { _cacheDbPromise = null; reject(e.target.error); };
+  });
+  return _cacheDbPromise;
+}
+
+// Single-transaction batch GET — fires all requests concurrently
+async function getCachedCards(db, keys) {
+  if (!keys.length) return new Map();
+  return new Promise(resolve => {
+    const hits  = new Map();
+    const tx    = db.transaction(CACHE_STORE, 'readonly');
+    const store = tx.objectStore(CACHE_STORE);
+    let pending = keys.length;
+    const now   = Date.now();
+    for (const key of keys) {
+      const req = store.get(key);
+      req.onsuccess = () => {
+        const rec = req.result;
+        if (rec && (now - rec.cachedAt) < CACHE_TTL_MS) hits.set(key, rec.card);
+        if (--pending === 0) resolve(hits);
+      };
+      req.onerror = () => { if (--pending === 0) resolve(hits); };
+    }
+  });
+}
+
+// Single-transaction batch PUT
+async function setCachedCards(db, entries) {
+  return new Promise(resolve => {
+    const tx    = db.transaction(CACHE_STORE, 'readwrite');
+    const store = tx.objectStore(CACHE_STORE);
+    const now   = Date.now();
+    for (const [key, card] of entries) store.put({ key, card, cachedAt: now });
+    tx.oncomplete = () => resolve();
+    tx.onerror    = () => resolve(); // Silently survive storage-quota errors
+  });
+}
+
+async function clearCacheDB() {
+  try {
+    const db = await openCacheDB();
+    await new Promise((resolve, reject) => {
+      const tx = db.transaction(CACHE_STORE, 'readwrite');
+      tx.objectStore(CACHE_STORE).clear();
+      tx.oncomplete = () => resolve();
+      tx.onerror    = e => reject(e.target.error);
+    });
+    addLog('Local Scryfall cache cleared by user.');
+  } catch(e) { addLog('clearCacheDB error: ' + e.message); }
+}
+// ─────────────────────────────────────────────────────────────────────────────
+
 async function runBatchFetch(toFetch, onProgress) {
-  const batches  = [];
-  for (let i = 0; i < toFetch.length; i += BATCH_SIZE) batches.push(toFetch.slice(i, i+BATCH_SIZE));
-
-  addLog(`Prepared ${batches.length} batches for ${toFetch.length} unique cards.`);
-
-  const cardMap = new Map();
+  const cardMap      = new Map();
   const notFoundKeys = new Set();
+  let   cacheHits    = 0;
+  const uncached     = [];
+
+  // ── 1. Consult IndexedDB cache ───────────────────────────────────────────
+  let db = null;
+  try { db = await openCacheDB(); } catch(e) { addLog('IndexedDB unavailable: ' + e.message); }
+
+  if (db) {
+    const keys          = toFetch.map(item => getCardKey(item));
+    const cachedResults = await getCachedCards(db, keys);
+
+    for (let i = 0; i < toFetch.length; i++) {
+      const item   = toFetch[i];
+      const key    = keys[i];
+      const cached = cachedResults.get(key);
+      if (cached) {
+        // Populate all alias keys so downstream lookups always hit
+        cardMap.set(key, cached);
+        cardMap.set(cached.set + '/' + cached.collector_number, cached);
+        cardMap.set('name/' + cached.name.toLowerCase(), cached);
+        if (cached.name.includes('//')) {
+          cardMap.set('name/' + cached.name.split('//')[0].trim().toLowerCase(), cached);
+        }
+        cacheHits++;
+      } else {
+        uncached.push(item);
+      }
+    }
+    addLog(`Cache: ${cacheHits} hit(s), ${uncached.length} miss(es).`);
+  } else {
+    uncached.push(...toFetch);
+  }
+
+  // ── 2. Everything cached → skip API entirely ─────────────────────────────
+  if (uncached.length === 0) {
+    onProgress(1, 1, 'All ' + cacheHits + ' cards loaded from local cache!');
+    addLog('No API requests needed — all cards served from cache.');
+    return { cardMap, notFoundKeys, batchCount: 0, cacheHits };
+  }
+
+  // ── 3. Batch-fetch from Scryfall for cache misses ────────────────────────
+  const batches = [];
+  for (let i = 0; i < uncached.length; i += BATCH_SIZE) batches.push(uncached.slice(i, i + BATCH_SIZE));
+  addLog(`Prepared ${batches.length} batch(es) for ${uncached.length} uncached card(s).`);
 
   for (let i = 0; i < batches.length; i++) {
     onProgress(i, batches.length, 'Batch ' + (i+1) + ' of ' + batches.length + ' (' + batches[i].length + ' cards)...');
-    
+
     addLog(`Sending Batch ${i+1}/${batches.length} with ${batches[i].length} cards...`);
     const result = await fetchBatch(batches[i]);
-    
+
     if (result.fetchError) {
-      addLog(`Batch ${i+1} failed completely: ${result.fetchError}`, batches[i].map(getCardKey));
+      addLog(`Batch ${i+1} failed: ${result.fetchError}`, batches[i].map(getCardKey));
     } else {
-      addLog(`Batch ${i+1} success: ${result.found.size} found, ${result.notFound.size} not found`);
+      addLog(`Batch ${i+1}: ${result.found.size} found, ${result.notFound.size} not found.`);
     }
 
     for (const [k,v] of result.found)  cardMap.set(k, v);
     for (const k of result.notFound)   notFoundKeys.add(k);
+
+    // ── 4. Persist new results (stored under every alias key) ──────────────
+    if (db && result.found.size > 0) {
+      await setCachedCards(db, result.found);
+      $('btn-clear-cache').style.display = 'inline-block';
+    }
+
     onProgress(i+1, batches.length, '');
     if (i < batches.length - 1) await sleep(BATCH_DELAY_MS);
   }
-  
-  addLog(`Batch fetching complete. Total found: ${cardMap.size}, Total missing: ${notFoundKeys.size}`);
-  return { cardMap, notFoundKeys, batchCount: batches.length };
+
+  addLog(`Fetch complete. cardMap: ${cardMap.size}, notFound: ${notFoundKeys.size}, cacheHits: ${cacheHits}`);
+  return { cardMap, notFoundKeys, batchCount: batches.length, cacheHits };
 }
+
+// ── MANA CURVE VISUALIZER ─────────────────────────────────────────────────────
+const CURVE_MAX_PX = 90; // Maximum bar height in pixels
+
+function renderManaCurve(cards) {
+  const wrap = $('mana-curve-wrap');
+  if (!wrap) return;
+
+  const found = cards.filter(c => c.found && c.qty > 0);
+  if (found.length === 0) { wrap.style.display = 'none'; return; }
+
+  // Bucket non-land cards by CMC: 0, 1, 2, 3, 4, 5, 6+
+  const counts  = [0, 0, 0, 0, 0, 0, 0]; // index 6 = "6+"
+  let landCount = 0;
+  for (const c of found) {
+    if (c.type && /\bLand\b/i.test(c.type)) {
+      landCount += c.qty;
+    } else {
+      counts[Math.min(Math.floor(c.cmc || 0), 6)] += c.qty;
+    }
+  }
+
+  const maxCount = Math.max(...counts, 1);
+  const labels   = ['0', '1', '2', '3', '4', '5', '6+'];
+
+  // Only strongly-typed integers and hardcoded strings are injected into innerHTML
+  let colsHtml = '';
+  for (let i = 0; i < 7; i++) {
+    const n = counts[i];
+    const h = Math.round((n / maxCount) * CURVE_MAX_PX);
+    colsHtml += '<div class="curve-col">'
+      + '<span class="curve-count">' + (n > 0 ? n : '') + '</span>'
+      + '<div class="curve-bar" style="height:' + h + 'px"></div>'
+      + '</div>';
+  }
+
+  let labelsHtml = '';
+  for (const lbl of labels) {
+    labelsHtml += '<div class="curve-label">' + lbl + '</div>';
+  }
+
+  wrap.innerHTML =
+    '<div class="mana-curve-section">'
+    + '<div class="mana-curve-title">⬡ Mana Curve</div>'
+    + '<div class="curve-bars">' + colsHtml + '</div>'
+    + '<div class="curve-labels">' + labelsHtml + '</div>'
+    + (landCount > 0
+        ? '<div class="curve-lands">' + landCount + ' land' + (landCount !== 1 ? 's' : '') + ' not shown</div>'
+        : '')
+    + '</div>';
+  wrap.style.display = 'block';
+}
+// ─────────────────────────────────────────────────────────────────────────────
+
 
 // --- TAB SWITCHING ---
 document.querySelectorAll('.tab-btn').forEach(btn => {
@@ -1033,7 +1365,7 @@ btnEnrich.addEventListener('click', async () => {
   btnEnrich.disabled = btnCopy.disabled = btnDownload.disabled = true;
   progressFill.style.width = '0%'; progressCount.textContent = '0 / 0';
 
-  const { cardMap, notFoundKeys, batchCount } = await runBatchFetch(
+  const { cardMap, notFoundKeys, batchCount, cacheHits } = await runBatchFetch(
     [...uniqueMap.values()],
     (done, total, msg) => {
       progressFill.style.width = (total ? Math.round(done/total*100) : 0) + '%';
@@ -1059,8 +1391,9 @@ btnEnrich.addEventListener('click', async () => {
     let type = '';
     let name = p.name;
 
+    let qty = 0;
     if (card) {
-      const qty = parseInt(p.qty,10)||1;
+      qty = parseInt(p.qty,10)||1;
       totalQty += qty; enriched++;
       price = getCardPriceVal(card);
       totalCost += price * qty;
@@ -1073,11 +1406,12 @@ btnEnrich.addEventListener('click', async () => {
       errors.push(p.raw + '  ->  ' + (notFoundKeys.has(key) ? 'Not in Scryfall' : 'Fetch error'));
     }
     
-    currentTab1State.cards.push({ originalIndex: originalIndex++, name, price, cmc, type, lineStr });
+    currentTab1State.cards.push({ originalIndex: originalIndex++, name, price, cmc, type, lineStr, qty, found: !!card });
   }
 
   progressWrap.classList.remove('visible');
   renderTab1Output();
+  renderManaCurve(currentTab1State.cards);
   outputSection.classList.add('visible');
   btnCopy.disabled = btnDownload.disabled = btnEnrich.disabled = false;
 
@@ -1085,7 +1419,8 @@ btnEnrich.addEventListener('click', async () => {
     '<div class="stat"><strong>' + totalQty + '</strong>Cards (w/ qty)</div>',
     '<div class="stat"><strong>' + uniqueMap.size + '</strong>Unique cards</div>',
     totalCost > 0 ? '<div class="stat highlight"><strong>$' + totalCost.toFixed(2) + '</strong>Est. Cost</div>' : '',
-    '<div class="stat highlight"><strong>' + batchCount + '</strong>API requests</div>',
+    batchCount > 0 ? '<div class="stat highlight"><strong>' + batchCount + '</strong>API requests</div>' : '',
+    cacheHits  > 0 ? '<div class="stat"><strong>' + cacheHits + '</strong>From cache</div>' : '',
     '<div class="stat"><strong>' + enriched + '</strong>Enriched</div>',
     errors.length ? '<div class="stat"><strong style="color:var(--warn)">' + errors.length + '</strong>Not found</div>' : ''
   ].join('');
@@ -1117,6 +1452,8 @@ btnClear.addEventListener('click', () => {
   deckInput.value = outputBox.value = '';
   ['output-section','progress-wrap','errors-section'].forEach(id => $(id).classList.remove('visible'));
   effBadge.style.display = 'none'; btnCopy.disabled = btnDownload.disabled = true; statsRow.innerHTML = '';
+  const curveWrap = $('mana-curve-wrap');
+  if (curveWrap) { curveWrap.style.display = 'none'; curveWrap.innerHTML = ''; }
 });
 
 // --- TAB 2: EXTRACT FROM TEXT ---
@@ -1219,7 +1556,7 @@ btnExtract.addEventListener('click', async () => {
   extractErrorsSec.classList.remove('visible'); extractOutputSec.classList.remove('visible');
   btnExtract.disabled = btnExtractCopy.disabled = btnExtractDownload.disabled = true;
 
-  let cardMap = new Map(), notFoundKeys = new Set(), batchCount = 0;
+  let cardMap = new Map(), notFoundKeys = new Set(), batchCount = 0, cacheHits = 0;
 
   if (fmt === 'enriched' && cards.length > 0) {
     extractProgressWrap.classList.add('visible');
@@ -1233,6 +1570,7 @@ btnExtract.addEventListener('click', async () => {
     cardMap      = result.cardMap;
     notFoundKeys = result.notFoundKeys;
     batchCount   = result.batchCount;
+    cacheHits    = result.cacheHits || 0;
     extractProgressWrap.classList.remove('visible');
   }
 
@@ -1281,6 +1619,7 @@ btnExtract.addEventListener('click', async () => {
     '<div class="stat"><strong>' + cards.length + '</strong>Unique cards extracted</div>',
     totalCost > 0 ? '<div class="stat highlight"><strong>$' + totalCost.toFixed(2) + '</strong>Est. Cost</div>' : '',
     fmt === 'enriched' && batchCount > 0 ? '<div class="stat highlight"><strong>' + batchCount + '</strong>API requests</div>' : '',
+    fmt === 'enriched' && cacheHits  > 0 ? '<div class="stat"><strong>' + cacheHits + '</strong>From cache</div>' : '',
     fmt === 'enriched' ? '<div class="stat"><strong>' + enrichedCount + '</strong>Enriched</div>' : '',
     errors.length ? '<div class="stat"><strong style="color:var(--warn)">' + errors.length + '</strong>Not found</div>' : ''
   ].join('');
@@ -1432,7 +1771,8 @@ btnCompare.addEventListener('click', async () => {
   compareStatsRow.innerHTML = [
     `<div class="stat"><strong>${matches.length}</strong>Unique Matches</div>`,
     `<div class="stat"><strong>${totalQty}</strong>Total Cards</div>`,
-    totalCost > 0 ? `<div class="stat highlight"><strong>$${totalCost.toFixed(2)}</strong>Est. Value</div>` : ''
+    totalCost > 0 ? `<div class="stat highlight"><strong>$${totalCost.toFixed(2)}</strong>Est. Value</div>` : '',
+    result.cacheHits > 0 ? `<div class="stat"><strong>${result.cacheHits}</strong>From cache</div>` : ''
   ].join('');
 });
 
@@ -1698,6 +2038,625 @@ setupFileUpload('compare-input-a', 'file-compare-a');
 setupFileUpload('compare-input-b', 'file-compare-b');
 setupFileUpload('diff-input-a', 'file-diff-a');
 setupFileUpload('diff-input-b', 'file-diff-b');
+
+// ════════════════════════════════════════════════════════════════════════════
+//  ZIP / XLSX BUILD UTILITIES  (Tab 5 — Wanted List, zero dependencies)
+// ════════════════════════════════════════════════════════════════════════════
+
+// CRC-32 lookup table (required by ZIP format even in STORE / no-compression mode)
+const _ZIP_CRC = (() => {
+  const t = new Uint32Array(256);
+  for (let i = 0; i < 256; i++) {
+    let c = i;
+    for (let j = 0; j < 8; j++) c = c & 1 ? 0xEDB88320 ^ (c >>> 1) : c >>> 1;
+    t[i] = c;
+  }
+  return t;
+})();
+
+function zipCrc32(buf) {
+  let c = 0xFFFFFFFF;
+  for (let i = 0; i < buf.length; i++) c = _ZIP_CRC[(c ^ buf[i]) & 0xFF] ^ (c >>> 8);
+  return (c ^ 0xFFFFFFFF) >>> 0;
+}
+
+const _ZIP_TE = new TextEncoder();
+function toU8(v) {
+  if (typeof v === 'string') return _ZIP_TE.encode(v);
+  return v instanceof Uint8Array ? v : new Uint8Array(v);
+}
+function pu16(a, o, v) { a[o] = v & 0xFF; a[o+1] = (v >> 8) & 0xFF; }
+function pu32(a, o, v) { a[o] = v & 0xFF; a[o+1] = (v >> 8) & 0xFF; a[o+2] = (v >> 16) & 0xFF; a[o+3] = (v >>> 24) & 0xFF; }
+
+// Build a ZIP archive in STORE mode (no compression needed for XLSX).
+// files: [{name: string, data: string | Uint8Array}]
+function buildZipArchive(files) {
+  const parts = [], dirs = [];
+  let offset = 0;
+  for (const f of files) {
+    const name = toU8(f.name), data = toU8(f.data);
+    const crc = zipCrc32(data), size = data.length, nl = name.length;
+
+    // Local file header (30 + filename bytes)
+    const lh = new Uint8Array(30 + nl);
+    pu32(lh,  0, 0x04034B50);   // PK\x03\x04 signature
+    pu16(lh,  4, 20);             // version needed: 2.0
+    pu16(lh,  6, 0x0800);        // general flags: UTF-8 filename
+    pu16(lh,  8, 0);              // compression: STORE
+    pu16(lh, 10, 0); pu16(lh, 12, 0); // mod time/date
+    pu32(lh, 14, crc);
+    pu32(lh, 18, size); pu32(lh, 22, size); // compressed == uncompressed for STORE
+    pu16(lh, 26, nl); pu16(lh, 28, 0);
+    lh.set(name, 30);
+
+    // Central directory entry (46 + filename bytes)
+    const cd = new Uint8Array(46 + nl);
+    pu32(cd,  0, 0x02014B50);   // PK\x01\x02 signature
+    pu16(cd,  4, 20); pu16(cd, 6, 20); // version made by / needed
+    pu16(cd,  8, 0x0800); pu16(cd, 10, 0); // flags, compression
+    pu16(cd, 12, 0); pu16(cd, 14, 0); // mod time/date
+    pu32(cd, 16, crc);
+    pu32(cd, 20, size); pu32(cd, 24, size);
+    pu16(cd, 28, nl); pu16(cd, 30, 0); pu16(cd, 32, 0); // name/extra/comment len
+    pu16(cd, 34, 0); pu16(cd, 36, 0); // disk start, internal attrs
+    pu32(cd, 38, 0);              // external attrs
+    pu32(cd, 42, offset);        // relative offset of local header
+    cd.set(name, 46);
+
+    parts.push(lh, data);
+    dirs.push(cd);
+    offset += 30 + nl + size;
+  }
+
+  // End of central directory record
+  const cdOff = offset;
+  const cdSize = dirs.reduce((s, d) => s + d.length, 0);
+  const eocd = new Uint8Array(22);
+  pu32(eocd,  0, 0x06054B50);   // PK\x05\x06 signature
+  pu16(eocd,  4, 0); pu16(eocd, 6, 0); // disk number, disk with CD
+  pu16(eocd,  8, files.length); pu16(eocd, 10, files.length);
+  pu32(eocd, 12, cdSize); pu32(eocd, 16, cdOff); pu16(eocd, 20, 0);
+
+  // Assemble final buffer
+  const out = new Uint8Array(cdOff + cdSize + 22);
+  let pos = 0;
+  for (const p of parts) { out.set(p, pos); pos += p.length; }
+  for (const d of dirs)  { out.set(d, pos); pos += d.length; }
+  out.set(eocd, pos);
+  return out;
+}
+
+// XML-escape a string (for injecting into XML text content and attribute values)
+function xesc(s) {
+  return String(s)
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
+// ── XLSX XML generators ──────────────────────────────────────────────────────
+
+function xlsxContentTypes(hasImages) {
+  const imgExtra = hasImages
+    ? '\n  <Default Extension="jpg"  ContentType="image/jpeg"/>'
+    + '\n  <Override PartName="/xl/drawings/drawing1.xml" ContentType="application/vnd.openxmlformats-officedocument.drawing+xml"/>'
+    : '';
+  return '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+    + '\n<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">'
+    + '\n  <Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>'
+    + '\n  <Default Extension="xml"  ContentType="application/xml"/>' + imgExtra
+    + '\n  <Override PartName="/xl/workbook.xml"           ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/>'
+    + '\n  <Override PartName="/xl/worksheets/sheet1.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/>'
+    + '\n  <Override PartName="/xl/sharedStrings.xml"     ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sharedStrings+xml"/>'
+    + '\n  <Override PartName="/xl/styles.xml"            ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/>'
+    + '\n</Types>';
+}
+
+const _XLSX_PKG_RELS = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+  + '\n<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">'
+  + '\n  <Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/>'
+  + '\n</Relationships>';
+
+const _XLSX_WORKBOOK = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+  + '\n<workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"'
+  + '\n          xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">'
+  + '\n  <sheets><sheet name="Wanted List" sheetId="1" r:id="rId1"/></sheets>'
+  + '\n</workbook>';
+
+const _XLSX_WB_RELS = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+  + '\n<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">'
+  + '\n  <Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet"     Target="worksheets/sheet1.xml"/>'
+  + '\n  <Relationship Id="rId2" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/sharedStrings" Target="sharedStrings.xml"/>'
+  + '\n  <Relationship Id="rId3" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles"        Target="styles.xml"/>'
+  + '\n</Relationships>';
+
+// Styles: s=0 wrap/vcenter, s=1 bold header, s=2 hyperlink, s=3 centered, s=4 number 0.00
+const _XLSX_STYLES = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+  + '\n<styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">'
+  + '\n  <fonts count="3">'
+  + '\n    <font><sz val="11"/><name val="Calibri"/></font>'
+  + '\n    <font><b/><sz val="12"/><name val="Calibri"/></font>'
+  + '\n    <font><u/><color rgb="FF0563C1"/><sz val="11"/><name val="Calibri"/></font>'
+  + '\n  </fonts>'
+  + '\n  <fills count="2">'
+  + '\n    <fill><patternFill patternType="none"/></fill>'
+  + '\n    <fill><patternFill patternType="gray125"/></fill>'
+  + '\n  </fills>'
+  + '\n  <borders count="2">'
+  + '\n    <border><left/><right/><top/><bottom/><diagonal/></border>'
+  + '\n    <border>'
+  + '\n      <left style="thin"><color rgb="FFD4AF37"/></left>'
+  + '\n      <right style="thin"><color rgb="FFD4AF37"/></right>'
+  + '\n      <top style="thin"><color rgb="FFD4AF37"/></top>'
+  + '\n      <bottom style="thin"><color rgb="FFD4AF37"/></bottom>'
+  + '\n    </border>'
+  + '\n  </borders>'
+  + '\n  <cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs>'
+  + '\n  <cellXfs count="5">'
+  + '\n    <xf numFmtId="0" fontId="0" fillId="0" borderId="1" xfId="0"><alignment wrapText="1" vertical="center"/></xf>'
+  + '\n    <xf numFmtId="0" fontId="1" fillId="0" borderId="1" xfId="0"><alignment horizontal="center" vertical="center"/></xf>'
+  + '\n    <xf numFmtId="0" fontId="2" fillId="0" borderId="1" xfId="0"><alignment horizontal="center" vertical="center"/></xf>'
+  + '\n    <xf numFmtId="0" fontId="0" fillId="0" borderId="1" xfId="0"><alignment horizontal="center" vertical="center"/></xf>'
+  + '\n    <xf numFmtId="2" fontId="0" fillId="0" borderId="1" xfId="0"><alignment horizontal="center" vertical="center"/></xf>'
+  + '\n  </cellXfs>'
+  + '\n</styleSheet>';
+
+function buildXlsxSharedStrings(cards) {
+  const strs  = ['Qty', 'Card Name', 'Image', 'Scryfall Link', 'Bought'];
+  const ssMap = new Map(strs.map((s, i) => [s, i]));
+  for (const c of cards) {
+    if (!ssMap.has(c.name)) { ssMap.set(c.name, strs.length); strs.push(c.name); }
+  }
+  return {
+    xml: '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+      + '\n<sst xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"'
+      + ' count="' + strs.length + '" uniqueCount="' + strs.length + '">'
+      + '\n' + strs.map(s => '  <si><t>' + xesc(s) + '</t></si>').join('\n')
+      + '\n</sst>',
+    ssMap
+  };
+}
+
+// ROW_HT: 227pt ≈ 303px (279px image height + 12px top + 12px bottom padding)
+const _XLSX_ROW_HT = 227;
+
+function buildXlsxSheet(cards, ssMap, hasImages) {
+  // 5 columns: A=Qty  B=Card Name  C=Image  D=Scryfall Link  E=Bought
+  const header = '  <row r="1" ht="18" customHeight="1">'
+    + '\n    <c r="A1" s="1" t="s"><v>' + ssMap.get('Qty')           + '</v></c>'
+    + '\n    <c r="B1" s="1" t="s"><v>' + ssMap.get('Card Name')     + '</v></c>'
+    + '\n    <c r="C1" s="1" t="s"><v>' + ssMap.get('Image')         + '</v></c>'
+    + '\n    <c r="D1" s="1" t="s"><v>' + ssMap.get('Scryfall Link') + '</v></c>'
+    + '\n    <c r="E1" s="1" t="s"><v>' + ssMap.get('Bought')        + '</v></c>'
+    + '\n  </row>';
+
+  const rows = cards.map((c, i) => {
+    const r = i + 2;
+
+    // Column C: empty placeholder when images are embedded; URL hyperlink when they're not
+    const imgCell = !hasImages && c.imageUrl
+      ? '<c r="C' + r + '" s="2" t="str"><f>' + xesc('=HYPERLINK("' + c.imageUrl + '","View Image")') + '</f></c>'
+      : '<c r="C' + r + '" s="3"/>';
+
+    // Column D: HYPERLINK formula — xesc turns " into &quot; which Excel un-escapes into "
+    const linkCell = c.scryfallUrl
+      ? '<c r="D' + r + '" s="2" t="str"><f>' + xesc('=HYPERLINK("' + c.scryfallUrl + '","View on Scryfall")') + '</f></c>'
+      : '<c r="D' + r + '" s="2"/>';
+
+    const ht = (hasImages && c.imageUrl) ? _XLSX_ROW_HT : 20;
+
+    return '  <row r="' + r + '" ht="' + ht + '" customHeight="1">'
+      + '\n    <c r="A' + r + '" s="3"><v>' + c.qty + '</v></c>'
+      + '\n    <c r="B' + r + '" s="0" t="s"><v>' + ssMap.get(c.name) + '</v></c>'
+      + '\n    ' + imgCell
+      + '\n    ' + linkCell
+      + '\n    <c r="E' + r + '" s="3"/>'
+      + '\n  </row>';
+  }).join('\n');
+
+  // Data validation: Yes/No dropdown on every Bought cell (E column)
+  const lastRow  = Math.max(cards.length + 1, 2);
+  const dvRange  = 'E2:E' + Math.max(lastRow, 5000);
+  const dataVal  = '\n  <dataValidations count="1">'
+    + '\n    <dataValidation type="list" allowBlank="1" showDropDown="0" sqref="' + dvRange + '">'
+    + '\n      <formula1>"Yes,No"</formula1>'
+    + '\n    </dataValidation>'
+    + '\n  </dataValidations>';
+
+  const drawingRef = hasImages ? '\n  <drawing r:id="rId1"/>' : '';
+  return '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+    + '\n<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"'
+    + '\n           xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">'
+    + '\n  <cols>'
+    + '\n    <col min="1" max="1" width="6"  customWidth="1"/>'
+    + '\n    <col min="2" max="2" width="30" customWidth="1"/>'
+    + '\n    <col min="3" max="3" width="29" customWidth="1"/>'
+    + '\n    <col min="4" max="4" width="20" customWidth="1"/>'
+    + '\n    <col min="5" max="5" width="10" customWidth="1"/>'
+    + '\n  </cols>'
+    + '\n  <sheetData>'
+    + '\n' + header
+    + '\n' + rows
+    + '\n  </sheetData>'
+    + dataVal
+    + drawingRef
+    + '\n</worksheet>';
+}
+
+function buildXlsxSheetRels(hasImages) {
+  return '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+    + '\n<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">'
+    + (hasImages
+        ? '\n  <Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/drawing" Target="../drawings/drawing1.xml"/>'
+        : '')
+    + '\n</Relationships>';
+}
+
+// Drawing XML — oneCellAnchor pins each card image to col C at the correct row.
+// normal image displayed at 200×279px — exact 488:680 card aspect ratio.
+function buildXlsxDrawing(imageEntries) {
+  const IMG_CX = 1905000;  // 200px × 9525 EMU/px
+  const IMG_CY = 2657475;  // 279px × 9525 EMU/px  (200 × 680/488 = 278.7 → 279px)
+  const PAD    =  114300;  //  12px × 9525 EMU/px (top + left padding)
+
+  const anchors = imageEntries.map(({ cardIndex, rId }, k) => {
+    const rowIdx = cardIndex + 1; // 0-based: header row = 0, first card = 1
+    return '  <xdr:oneCellAnchor>'
+      + '\n    <xdr:from>'
+      + '\n      <xdr:col>2</xdr:col><xdr:colOff>' + PAD + '</xdr:colOff>'
+      + '\n      <xdr:row>' + rowIdx + '</xdr:row><xdr:rowOff>' + PAD + '</xdr:rowOff>'
+      + '\n    </xdr:from>'
+      + '\n    <xdr:ext cx="' + IMG_CX + '" cy="' + IMG_CY + '"/>'
+      + '\n    <xdr:pic>'
+      + '\n      <xdr:nvPicPr>'
+      + '\n        <xdr:cNvPr id="' + (k + 2) + '" name="Card' + (k + 1) + '"/>'
+      + '\n        <xdr:cNvPicPr><a:picLocks noChangeAspect="1"/></xdr:cNvPicPr>'
+      + '\n      </xdr:nvPicPr>'
+      + '\n      <xdr:blipFill>'
+      + '\n        <a:blip r:embed="' + rId + '"/>'
+      + '\n        <a:stretch><a:fillRect/></a:stretch>'
+      + '\n      </xdr:blipFill>'
+      + '\n      <xdr:spPr>'
+      + '\n        <a:xfrm><a:off x="0" y="0"/><a:ext cx="' + IMG_CX + '" cy="' + IMG_CY + '"/></a:xfrm>'
+      + '\n        <a:prstGeom prst="rect"><a:avLst/></a:prstGeom>'
+      + '\n      </xdr:spPr>'
+      + '\n    </xdr:pic>'
+      + '\n    <xdr:clientData/>'
+      + '\n  </xdr:oneCellAnchor>';
+  });
+
+  return '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+    + '\n<xdr:wsDr xmlns:xdr="http://schemas.openxmlformats.org/drawingml/2006/spreadsheetDrawing"'
+    + '\n          xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main"'
+    + '\n          xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">'
+    + '\n' + anchors.join('\n')
+    + '\n</xdr:wsDr>';
+}
+
+function buildXlsxDrawingRels(imageEntries) {
+  const rels = imageEntries.map(({ rId, fileIdx }) =>
+    '  <Relationship Id="' + rId
+    + '" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/image"'
+    + ' Target="../media/img_' + fileIdx + '.jpg"/>'
+  ).join('\n');
+  return '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+    + '\n<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">'
+    + '\n' + rels
+    + '\n</Relationships>';
+}
+
+// Extract the best image URI from a Scryfall card object (handles DFC / MDFC).
+// Prefers 'normal' (488×680) for full-size embedding in XLSX.
+function getCardImageUri(card) {
+  if (!card) return null;
+  const uris = card.image_uris
+    || (card.card_faces && card.card_faces[0] && card.card_faces[0].image_uris);
+  return uris ? (uris.normal || uris.large || uris.small || null) : null;
+}
+
+// ── Main XLSX generator ───────────────────────────────────────────────────────
+// wantedCards: [{qty, name, price, imageUrl, scryfallUrl}]
+async function generateWantedListXLSX(wantedCards, onProgress) {
+  const total = wantedCards.length;
+
+  // Phase A: Fetch card images as ArrayBuffers (Scryfall CDN has open CORS).
+  // Promise.allSettled tolerates any individual failure without aborting.
+  onProgress(0, total, 'Fetching card images…');
+  const imgBufs = new Array(total).fill(null);
+  const IMG_BATCH = 15;
+
+  for (let i = 0; i < total; i += IMG_BATCH) {
+    const results = await Promise.allSettled(
+      wantedCards.slice(i, i + IMG_BATCH).map(c =>
+        c.imageUrl
+          ? fetch(c.imageUrl).then(r => r.ok ? r.arrayBuffer().then(b => new Uint8Array(b)) : null)
+          : Promise.resolve(null)
+      )
+    );
+    results.forEach((r, j) => {
+      if (r.status === 'fulfilled' && r.value instanceof Uint8Array) imgBufs[i + j] = r.value;
+    });
+    onProgress(Math.min(i + IMG_BATCH, total), total, 'Fetching card images…');
+  }
+
+  // Phase B: Build image entry index (maps card row → media file number).
+  const imageEntries = [];
+  let fileIdx = 1;
+  for (let i = 0; i < total; i++) {
+    if (imgBufs[i]) {
+      imageEntries.push({ cardIndex: i, rId: 'rId' + (imageEntries.length + 1), fileIdx: fileIdx++ });
+    }
+  }
+  const hasImages = imageEntries.length > 0;
+  addLog('XLSX export: ' + imageEntries.length + '/' + total + ' card images embedded.');
+
+  // Phase C: Build all XLSX XML parts and ZIP them.
+  onProgress(total, total, 'Building spreadsheet…');
+  const { xml: ssXml, ssMap } = buildXlsxSharedStrings(wantedCards);
+
+  const files = [
+    { name: '[Content_Types].xml',                 data: xlsxContentTypes(hasImages) },
+    { name: '_rels/.rels',                          data: _XLSX_PKG_RELS },
+    { name: 'xl/workbook.xml',                      data: _XLSX_WORKBOOK },
+    { name: 'xl/_rels/workbook.xml.rels',           data: _XLSX_WB_RELS },
+    { name: 'xl/styles.xml',                        data: _XLSX_STYLES },
+    { name: 'xl/sharedStrings.xml',                 data: ssXml },
+    { name: 'xl/worksheets/sheet1.xml',             data: buildXlsxSheet(wantedCards, ssMap, hasImages) },
+    { name: 'xl/worksheets/_rels/sheet1.xml.rels',  data: buildXlsxSheetRels(hasImages) },
+  ];
+
+  if (hasImages) {
+    files.push({ name: 'xl/drawings/drawing1.xml',             data: buildXlsxDrawing(imageEntries) });
+    files.push({ name: 'xl/drawings/_rels/drawing1.xml.rels',  data: buildXlsxDrawingRels(imageEntries) });
+    for (const ie of imageEntries) {
+      files.push({ name: 'xl/media/img_' + ie.fileIdx + '.jpg', data: imgBufs[ie.cardIndex] });
+    }
+  }
+
+  return buildZipArchive(files);
+}
+
+// ════════════════════════════════════════════════════════════════════════════
+//  TAB 5 — WANTED LIST event handlers
+// ════════════════════════════════════════════════════════════════════════════
+
+let currentWantedCards = [];
+
+$('btn-wanted').addEventListener('click', async () => {
+  const rawText = $('wanted-input').value.trim();
+  if (!rawText) return;
+
+  const parsed = extractCardsFromText(rawText);
+  if (parsed.length === 0) {
+    alert('No card references found in the input.');
+    return;
+  }
+
+  // Reset UI state
+  $('btn-wanted').disabled = true;
+  $('wanted-status').textContent = '';
+  $('wanted-status').style.color = 'var(--text-dim)';
+  $('wanted-preview').innerHTML = '';
+  $('wanted-preview-section').classList.remove('visible');
+  $('wanted-progress-wrap').classList.add('visible');
+  $('wanted-progress-fill').style.width = '0%';
+  $('wanted-progress-count').textContent = '0 / 0';
+  $('wanted-progress-text').textContent  = 'Fetching card data…';
+
+  // ── Phase 1: Scryfall enrichment (uses IndexedDB cache automatically) ──
+  const { cardMap } = await runBatchFetch(parsed, (done, total, msg) => {
+    $('wanted-progress-fill').style.width   = (total ? Math.round(done / total * 100) : 0) + '%';
+    $('wanted-progress-count').textContent  = done + ' / ' + total;
+    if (msg) $('wanted-progress-text').textContent = msg;
+  });
+
+  // Build enriched card objects
+  const wantedCards = parsed.map(p => {
+    const key  = p.key || getCardKey(p);
+    const card = cardMap.get(key);
+    return {
+      qty:         parseInt(p.qty, 10) || 1,
+      name:        card ? card.name : p.name,
+      imageUrl:    card ? getCardImageUri(card) : null,
+      scryfallUrl: card ? (card.scryfall_uri || '') : '',
+    };
+  });
+  
+  currentWantedCards = wantedCards;
+
+  // ── Phase 2: Show interactive card preview grid ──
+  // Images load lazily in the browser; no ArrayBuffer needed here.
+  const grid = $('wanted-preview');
+  for (const c of wantedCards) {
+    const div = document.createElement('div');
+    div.className = 'wanted-card' + (c.scryfallUrl ? ' clickable' : '');
+    if (c.scryfallUrl) div.addEventListener('click', () => window.open(c.scryfallUrl, '_blank', 'noopener'));
+
+    if (c.qty > 1) {
+      const badge = document.createElement('span');
+      badge.className   = 'wanted-qty';
+      badge.textContent = 'x' + c.qty;
+      div.appendChild(badge);
+    }
+
+    if (c.imageUrl) {
+      const img = document.createElement('img');
+      img.src     = c.imageUrl;
+      img.alt     = c.name;
+      img.loading = 'lazy';
+      div.appendChild(img);
+    } else {
+      const ph = document.createElement('div');
+      ph.className   = 'wanted-card-placeholder';
+      ph.textContent = c.name;
+      div.appendChild(ph);
+    }
+
+    const nameEl = document.createElement('div');
+    nameEl.className   = 'wanted-card-name';
+    nameEl.textContent = c.name;
+    div.appendChild(nameEl);
+
+    grid.appendChild(div);
+  }
+  $('wanted-preview-badge').textContent = wantedCards.length + ' card' + (wantedCards.length !== 1 ? 's' : '');
+  $('wanted-preview-section').classList.add('visible');
+
+  $('wanted-progress-wrap').classList.remove('visible');
+  $('btn-wanted').disabled = false;
+  $('wanted-status').textContent = '✓ Loaded ' + wantedCards.length + ' card' + (wantedCards.length !== 1 ? 's' : '') + '.';
+  $('wanted-status').style.color = 'var(--text-dim)';
+});
+
+$('btn-wanted-dl-xlsx').addEventListener('click', async () => {
+  if (!currentWantedCards.length) return;
+  const btn = $('btn-wanted-dl-xlsx');
+  const prevText = btn.textContent;
+  btn.disabled = true;
+  
+  $('wanted-progress-wrap').classList.add('visible');
+  $('wanted-progress-fill').style.width  = '0%';
+  $('wanted-progress-count').textContent = '0 / 0';
+  $('wanted-progress-text').textContent  = 'Embedding card images…';
+
+  try {
+    const xlsxBytes = await generateWantedListXLSX(currentWantedCards, (done, total, msg) => {
+      $('wanted-progress-fill').style.width  = (total ? Math.round(done / total * 100) : 0) + '%';
+      $('wanted-progress-count').textContent = done + ' / ' + total;
+      if (msg) $('wanted-progress-text').textContent = msg;
+    });
+
+    const blob = new Blob([xlsxBytes], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+    const dlUrl = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = dlUrl; a.download = 'MTG_Wanted_List.xlsx';
+    a.click();
+    URL.revokeObjectURL(dlUrl);
+
+    $('wanted-status').textContent = '✓ ' + currentWantedCards.length + ' card' + (currentWantedCards.length !== 1 ? 's' : '') + ' exported → MTG_Wanted_List.xlsx';
+    $('wanted-status').style.color = 'var(--success, #6ecb63)';
+  } catch (err) {
+    alert('Failed to generate XLSX: ' + err.message);
+  } finally {
+    $('wanted-progress-wrap').classList.remove('visible');
+    btn.disabled = false;
+    btn.textContent = prevText;
+  }
+});
+
+$('btn-wanted-copy-links').addEventListener('click', async () => {
+  if (!currentWantedCards.length) return;
+  const btn = $('btn-wanted-copy-links');
+  const prevText = btn.textContent;
+  
+  const text = currentWantedCards.map(c => c.name + (c.scryfallUrl ? '\n' + c.scryfallUrl : '')).join('\n\n');
+  try {
+    await navigator.clipboard.writeText(text);
+    btn.textContent = '✓ Copied!';
+    setTimeout(() => { btn.textContent = prevText; }, 1800);
+  } catch {
+    alert('Copy failed. Browser blocked clipboard access.');
+  }
+});
+
+async function copyCardsToClipboard(cards, includeNames, btnElement) {
+  const prevText = btnElement.textContent;
+  btnElement.textContent = '⏳ Generating Image...';
+  btnElement.disabled = true;
+
+  try {
+    const validCards = cards.filter(c => c.imageUrl);
+    if (validCards.length === 0) throw new Error('No images to copy');
+
+    // 1. Load all images with CORS enabled so we don't taint the canvas
+    const imgElements = await Promise.all(validCards.map(c => {
+      return new Promise((resolve, reject) => {
+        const img = new Image();
+        img.crossOrigin = 'Anonymous'; // CRITICAL for canvas export
+        img.onload = () => resolve({ card: c, img });
+        img.onerror = () => resolve(null); // Skip failures gracefully
+        img.src = c.imageUrl;
+      });
+    }));
+
+    const loaded = imgElements.filter(Boolean);
+    if (loaded.length === 0) throw new Error('Failed to load image data from Scryfall.');
+
+    // 2. Setup Canvas Grid Dimensions
+    const CARD_W = 244;
+    const CARD_H = 340;
+    const TEXT_H = includeNames ? 36 : 0;
+    const PADDING = 16;
+    const COLS = Math.min(loaded.length, 3); // Max 3 cards wide
+    const ROWS = Math.ceil(loaded.length / COLS);
+
+    const canvas = document.createElement('canvas');
+    canvas.width = COLS * CARD_W + (COLS + 1) * PADDING;
+    canvas.height = ROWS * (CARD_H + TEXT_H) + (ROWS + 1) * PADDING;
+    const ctx = canvas.getContext('2d');
+
+    // Fill background (dark gray to match app theme)
+    ctx.fillStyle = '#1e1e1e';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    ctx.font = 'bold 20px sans-serif';
+    ctx.fillStyle = '#ffffff';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+
+    // 3. Draw Text and Images
+    loaded.forEach((item, i) => {
+      const col = i % COLS;
+      const row = Math.floor(i / COLS);
+      const x = PADDING + col * (CARD_W + PADDING);
+      let y = PADDING + row * (CARD_H + TEXT_H + PADDING);
+
+      if (includeNames) {
+        ctx.fillText(item.card.name, x + CARD_W / 2, y + 6, CARD_W);
+        y += TEXT_H;
+      }
+      ctx.drawImage(item.img, x, y, CARD_W, CARD_H);
+    });
+
+    // 4. Export as PNG and write directly to the OS Clipboard
+    const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
+    if (!blob) throw new Error('Canvas export failed');
+
+    await navigator.clipboard.write([
+      new ClipboardItem({ 'image/png': blob })
+    ]);
+    
+    btnElement.textContent = '✓ Image Copied!';
+  } catch (err) {
+    console.error(err);
+    alert('Copy failed: ' + err.message + '\n\nNote: Firefox requires manually enabling dom.events.asyncClipboard.clipboardItem in about:config for image copying.');
+  } finally {
+    setTimeout(() => { 
+      btnElement.textContent = prevText; 
+      btnElement.disabled = false; 
+    }, 2000);
+  }
+}
+
+$('btn-wanted-copy-arts').addEventListener('click', (e) => {
+  if (!currentWantedCards.length) return;
+  copyCardsToClipboard(currentWantedCards, false, e.target);
+});
+
+$('btn-wanted-copy-full').addEventListener('click', (e) => {
+  if (!currentWantedCards.length) return;
+  copyCardsToClipboard(currentWantedCards, true, e.target);
+});
+
+$('btn-wanted-clear').addEventListener('click', () => {
+  $('wanted-input').value = '';
+  $('wanted-preview').innerHTML = '';
+  $('wanted-preview-section').classList.remove('visible');
+  $('wanted-status').textContent = '';
+  $('wanted-progress-wrap').classList.remove('visible');
+  currentWantedCards = [];
+});
+
+setupFileUpload('wanted-input', 'file-wanted');
 </script>
 </body>
 </html>

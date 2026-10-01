@@ -32,7 +32,12 @@ A zero-dependency, single-file browser utility for Magic: The Gathering decklist
 * **Live MTGJSON Integration:** Search and fetch the official decklist for every Commander, Brawl, and Challenger precon ever printed using a native, searchable dropdown powered by MTGJSON—no third-party proxies or backend required.
 * **Set-Agnostic Matching:** Intelligently ignores set codes and collector numbers during the comparison, so upgrading a basic land or swapping a card's art version won't falsely flag as a "cut" and "addition."
 
-### 5. Resilient Networking & Debugging
+### 5. Wanted List Generator (.xlsx & Clipboard)
+* **Visual Shopping List:** Paste a list of cards you want to acquire and instantly preview them in a visual grid.
+* **Direct Image Copying:** Copy a compiled grid of card images directly to your OS clipboard to paste into Discord, Notion, or MS Word. 
+* **Native Excel Export:** Generates a zero-dependency `.xlsx` file entirely in the browser. The spreadsheet includes embedded physical card art (dynamically sized), quantities, Scryfall links, and interactive Yes/No dropdowns to track your shopping progress.
+
+### 6. Resilient Networking & Debugging
 * **Rate-Limit Safe:** Automatic 500ms delay between batches and exponential backoff retry on HTTP 429 or 5xx responses.
 * **Session Logs:** Downloadable in-memory operation logs (`Grimoire_Logs.txt`) capturing batch requests, HTTP status codes, and unparsed lines.
 

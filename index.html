@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>MTG Grimoire &middot; Scryfall</title>
+  <link rel="icon" type="image/png" href="data:image/png;base64,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" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
@@ -604,7 +605,7 @@ The tool will scan every line (ignoring CSV headers or conversational fluff), pu
 
   <div class="card">
     <p style="font-size:0.85rem; color:var(--text-dim); line-height:1.6; margin-bottom:1rem;">
-      Paste a card list to build a <strong style="color:var(--text)">Wanted List</strong>. Instantly copy card images as a visual grid directly to your clipboard to paste into Discord, Notion, or Docs. Or, export it as an Excel (.xlsx) file featuring embedded card art, Scryfall links, and a <em>Bought</em> Yes/No dropdown to track your purchases.
+      Paste a card list to build a <strong style="color:var(--text)">Wanted List</strong>. Instantly copy card images as a visual grid directly to your clipboard to paste into Discord, Notion, or Docs. Export a <em>printable PDF</em> (3×3 cards per page at real card size, white background), or an Excel (.xlsx) file featuring embedded card art, Scryfall links, and a <em>Bought</em> Yes/No dropdown to track your purchases.
     </p>
 
     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.5rem;">
@@ -646,11 +647,22 @@ Supports all formats: qty + name, CSV exports, Moxfield copy-paste, ManaBox, Dec
         <h2 style="display:inline-block; margin-right: 1rem;">Card Preview</h2>
         <span class="badge badge-ok" id="wanted-preview-badge"></span>
       </div>
-      <div style="display:flex; gap: 0.4rem; flex-wrap:wrap;">
-        <button class="btn-ghost btn-sm" id="btn-wanted-copy-arts">📋 Copy Arts</button>
-        <button class="btn-ghost btn-sm" id="btn-wanted-copy-full">📋 Copy Names + Arts</button>
-        <button class="btn-ghost btn-sm" id="btn-wanted-copy-links">📋 Copy Names + Links</button>
-        <button class="btn-primary btn-sm" id="btn-wanted-dl-xlsx">💾 Download .xlsx</button>
+      <div style="display:flex; gap: 1rem; flex-wrap:wrap; align-items:center;">
+        <div style="display:flex; gap: 0.4rem; flex-wrap:wrap;">
+          <button class="btn-ghost btn-sm" id="btn-wanted-copy-arts" title="Copy just the card images to clipboard">📋 Arts</button>
+          <button class="btn-ghost btn-sm" id="btn-wanted-copy-full" title="Copy names and card images to clipboard">📋 Names + Arts</button>
+          <button class="btn-ghost btn-sm" id="btn-wanted-copy-links" title="Copy names and Scryfall links as text">📋 Links</button>
+        </div>
+        <div style="display:flex; gap: 0.4rem; align-items:center; flex-wrap:wrap;">
+          <button class="btn-primary btn-sm" id="btn-wanted-dl-xlsx">💾 .xlsx</button>
+          <div style="display:flex; border: 1px solid #ffe8a1; border-radius: 3px; overflow: hidden; box-shadow: 0 2px 4px rgba(0,0,0,0.3);">
+            <select id="wanted-paper" style="background:var(--panel); color:var(--text); border:none; padding:0 0.5rem; font-family:var(--font-head); font-size:0.8rem; outline:none; cursor:pointer; border-right:1px solid #ffe8a1;">
+              <option value="a4">A4</option>
+              <option value="letter">Letter</option>
+            </select>
+            <button class="btn-primary btn-sm" id="btn-wanted-dl-pdf" title="3×3 cards per page at real card size, white background" style="border:none; border-radius:0; box-shadow:none;">🖨 Print PDF</button>
+          </div>
+        </div>
       </div>
     </div>
     <div id="wanted-preview" class="wanted-grid"></div>
@@ -2416,6 +2428,220 @@ async function generateWantedListXLSX(wantedCards, onProgress) {
 }
 
 // ════════════════════════════════════════════════════════════════════════════
+//  PRINTABLE PDF BUILDER  (Tab 5 — Wanted List, zero dependencies)
+//  3×3 cards per page at real MTG size (63×88 mm) on a white page.
+//  Scryfall JPEGs are embedded byte-for-byte via /DCTDecode — no quality loss.
+// ════════════════════════════════════════════════════════════════════════════
+const PT_PER_MM = 72 / 25.4;
+const PDF_PAPER = {
+  a4:     { w: 595.28, h: 841.89 },
+  letter: { w: 612,    h: 792    },
+};
+
+// Read width / height / colour components from a JPEG's SOF marker.
+// Returns null when the bytes are not a JPEG.
+function readJpegInfo(bytes) {
+  if (!bytes || bytes.length < 4 || bytes[0] !== 0xFF || bytes[1] !== 0xD8) return null;
+  let i = 2;
+  while (i + 9 < bytes.length) {
+    if (bytes[i] !== 0xFF) { i++; continue; }
+    const marker = bytes[i + 1];
+    if (marker === 0xFF) { i++; continue; }                                   // fill byte
+    if (marker === 0x01 || (marker >= 0xD0 && marker <= 0xD8)) { i += 2; continue; } // standalone markers
+    const len = (bytes[i + 2] << 8) | bytes[i + 3];
+    // SOF0–SOF15, excluding DHT (C4), JPG (C8) and DAC (CC)
+    if (marker >= 0xC0 && marker <= 0xCF && marker !== 0xC4 && marker !== 0xC8 && marker !== 0xCC) {
+      return {
+        height: (bytes[i + 5] << 8) | bytes[i + 6],
+        width:  (bytes[i + 7] << 8) | bytes[i + 8],
+        comps:  bytes[i + 9],
+      };
+    }
+    i += 2 + len;
+  }
+  return null;
+}
+
+// Fallback for non-JPEG images (e.g. PNG): re-encode as JPEG on a white canvas.
+// The image comes from a same-origin blob: URL, so the canvas is never tainted.
+async function toJpegBytes(bytes) {
+  if (!bytes) return null;
+  const url = URL.createObjectURL(new Blob([bytes]));
+  try {
+    const img = await new Promise((res, rej) => {
+      const im = new Image();
+      im.onload = () => res(im);
+      im.onerror = rej;
+      im.src = url;
+    });
+    const cv = document.createElement('canvas');
+    cv.width = img.naturalWidth; cv.height = img.naturalHeight;
+    const ctx = cv.getContext('2d');
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(0, 0, cv.width, cv.height);
+    ctx.drawImage(img, 0, 0);
+    const out = await new Promise(res => cv.toBlob(res, 'image/jpeg', 0.92));
+    return out ? new Uint8Array(await out.arrayBuffer()) : null;
+  } catch { return null; }
+  finally { URL.revokeObjectURL(url); }
+}
+
+function latin1Bytes(str) {
+  const b = new Uint8Array(str.length);
+  for (let i = 0; i < str.length; i++) b[i] = str.charCodeAt(i) & 0xFF;
+  return b;
+}
+
+// Encode a string as a PDF literal string in WinAnsiEncoding (standard Helvetica).
+const _WINANSI_EXTRA = { '\u2018': 0x91, '\u2019': 0x92, '\u201C': 0x93, '\u201D': 0x94,
+                         '\u2022': 0x95, '\u2013': 0x96, '\u2014': 0x97, '\u2026': 0x85 };
+function pdfStr(s) {
+  let out = '';
+  for (const ch of String(s)) {
+    let code = _WINANSI_EXTRA[ch] || ch.codePointAt(0);
+    if (code > 255 || code < 32) code = 63; // '?' for anything outside WinAnsi
+    const c = String.fromCharCode(code);
+    out += (c === '(' || c === ')' || c === '\\') ? '\\' + c : c;
+  }
+  return '(' + out + ')';
+}
+
+// cards:  [{qty, name, ...}]   images: [{bytes, width, height, comps} | null] (same index as cards)
+function buildPrintPdf(cards, images, paperKey) {
+  const paper    = PDF_PAPER[paperKey] || PDF_PAPER.a4;
+  const COLS = 3, ROWS = 3, PER_PAGE = COLS * ROWS;
+  const MARGIN   = 6 * PT_PER_MM;
+  const GAP_X    = 3 * PT_PER_MM;
+  const GAP_Y    = 2 * PT_PER_MM;
+  const LABEL_H  = 13; // pt reserved above each card for its name
+
+  // Real card size; scaled down only if the page can't fit it (e.g. US Letter)
+  let cardW = 63 * PT_PER_MM, cardH = 88 * PT_PER_MM;
+  const availW = paper.w - 2 * MARGIN - (COLS - 1) * GAP_X;
+  const availH = paper.h - 2 * MARGIN - ROWS * LABEL_H - (ROWS - 1) * GAP_Y;
+  const scale  = Math.min(1, availW / (COLS * cardW), availH / (ROWS * cardH));
+  cardW *= scale; cardH *= scale;
+
+  const gridW = COLS * cardW + (COLS - 1) * GAP_X;
+  const gridH = ROWS * (LABEL_H + cardH) + (ROWS - 1) * GAP_Y;
+  const x0    = (paper.w - gridW) / 2;
+  const top   = paper.h - (paper.h - gridH) / 2; // PDF origin is bottom-left
+
+  const fmt = n => (Math.round(n * 100) / 100).toString();
+
+  // Pre-assign object numbers: 1 Catalog, 2 Pages, 3 Font, then images, then page+content pairs
+  let nextId = 4;
+  const imgIds = images.map(img => img ? nextId++ : 0);
+  const pageCount = Math.max(1, Math.ceil(cards.length / PER_PAGE));
+  const pageIds = [], contentIds = [];
+  for (let p = 0; p < pageCount; p++) { pageIds.push(nextId++); contentIds.push(nextId++); }
+  const objCount = nextId - 1;
+
+  const chunks = [], offsets = [];
+  let offset = 0;
+  const push = data => {
+    const b = typeof data === 'string' ? latin1Bytes(data) : data;
+    chunks.push(b); offset += b.length;
+  };
+  const writeObj = (id, body) => {
+    offsets[id] = offset;
+    push(id + ' 0 obj\n');
+    for (const part of [].concat(body)) push(part);
+    push('\nendobj\n');
+  };
+
+  push('%PDF-1.4\n%\xE2\xE3\xCF\xD3\n');
+  writeObj(1, '<< /Type /Catalog /Pages 2 0 R >>');
+  writeObj(2, '<< /Type /Pages /Kids [' + pageIds.map(id => id + ' 0 R').join(' ') + '] /Count ' + pageCount + ' >>');
+  writeObj(3, '<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>');
+
+  images.forEach((img, i) => {
+    if (!img) return;
+    const cs = img.comps === 1 ? '/DeviceGray'
+             : img.comps === 4 ? '/DeviceCMYK /Decode [1 0 1 0 1 0 1 0]'
+             : '/DeviceRGB';
+    writeObj(imgIds[i], [
+      '<< /Type /XObject /Subtype /Image /Width ' + img.width + ' /Height ' + img.height
+        + ' /ColorSpace ' + cs + ' /BitsPerComponent 8 /Filter /DCTDecode /Length ' + img.bytes.length + ' >>\nstream\n',
+      img.bytes,
+      '\nendstream'
+    ]);
+  });
+
+  for (let p = 0; p < pageCount; p++) {
+    const xobjs = [];
+    let cs = '';
+    for (let k = 0; k < PER_PAGE; k++) {
+      const idx = p * PER_PAGE + k;
+      if (idx >= cards.length) break;
+      const c   = cards[idx];
+      const col = k % COLS, row = Math.floor(k / COLS);
+      const x        = x0 + col * (cardW + GAP_X);
+      const labelTop = top - row * (LABEL_H + cardH + GAP_Y);
+      const imgY     = labelTop - LABEL_H - cardH;
+
+      // Name label (with qty prefix when > 1), shrunk to fit the card width
+      const label = (c.qty > 1 ? c.qty + 'x ' : '') + c.name;
+      const fs    = Math.max(5, Math.min(9, cardW / (label.length * 0.58)));
+      cs += 'BT /F1 ' + fmt(fs) + ' Tf 0 g ' + fmt(x) + ' ' + fmt(labelTop - LABEL_H + 3.5) + ' Td ' + pdfStr(label) + ' Tj ET\n';
+
+      if (images[idx]) {
+        const nm = '/Im' + idx;
+        xobjs.push(nm + ' ' + imgIds[idx] + ' 0 R');
+        cs += 'q ' + fmt(cardW) + ' 0 0 ' + fmt(cardH) + ' ' + fmt(x) + ' ' + fmt(imgY) + ' cm ' + nm + ' Do Q\n';
+      } else {
+        // Light frame placeholder for cards without an image
+        cs += '0.6 G 0.75 w ' + fmt(x) + ' ' + fmt(imgY) + ' ' + fmt(cardW) + ' ' + fmt(cardH) + ' re S\n';
+      }
+    }
+    writeObj(pageIds[p], '<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ' + fmt(paper.w) + ' ' + fmt(paper.h) + ']'
+      + ' /Resources << /Font << /F1 3 0 R >>' + (xobjs.length ? ' /XObject << ' + xobjs.join(' ') + ' >>' : '') + ' >>'
+      + ' /Contents ' + contentIds[p] + ' 0 R >>');
+    const csBytes = latin1Bytes(cs);
+    writeObj(contentIds[p], ['<< /Length ' + csBytes.length + ' >>\nstream\n', csBytes, '\nendstream']);
+  }
+
+  // Cross-reference table (each entry exactly 20 bytes)
+  const xrefStart = offset;
+  let xref = 'xref\n0 ' + (objCount + 1) + '\n0000000000 65535 f \n';
+  for (let id = 1; id <= objCount; id++) xref += String(offsets[id] || 0).padStart(10, '0') + ' 00000 n \n';
+  push(xref);
+  push('trailer\n<< /Size ' + (objCount + 1) + ' /Root 1 0 R >>\nstartxref\n' + xrefStart + '\n%%EOF\n');
+
+  const out = new Uint8Array(offset);
+  let pos = 0;
+  for (const ch of chunks) { out.set(ch, pos); pos += ch.length; }
+  return out;
+}
+
+async function generateWantedListPDF(wantedCards, paperKey, onProgress) {
+  const total  = wantedCards.length;
+  const images = new Array(total).fill(null);
+  const IMG_BATCH = 15;
+
+  onProgress(0, total, 'Fetching card images…');
+  for (let i = 0; i < total; i += IMG_BATCH) {
+    const results = await Promise.allSettled(
+      wantedCards.slice(i, i + IMG_BATCH).map(async c => {
+        if (!c.imageUrl) return null;
+        const r = await fetch(c.imageUrl);
+        if (!r.ok) return null;
+        let bytes = new Uint8Array(await r.arrayBuffer());
+        let info  = readJpegInfo(bytes);
+        if (!info) { bytes = await toJpegBytes(bytes); info = readJpegInfo(bytes); }
+        return info ? { bytes, width: info.width, height: info.height, comps: info.comps } : null;
+      })
+    );
+    results.forEach((r, j) => { if (r.status === 'fulfilled' && r.value) images[i + j] = r.value; });
+    onProgress(Math.min(i + IMG_BATCH, total), total, 'Fetching card images…');
+  }
+
+  onProgress(total, total, 'Building printable PDF…');
+  addLog('PDF export: ' + images.filter(Boolean).length + '/' + total + ' card images embedded (' + (paperKey || 'a4') + ').');
+  return buildPrintPdf(wantedCards, images, paperKey);
+}
+
+// ════════════════════════════════════════════════════════════════════════════
 //  TAB 5 — WANTED LIST event handlers
 // ════════════════════════════════════════════════════════════════════════════
 
@@ -2540,6 +2766,42 @@ $('btn-wanted-dl-xlsx').addEventListener('click', async () => {
     $('wanted-progress-wrap').classList.remove('visible');
     btn.disabled = false;
     btn.textContent = prevText;
+  }
+});
+
+$('btn-wanted-dl-pdf').addEventListener('click', async () => {
+  if (!currentWantedCards.length) return;
+  const btn = $('btn-wanted-dl-pdf');
+  btn.disabled = true;
+
+  $('wanted-progress-wrap').classList.add('visible');
+  $('wanted-progress-fill').style.width  = '0%';
+  $('wanted-progress-count').textContent = '0 / 0';
+  $('wanted-progress-text').textContent  = 'Fetching card images…';
+
+  try {
+    const pdfBytes = await generateWantedListPDF(currentWantedCards, $('wanted-paper').value, (done, total, msg) => {
+      $('wanted-progress-fill').style.width  = (total ? Math.round(done / total * 100) : 0) + '%';
+      $('wanted-progress-count').textContent = done + ' / ' + total;
+      if (msg) $('wanted-progress-text').textContent = msg;
+    });
+
+    const blob  = new Blob([pdfBytes], { type: 'application/pdf' });
+    const dlUrl = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = dlUrl; a.download = 'MTG_Wanted_List_Print.pdf';
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(dlUrl), 10000);
+
+    const pages = Math.ceil(currentWantedCards.length / 9);
+    $('wanted-status').textContent = '✓ ' + currentWantedCards.length + ' card' + (currentWantedCards.length !== 1 ? 's' : '')
+      + ' on ' + pages + ' page' + (pages !== 1 ? 's' : '') + ' → MTG_Wanted_List_Print.pdf';
+    $('wanted-status').style.color = 'var(--success, #6ecb63)';
+  } catch (err) {
+    alert('Failed to generate PDF: ' + err.message);
+  } finally {
+    $('wanted-progress-wrap').classList.remove('visible');
+    btn.disabled = false;
   }
 });
 

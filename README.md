@@ -32,8 +32,9 @@ A zero-dependency, single-file browser utility for Magic: The Gathering decklist
 * **Live MTGJSON Integration:** Search and fetch the official decklist for every Commander, Brawl, and Challenger precon ever printed using a native, searchable dropdown powered by MTGJSON—no third-party proxies or backend required.
 * **Set-Agnostic Matching:** Intelligently ignores set codes and collector numbers during the comparison, so upgrading a basic land or swapping a card's art version won't falsely flag as a "cut" and "addition."
 
-### 5. Wanted List Generator (.xlsx & Clipboard)
-* **Visual Shopping List:** Paste a list of cards you want to acquire and instantly preview them in a visual grid.
+### 5. Wanted List & What's Missing (.xlsx & PDF)
+* **What's Missing Calculator:** Paste a list of cards you want (e.g. a deck you are building) and optionally paste a list of cards you already own. The app automatically subtracts your owned cards and calculates exactly what you still need to acquire.
+* **Visual Shopping List:** Instantly preview your missing cards in a visual grid.
 * **Direct Image Copying:** Copy a compiled grid of card images directly to your OS clipboard to paste into Discord, Notion, or MS Word. 
 * **Native Excel Export:** Generates a zero-dependency `.xlsx` file entirely in the browser. The spreadsheet includes embedded physical card art (dynamically sized), quantities, Scryfall links, and interactive Yes/No dropdowns to track your shopping progress.
 * **Printable PDF:** Generates a print-ready PDF in the browser with 3×3 cards per page at real card size (63×88 mm), card names above each image, and a plain white background to save ink. Supports A4 and US Letter (Letter scales cards down slightly to fit). Scryfall JPEGs are embedded as-is, so they keep their full quality.

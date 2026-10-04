@@ -298,6 +298,17 @@
       padding: 0.25rem 0.35rem 0.35rem; text-align: center;
       word-break: break-word; line-height: 1.3;
     }
+    .wanted-card-delete {
+      position: absolute; top: 4px; left: 4px;
+      background: rgba(0,0,0,0.7); color: #ff5e5e;
+      width: 20px; height: 20px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px; font-weight: bold; cursor: pointer;
+      opacity: 0.7; transition: opacity 0.2s, background 0.2s;
+      z-index: 2;
+    }
+    .wanted-card:hover .wanted-card-delete { opacity: 1; }
+    .wanted-card-delete:hover { background: rgba(255, 94, 94, 0.9); color: #fff; }
     .wanted-qty {
       position: absolute; top: 4px; right: 4px;
       background: rgba(0,0,0,0.82); color: var(--accent);
@@ -605,25 +616,39 @@ The tool will scan every line (ignoring CSV headers or conversational fluff), pu
 
   <div class="card">
     <p style="font-size:0.85rem; color:var(--text-dim); line-height:1.6; margin-bottom:1rem;">
-      Paste a card list to build a <strong style="color:var(--text)">Wanted List</strong>. Instantly copy card images as a visual grid directly to your clipboard to paste into Discord, Notion, or Docs. Export a <em>printable PDF</em> (3×3 cards per page at real card size, white background), or an Excel (.xlsx) file featuring embedded card art, Scryfall links, and a <em>Bought</em> Yes/No dropdown to track your purchases.
+      Paste a card list to build a <strong style="color:var(--text)">Wanted List</strong>. Optionally, paste a list of cards you already own to automatically calculate <strong>What's Missing</strong>. Instantly copy card images as a visual grid directly to your clipboard, or export to a <em>printable PDF</em> (3×3 cards per page) or an Excel (.xlsx) file featuring embedded card art.
     </p>
 
-    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.5rem;">
-      <label for="wanted-input" style="margin-bottom:0;">Card List (Wanted)</label>
-      <input type="file" id="file-wanted" multiple accept=".txt,.csv,.dec" style="display:none">
-      <button class="btn-ghost" style="padding:0.2rem 0.6rem; font-size:0.75rem; border-radius:4px;"
-              onclick="document.getElementById('file-wanted').click()">📁 Upload Files</button>
-    </div>
-    <textarea id="wanted-input" spellcheck="false"
-      placeholder="Paste your wanted card list here…
-
+    <div class="split-pane">
+      <div>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.5rem;">
+          <label for="wanted-input" style="margin-bottom:0; color: var(--accent);">Card List (Wanted)</label>
+          <input type="file" id="file-wanted" multiple accept=".txt,.csv,.dec" style="display:none">
+          <button class="btn-ghost" style="padding:0.2rem 0.6rem; font-size:0.75rem; border-radius:4px;"
+                  onclick="document.getElementById('file-wanted').click()">📁 Upload Files</button>
+        </div>
+        <textarea id="wanted-input" spellcheck="false"
+          placeholder="Paste your wanted card list here (e.g., a deck you're building)…
+          
 Example:
 4 Sol Ring
 1 Command Tower (CMM) 496
-1 Rhystic Study
-3 Counterspell
 
 Supports all formats: qty + name, CSV exports, Moxfield copy-paste, ManaBox, Deckbox."></textarea>
+      </div>
+      <div>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.5rem;">
+          <label for="wanted-input-owned" style="margin-bottom:0;">Collection / Bulk (Optional)</label>
+          <input type="file" id="file-wanted-owned" multiple accept=".txt,.csv,.dec" style="display:none">
+          <button class="btn-ghost" style="padding:0.2rem 0.6rem; font-size:0.75rem; border-radius:4px;"
+                  onclick="document.getElementById('file-wanted-owned').click()">📁 Upload Files</button>
+        </div>
+        <textarea id="wanted-input-owned" spellcheck="false"
+          placeholder="Paste cards you already own here.
+
+The app will subtract these from your Wanted list to automatically figure out 'What's Missing'."></textarea>
+      </div>
+    </div>
 
     <div class="btn-row">
       <button class="btn-primary" id="btn-wanted">🔍 Load Wanted List</button>
@@ -2653,8 +2678,47 @@ $('btn-wanted').addEventListener('click', async () => {
 
   const parsed = extractCardsFromText(rawText);
   if (parsed.length === 0) {
-    alert('No card references found in the input.');
+    alert('No card references found in the Wanted List input.');
     return;
+  }
+
+  const ownedText = $('wanted-input-owned').value.trim();
+  let missingList = parsed;
+
+  if (ownedText) {
+    const ownedParsed = extractCardsFromText(ownedText);
+    const ownedMap = new Map();
+    // Aggregate owned quantities by name (ignoring set/printing)
+    for (const o of ownedParsed) {
+      const normName = o.name.toLowerCase();
+      ownedMap.set(normName, (ownedMap.get(normName) || 0) + parseInt(o.qty, 10));
+    }
+    
+    missingList = [];
+    for (const w of parsed) {
+      const normName = w.name.toLowerCase();
+      const wQty = parseInt(w.qty, 10);
+      const ownedQty = ownedMap.get(normName) || 0;
+      
+      if (ownedQty > 0) {
+        if (ownedQty >= wQty) {
+          // Fully satisfied
+          ownedMap.set(normName, ownedQty - wQty);
+        } else {
+          // Partially satisfied
+          missingList.push({ ...w, qty: wQty - ownedQty });
+          ownedMap.set(normName, 0);
+        }
+      } else {
+        // Not owned at all
+        missingList.push(w);
+      }
+    }
+    
+    if (missingList.length === 0) {
+      alert("You already own all the cards in your Wanted List!");
+      return;
+    }
   }
 
   // Reset UI state
@@ -2669,14 +2733,14 @@ $('btn-wanted').addEventListener('click', async () => {
   $('wanted-progress-text').textContent  = 'Fetching card data…';
 
   // ── Phase 1: Scryfall enrichment (uses IndexedDB cache automatically) ──
-  const { cardMap } = await runBatchFetch(parsed, (done, total, msg) => {
+  const { cardMap } = await runBatchFetch(missingList, (done, total, msg) => {
     $('wanted-progress-fill').style.width   = (total ? Math.round(done / total * 100) : 0) + '%';
     $('wanted-progress-count').textContent  = done + ' / ' + total;
     if (msg) $('wanted-progress-text').textContent = msg;
   });
 
   // Build enriched card objects
-  const wantedCards = parsed.map(p => {
+  const wantedCards = missingList.map(p => {
     const key  = p.key || getCardKey(p);
     const card = cardMap.get(key);
     return {
@@ -2692,10 +2756,25 @@ $('btn-wanted').addEventListener('click', async () => {
   // ── Phase 2: Show interactive card preview grid ──
   // Images load lazily in the browser; no ArrayBuffer needed here.
   const grid = $('wanted-preview');
-  for (const c of wantedCards) {
+  for (let i = 0; i < wantedCards.length; i++) {
+    const c = wantedCards[i];
     const div = document.createElement('div');
     div.className = 'wanted-card' + (c.scryfallUrl ? ' clickable' : '');
     if (c.scryfallUrl) div.addEventListener('click', () => window.open(c.scryfallUrl, '_blank', 'noopener'));
+
+    const delBtn = document.createElement('div');
+    delBtn.className = 'wanted-card-delete';
+    delBtn.innerHTML = '&times;';
+    delBtn.title = 'Remove card';
+    delBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      currentWantedCards.splice(currentWantedCards.indexOf(c), 1);
+      div.remove();
+      const countText = currentWantedCards.length + ' card' + (currentWantedCards.length !== 1 ? 's' : '');
+      $('wanted-preview-badge').textContent = countText;
+      $('wanted-status').textContent = '✓ Loaded ' + countText + '.';
+    });
+    div.appendChild(delBtn);
 
     if (c.qty > 1) {
       const badge = document.createElement('span');
@@ -2911,6 +2990,7 @@ $('btn-wanted-copy-full').addEventListener('click', (e) => {
 
 $('btn-wanted-clear').addEventListener('click', () => {
   $('wanted-input').value = '';
+  $('wanted-input-owned').value = '';
   $('wanted-preview').innerHTML = '';
   $('wanted-preview-section').classList.remove('visible');
   $('wanted-status').textContent = '';
@@ -2919,6 +2999,7 @@ $('btn-wanted-clear').addEventListener('click', () => {
 });
 
 setupFileUpload('wanted-input', 'file-wanted');
+setupFileUpload('wanted-input-owned', 'file-wanted-owned');
 </script>
 </body>
 </html>

@@ -8,53 +8,90 @@
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
-      /* MTG Dark Fantasy Palette */
-      --bg: #111012; /* Deep dark background */
-      --surface: #1e1b1e; /* Card background */
-      --panel: #141315; /* Inset panels */
-      --accent: #d4af37; /* Mythic Gold */
-      --accent-dark: #a68420;
-      --text: #e8e4db; /* Off-white parchment text */
-      --text-dim: #9a9387; 
-      --border: #443c34; 
-      --success: #5d8a57; /* Forest / Green Mana */
-      --warn: #c2833a; /* Artifact / Red Mana */
-      --error: #a83b3b; /* Red Mana */
+      /* MTG Dark Fantasy Palette (Base) */
+      --bg: #121214;
+      --surface: #1B1B1E;
+      --panel: #252427;
+      --accent: #d4af37;        /* Regal Paladin Gold */
+      --accent-bright: #f0d060; /* Radiant Sun Gold */
+      --accent-dark: #8a6d1c;   /* Burnished Bronze / Deep Gold */
+      --accent-glow: rgba(212, 175, 55, 0.35);
+      --text: #F8F6F0; /* Clean ivory text */
+      --text-dim: #B5B3BA; /* Colorless silver text */
+      --border: #3A393E; /* Colorless steel border */
+      --success: #1A9E58; /* Forest / Green Mana */
+      --warn: #E5E3D8; /* Plains / Conditional */
+      --error: #D3202A; /* Mountain / Red Mana */
       --font-mono: "Consolas", "Courier New", monospace;
       --font-head: "Palatino Linotype", "Book Antiqua", Palatino, serif;
       --font-body: "Segoe UI", system-ui, sans-serif;
+
+      /* ══════════════════════════════════════════════════════════
+         OFFICIAL MTG MANA & FRAME DESIGN TOKENS (WUBRG + COLORLESS)
+         ══════════════════════════════════════════════════════════ */
+      --mtg-swamp-base: #121214;       /* Black: Deep obsidian canvas / terminal */
+      --mtg-swamp-surface: #1B1B1E;    /* Black: Primary card surface */
+      --mtg-swamp-panel: #252427;      /* Black: Elevated surface & input fill */
+      --mtg-swamp-hover: #2E2D32;      /* Black: Interactive hover state */
+      
+      --mtg-plains-pure: #F8F6F0;      /* White: Primary crisp typography */
+      --mtg-plains-parchment: #E5E3D8; /* White: Secondary text / accents */
+      --mtg-plains-muted: #D1CFBA;     /* White: Tertiary soft white */
+      
+      --mtg-colorless-border: #3A393E; /* Colorless: Steel border / divider */
+      --mtg-colorless-border-subtle: rgba(255, 255, 255, 0.08);
+      --mtg-colorless-muted: #6E6D73;  /* Colorless: Inactive / placeholder text */
+      --mtg-colorless-silver: #B5B3BA; /* Colorless: Secondary metadata text */
+      
+      --mtg-island-base: #0E68AB;      /* Blue: Island mana */
+      --mtg-island-bright: #2B82C9;    /* Blue: Highlight / active glow */
+      --mtg-island-dim: rgba(14, 104, 171, 0.18);
+      
+      --mtg-forest-base: #00733E;      /* Green: Untapped / success fill */
+      --mtg-forest-bright: #1A9E58;    /* Green: Untapped active border / glow */
+      --mtg-forest-dim: rgba(26, 158, 88, 0.18);
+      
+      --mtg-mountain-base: #D3202A;    /* Red: Tapped / warning accent */
+      --mtg-mountain-bright: #E0413C;  /* Red: Tapped active border / glow */
+      --mtg-mountain-dim: rgba(211, 32, 42, 0.18);
     }
     body {
-      background: var(--bg);
-      background-image: radial-gradient(circle at top, #2a2528 0%, var(--bg) 60%);
-      color: var(--text);
+      background: var(--mtg-swamp-base);
+      background-image: radial-gradient(circle at top, #1E1D22 0%, var(--mtg-swamp-base) 60%);
+      color: var(--mtg-plains-pure);
       font-family: var(--font-body);
       min-height: 100vh; display: flex; flex-direction: column;
       align-items: center; padding: 2rem 1rem; gap: 1.5rem;
     }
     h1 { 
       font-family: var(--font-head); 
-      font-size: 2.2rem; font-weight: normal; color: var(--text); 
+      font-size: 2.2rem; font-weight: normal; color: var(--mtg-plains-pure); 
       letter-spacing: 1px; text-transform: uppercase;
       text-shadow: 0 2px 4px rgba(0,0,0,0.5);
     }
-    h1 span { color: var(--accent); }
-    .subtitle { color: var(--text-dim); font-size: 0.95rem; margin-top: 0.4rem; font-style: italic; font-family: var(--font-head); }
+    h1 span { color: var(--accent-bright); text-shadow: 0 0 14px var(--accent-glow); }
+    .subtitle { color: var(--mtg-colorless-silver); font-size: 0.95rem; margin-top: 0.4rem; font-style: italic; font-family: var(--font-head); }
 
-    /* ── TABS ── */
+    /* ── TABS (Segmented High-Contrast Design) ── */
     .tabs {
-      display: flex; justify-content: center; gap: 0; width: 100%; max-width: 900px;
-      border-bottom: 2px solid var(--border);
+      display: flex; justify-content: center; gap: 0.35rem; width: 100%; max-width: 1050px;
+      border-bottom: 1px solid var(--mtg-colorless-border); padding-bottom: 0.5rem; flex-wrap: wrap;
     }
     .tab-btn {
-      background: transparent; border: none; border-bottom: 2px solid transparent;
-      margin-bottom: -2px; padding: 0.8rem 1.6rem;
-      font-family: var(--font-head); font-size: 1.05rem; color: var(--text-dim);
-      cursor: pointer; transition: color 0.2s, border-color 0.2s;
-      text-transform: uppercase; letter-spacing: 1px;
+      background: transparent; border: 1px solid transparent; border-radius: 4px;
+      padding: 0.6rem 0.95rem; font-family: var(--font-head); font-size: 0.92rem;
+      color: var(--mtg-colorless-silver); cursor: pointer; transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+      text-transform: uppercase; letter-spacing: 0.8px; white-space: nowrap;
     }
-    .tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
-    .tab-btn:hover:not(.active) { color: var(--text); }
+    .tab-btn:hover:not(.active) {
+      color: var(--accent-bright); background: var(--mtg-swamp-panel);
+      border-color: var(--mtg-colorless-border);
+    }
+    .tab-btn.active {
+      color: var(--accent-bright); background: var(--mtg-swamp-panel);
+      border-color: var(--accent);
+      box-shadow: 0 0 12px var(--accent-glow), inset 0 0 0 1px rgba(212, 175, 55, 0.25);
+    }
     .tab-panel { display: none; width: 100%; flex-direction: column; align-items: center; gap: 1.5rem; }
     .tab-panel.active { display: flex; }
 
@@ -322,6 +359,705 @@
     @media (max-width: 768px) {
       .wanted-grid { grid-template-columns: repeat(auto-fill, minmax(85px, 1fr)); gap: 0.5rem; }
     }
+
+    /* ── COLLECTION CODEX (TAB 6) ── */
+    .codex-drop {
+      border: 2px dashed var(--border); border-radius: 4px; background: var(--panel);
+      padding: 1.6rem 1rem; text-align: center; cursor: pointer;
+      transition: border-color 0.2s, background 0.2s; margin-bottom: 0.75rem;
+    }
+    .codex-drop:hover, .codex-drop.dragover { border-color: var(--accent); background: rgba(212,175,55,0.05); }
+    .codex-drop-title { font-family: var(--font-head); font-size: 1.05rem; color: var(--text); letter-spacing: 0.5px; }
+    .codex-drop-sub { font-size: 0.78rem; color: var(--text-dim); margin-top: 0.3rem; }
+    #codex-input { height: 110px; font-size: 0.75rem; }
+    .codex-saved {
+      display: none; margin-top: 0.75rem; font-size: 0.82rem; color: var(--text-dim);
+      font-family: var(--font-head); font-style: italic;
+    }
+    .codex-saved.visible { display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap; }
+    .codex-check { display: inline-flex; align-items: center; gap: 0.4rem; font-size: 0.82rem; color: var(--text-dim); font-family: var(--font-head); cursor: pointer; text-transform: none; letter-spacing: 0; margin: 0; }
+    .codex-check input { accent-color: var(--accent); }
+
+    .codex-tiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 0.6rem; }
+    .codex-tile {
+      background: var(--panel); border: 1px solid var(--border); border-radius: 3px; padding: 0.7rem 0.85rem;
+      font-size: 0.7rem; color: var(--text-dim); font-family: var(--font-head); text-transform: uppercase; letter-spacing: 0.5px;
+      min-width: 0;
+    }
+    .codex-tile strong { display: block; font-family: var(--font-body); font-size: 1.25rem; color: var(--text); letter-spacing: 0; margin-top: 0.15rem; text-transform: none; }
+    .codex-tile small { display: block; font-family: var(--font-body); font-size: 0.72rem; color: var(--text-dim); text-transform: none; letter-spacing: 0; margin-top: 0.1rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .codex-tile.gold { border-color: var(--accent-dark); }
+    .codex-tile.gold strong { color: var(--accent); }
+
+    .codex-charts { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-top: 1rem; }
+    .codex-chart { background: var(--panel); border: 1px solid var(--border); border-radius: 3px; padding: 0.85rem 1rem; min-width: 0; }
+    .codex-chart.wide { grid-column: 1 / -1; }
+    .codex-chart-title {
+      font-size: 0.75rem; color: var(--accent); font-family: var(--font-head);
+      text-transform: uppercase; letter-spacing: 1px; margin-bottom: 0.7rem;
+      display: flex; justify-content: space-between; align-items: baseline; gap: 0.5rem;
+    }
+    .codex-chart-title span { color: var(--text-dim); font-size: 0.68rem; letter-spacing: 0; text-transform: none; font-style: italic; }
+    .hbar { display: grid; grid-template-columns: minmax(70px, 34%) 1fr auto; align-items: center; gap: 0.5rem; margin-bottom: 0.35rem; font-size: 0.78rem; border-radius: 2px; padding: 1px 2px; }
+    .hbar.clickable { cursor: pointer; }
+    .hbar.clickable:hover { background: rgba(212,175,55,0.07); }
+    .hbar-label { color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .hbar-track { background: var(--bg); height: 10px; border-radius: 2px; overflow: hidden; border: 1px solid rgba(255,255,255,0.04); }
+    .hbar-fill { height: 100%; border-radius: 2px; background: linear-gradient(90deg, var(--accent-dark), var(--accent)); min-width: 2px; }
+    .hbar-val { color: var(--text-dim); font-family: var(--font-mono); font-size: 0.72rem; text-align: right; min-width: 3.5em; }
+    .donut-wrap { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; }
+    .donut-wrap svg { flex: 0 0 auto; }
+    .donut-legend { display: flex; flex-direction: column; gap: 0.3rem; flex: 1; min-width: 120px; }
+    .donut-legend .hbar { grid-template-columns: 12px 1fr auto; }
+    .legend-dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+    .codex-curve .curve-bar.clickable { cursor: pointer; }
+    .codex-curve .curve-bar.clickable:hover { filter: brightness(1.25); }
+
+    .treasure-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 0.4rem 1rem; }
+    .treasure { display: flex; align-items: center; gap: 0.6rem; font-size: 0.8rem; padding: 0.3rem 0.4rem; border-radius: 2px; cursor: pointer; min-width: 0; }
+    .treasure:hover { background: rgba(212,175,55,0.07); }
+    .treasure-rank { color: var(--accent); font-family: var(--font-head); width: 1.4em; text-align: right; flex: 0 0 auto; }
+    .treasure-name { flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--text); }
+    .treasure-price { font-family: var(--font-mono); color: var(--accent); font-size: 0.75rem; flex: 0 0 auto; }
+
+    .codex-toolbar { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; margin-bottom: 0.6rem; }
+    .codex-search {
+      flex: 1 1 260px; min-width: 0; background: var(--panel); color: var(--text);
+      border: 1px solid var(--border); border-radius: 2px; padding: 0.5rem 0.75rem;
+      font-family: var(--font-mono); font-size: 0.85rem; outline: none;
+    }
+    .codex-search:focus { border-color: var(--accent); }
+    .codex-help { font-size: 0.72rem; color: var(--text-dim); margin: -0.2rem 0 0.6rem; line-height: 1.6; }
+    .codex-help code { font-family: var(--font-mono); color: var(--accent); background: var(--panel); padding: 0 0.3em; border-radius: 2px; }
+    .codex-help details summary { cursor: pointer; font-family: var(--font-head); font-style: italic; }
+    .color-chips { display: inline-flex; gap: 0.25rem; align-items: center; }
+    .color-chip {
+      width: 26px; height: 26px; border-radius: 50%; padding: 0; font-size: 0.72rem; font-weight: bold;
+      font-family: var(--font-body); letter-spacing: 0; border: 2px solid transparent; opacity: 0.4;
+      display: inline-flex; align-items: center; justify-content: center; color: #111;
+    }
+    .color-chip.on { opacity: 1; border-color: var(--accent); box-shadow: 0 0 6px rgba(212,175,55,0.45); }
+    .pip { width: 12px; height: 12px; border-radius: 50%; display: inline-block; margin-right: 2px; border: 1px solid rgba(0,0,0,0.5); vertical-align: middle; }
+    .pip-W { background: #f8f3d8; } .pip-U { background: #3f8ed8; } .pip-B { background: #6b5e5a; }
+    .pip-R { background: #e0533c; } .pip-G { background: #3e9a5b; } .pip-C { background: #b9b3aa; }
+    .codex-summary { font-size: 0.8rem; color: var(--text-dim); font-family: var(--font-head); font-style: italic; margin-bottom: 0.5rem; }
+    .codex-summary strong { color: var(--accent); font-style: normal; }
+    .codex-chipbar { display: flex; flex-wrap: wrap; gap: 0.35rem; margin-bottom: 0.5rem; }
+    .filter-pill { font-size: 0.72rem; padding: 0.2rem 0.55rem; border-radius: 10px; background: rgba(212,175,55,0.12); color: var(--accent); border: 1px solid var(--accent-dark); text-transform: none; letter-spacing: 0; font-family: var(--font-body); }
+    .filter-pill:hover { background: rgba(212,175,55,0.25); }
+
+    .codex-table-wrap { width: 100%; overflow-x: auto; border: 1px solid var(--border); border-radius: 2px; background: var(--panel); }
+    .codex-table { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
+    .codex-table th {
+      position: sticky; top: 0; background: #1a181a; color: var(--accent); text-align: left;
+      font-family: var(--font-head); font-weight: normal; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.5px;
+      padding: 0.5rem 0.5rem; border-bottom: 1px solid var(--border); cursor: pointer; user-select: none; white-space: nowrap;
+    }
+    .codex-table th:hover { color: var(--text); }
+    .codex-table th.sorted::after { content: ' \25BC'; font-size: 0.6rem; }
+    .codex-table th.sorted.asc::after { content: ' \25B2'; }
+    .codex-table td { padding: 0.38rem 0.5rem; border-bottom: 1px solid rgba(68,60,52,0.45); white-space: nowrap; color: var(--text); }
+    .codex-table tbody tr { cursor: pointer; }
+    .codex-table tbody tr:hover td { background: rgba(212,175,55,0.06); }
+    .codex-table .num { text-align: right; font-family: var(--font-mono); font-size: 0.76rem; }
+    .codex-table .dim { color: var(--text-dim); }
+    .codex-table .name-cell { white-space: normal; min-width: 160px; }
+    .codex-table .type-cell { max-width: 170px; overflow: hidden; text-overflow: ellipsis; color: var(--text-dim); }
+    .tag { display: inline-block; font-size: 0.62rem; padding: 0 0.3rem; border-radius: 2px; margin-left: 0.3rem; vertical-align: middle; font-family: var(--font-body); line-height: 1.5; }
+    .tag-foil { background: linear-gradient(90deg, #6a5acd, #3fa7c9, #d4af37); color: #fff; }
+    .tag-etched { background: #7a6a4a; color: #fff; }
+    .tag-misc { background: var(--bg); color: var(--text-dim); border: 1px solid var(--border); }
+    .tag-miss { background: var(--error); color: #fff; }
+    .rar { font-weight: bold; font-family: var(--font-head); }
+    .rar-common { color: #bdb7ad; } .rar-uncommon { color: #a9c1d9; } .rar-rare { color: #d4af37; }
+    .rar-mythic { color: #ef6a2c; } .rar-special, .rar-bonus { color: #b07be0; }
+
+    .codex-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 0.7rem; }
+    .codex-gcard { position: relative; cursor: pointer; border-radius: 6px; overflow: hidden; background: var(--panel); border: 1px solid var(--border); transition: transform 0.15s, box-shadow 0.15s; }
+    .codex-gcard:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(0,0,0,0.5); border-color: var(--accent-dark); }
+    .codex-gcard img { width: 100%; display: block; aspect-ratio: 488 / 680; object-fit: cover; background: var(--bg); }
+    .codex-gcard .wanted-card-placeholder { aspect-ratio: 488 / 680; }
+    .codex-gcard-foot { display: flex; justify-content: space-between; gap: 0.3rem; padding: 0.25rem 0.4rem; font-size: 0.68rem; color: var(--text-dim); font-family: var(--font-mono); }
+    .codex-gcard-foot b { color: var(--accent); font-weight: normal; }
+    .codex-gcard .wanted-qty { top: 6px; right: 6px; }
+    .codex-gcard.foil::after {
+      content: ''; position: absolute; inset: 0; pointer-events: none;
+      background: linear-gradient(125deg, rgba(255,0,150,0.12), rgba(0,200,255,0.12) 40%, rgba(255,230,0,0.12) 70%, rgba(255,0,150,0.08));
+      mix-blend-mode: screen;
+    }
+
+    .codex-pager { display: flex; justify-content: space-between; align-items: center; gap: 0.5rem; margin-top: 0.75rem; flex-wrap: wrap; font-size: 0.8rem; color: var(--text-dim); font-family: var(--font-head); }
+    .codex-pager-btns { display: flex; gap: 0.35rem; align-items: center; }
+    .codex-actions { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+    #codex-preview {
+      position: fixed; z-index: 9000; pointer-events: none; display: none;
+      width: 240px; border-radius: 11px; box-shadow: 0 10px 30px rgba(0,0,0,0.7);
+    }
+
+    /* ── LAND STATION (TAB 7 - REDESIGNED DASHBOARD) ── */
+    .land-container { width: 100%; max-width: 1040px; display: flex; flex-direction: column; gap: 1.25rem; }
+
+    /* Land Station Header & Eyebrow */
+    .land-header-bar {
+      background: var(--mtg-swamp-surface); border: 1px solid var(--mtg-colorless-border);
+      border-radius: 8px; padding: 1.4rem 1.6rem; display: flex;
+      justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 1rem;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+    }
+    .land-header-eyebrow {
+      display: inline-flex; align-items: center; gap: 0.45rem; font-size: 0.72rem;
+      font-family: var(--font-mono); letter-spacing: 1.2px; text-transform: uppercase;
+      color: var(--accent-bright); margin-bottom: 0.35rem; font-weight: bold;
+    }
+    .land-header-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--accent-bright); box-shadow: 0 0 8px var(--accent-bright); }
+    .land-header-title {
+      font-family: var(--font-head); font-size: 1.6rem; font-weight: normal;
+      color: var(--mtg-plains-pure); letter-spacing: 0.5px; margin: 0 0 0.35rem;
+    }
+    .land-header-desc {
+      font-size: 0.85rem; color: var(--mtg-colorless-silver); line-height: 1.5;
+      max-width: 680px; margin: 0;
+    }
+    .land-btn-reset {
+      background: var(--mtg-swamp-panel); border: 1px solid var(--mtg-colorless-border);
+      border-radius: 4px; color: var(--mtg-colorless-silver); font-family: var(--font-head);
+      font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.8px;
+      padding: 0.45rem 0.85rem; cursor: pointer; transition: all 0.15s;
+    }
+    .land-btn-reset:hover {
+      background: var(--mtg-swamp-hover); color: var(--accent-bright);
+      border-color: var(--accent);
+    }
+
+    /* Section Container Blocks */
+    .land-section-block {
+      background: var(--mtg-swamp-surface); border: 1px solid var(--mtg-colorless-border);
+      border-radius: 8px; padding: 1.35rem 1.6rem; display: flex; flex-direction: column; gap: 0.75rem;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.25);
+    }
+    .land-section-header {
+      display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem;
+    }
+    .land-section-title-wrap { display: flex; align-items: center; gap: 0.65rem; }
+    .land-step-num {
+      font-family: var(--font-mono); font-size: 0.75rem; font-weight: bold;
+      color: #121214; background: linear-gradient(180deg, #f0d060 0%, #d4af37 100%);
+      padding: 2px 7px; border-radius: 3px; letter-spacing: 0;
+      box-shadow: 0 1px 4px rgba(212, 175, 55, 0.35);
+    }
+    .land-section-heading {
+      font-family: var(--font-head); font-size: 0.98rem; text-transform: uppercase;
+      letter-spacing: 1px; color: var(--mtg-plains-pure); margin: 0;
+    }
+    .land-section-badge {
+      font-family: var(--font-mono); font-size: 0.72rem; color: var(--accent-bright);
+      background: rgba(212, 175, 55, 0.08); border: 1px solid rgba(212, 175, 55, 0.35);
+      padding: 2px 8px; border-radius: 3px; font-weight: 600;
+    }
+    .land-section-sub {
+      font-size: 0.78rem; color: var(--mtg-colorless-silver); line-height: 1.45;
+      margin: -0.25rem 0 0.25rem;
+    }
+    .land-section-sub code {
+      font-family: var(--font-mono); font-size: 0.75rem; color: var(--accent-bright);
+      background: var(--mtg-swamp-panel); padding: 1px 4px; border-radius: 2px;
+      border: 1px solid rgba(212, 175, 55, 0.25);
+    }
+
+    /* 1. Commander Identity: Mana Selectors */
+    .land-mana-row { display: flex; gap: 0.75rem; align-items: center; flex-wrap: wrap; margin-bottom: 0.35rem; }
+    .land-mana-pip {
+      width: 44px; height: 44px; border-radius: 50%;
+      border: 2px solid var(--mtg-colorless-border); background: var(--mtg-swamp-surface);
+      color: var(--mtg-colorless-muted); display: inline-flex; align-items: center; justify-content: center;
+      font-size: 1.15rem; font-weight: bold; font-family: var(--font-head); cursor: pointer;
+      transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1); user-select: none;
+    }
+    .land-mana-pip:hover:not(.active) {
+      border-color: var(--accent); color: var(--accent-bright); transform: scale(1.04);
+    }
+    .land-mana-pip.active {
+      transform: scale(1.12);
+    }
+    /* WUBRGC Active Themes */
+    .land-mana-pip.pip-white.active {
+      background: var(--mtg-plains-pure); color: var(--mtg-swamp-base); border-color: var(--mtg-plains-parchment);
+      box-shadow: 0 0 14px rgba(248, 246, 240, 0.45);
+    }
+    .land-mana-pip.pip-blue.active {
+      background: var(--mtg-island-base); color: var(--mtg-plains-pure); border-color: var(--mtg-island-bright);
+      box-shadow: 0 0 14px rgba(43, 130, 201, 0.5);
+    }
+    .land-mana-pip.pip-black.active {
+      background: var(--mtg-swamp-panel); color: var(--mtg-plains-pure); border-color: var(--mtg-colorless-silver);
+      box-shadow: 0 0 12px rgba(110, 109, 115, 0.4);
+    }
+    .land-mana-pip.pip-red.active {
+      background: var(--mtg-mountain-base); color: var(--mtg-plains-pure); border-color: var(--mtg-mountain-bright);
+      box-shadow: 0 0 14px rgba(211, 32, 42, 0.5);
+    }
+    .land-mana-pip.pip-green.active {
+      background: var(--mtg-forest-base); color: var(--mtg-plains-pure); border-color: var(--mtg-forest-bright);
+      box-shadow: 0 0 14px rgba(26, 158, 88, 0.5);
+    }
+    .land-mana-pip.pip-colorless.active {
+      background: var(--mtg-colorless-border); color: var(--mtg-plains-pure); border-color: var(--mtg-colorless-silver);
+      box-shadow: 0 0 12px rgba(181, 179, 186, 0.4);
+    }
+
+    /* Presets: Categorized Segmented Rows */
+    .land-presets-catalog {
+      display: flex; flex-direction: column; gap: 0.65rem;
+      background: var(--mtg-swamp-panel); border: 1px solid var(--mtg-colorless-border);
+      border-radius: 6px; padding: 0.85rem 1rem;
+    }
+    .land-preset-group { display: flex; align-items: center; flex-wrap: wrap; gap: 0.5rem; }
+    .land-preset-category {
+      font-size: 0.68rem; color: var(--mtg-colorless-silver); font-family: var(--font-head);
+      text-transform: uppercase; letter-spacing: 0.8px; min-width: 140px;
+    }
+    .land-preset-chips { display: flex; flex-wrap: wrap; gap: 0.35rem; flex: 1; }
+    .land-preset-chip {
+      font-size: 0.72rem; padding: 0.25rem 0.6rem; border-radius: 3px;
+      background: var(--mtg-swamp-surface); border: 1px solid var(--mtg-colorless-border);
+      color: var(--mtg-colorless-silver); cursor: pointer; transition: all 0.15s;
+      font-family: var(--font-body); letter-spacing: 0;
+    }
+    .land-preset-chip:hover:not(.active) {
+      background: var(--mtg-swamp-hover); border-color: var(--accent); color: var(--accent-bright);
+    }
+    .land-preset-chip.active {
+      background: linear-gradient(180deg, #f0d060 0%, #d4af37 100%); color: #121214;
+      border-color: #ffe8a1; font-weight: bold;
+      box-shadow: 0 2px 8px rgba(212, 175, 55, 0.4); text-shadow: 0 1px 0 rgba(255, 255, 255, 0.3);
+    }
+
+    /* Color Match Mode Switch (Any vs Strict Match) */
+    .land-color-mode-card {
+      display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;
+      gap: 0.85rem; padding: 0.85rem 1.15rem; background: var(--mtg-swamp-panel);
+      border: 1px solid var(--mtg-colorless-border); border-radius: 6px; margin-top: 0.25rem;
+      transition: all 0.2s ease;
+    }
+    .land-color-mode-card.strict-active {
+      border-color: var(--accent); background: rgba(212, 175, 55, 0.08);
+      box-shadow: 0 0 14px rgba(212, 175, 55, 0.2);
+    }
+    .land-color-mode-info { flex: 1 1 320px; display: flex; flex-direction: column; gap: 0.25rem; }
+    .land-color-mode-title-row { display: flex; align-items: center; gap: 0.6rem; }
+    .land-color-mode-title {
+      font-family: var(--font-head); font-size: 0.88rem; font-weight: bold;
+      text-transform: uppercase; letter-spacing: 0.6px; color: var(--mtg-plains-pure);
+    }
+    .land-color-mode-pill {
+      font-family: var(--font-mono); font-size: 0.68rem; padding: 2px 7px; border-radius: 3px;
+      text-transform: uppercase; letter-spacing: 0.3px; font-weight: bold;
+      background: var(--mtg-swamp-surface); color: var(--mtg-colorless-silver);
+      border: 1px solid var(--mtg-colorless-border);
+    }
+    .land-color-mode-card.strict-active .land-color-mode-pill {
+      background: linear-gradient(180deg, #f0d060 0%, #d4af37 100%); color: #121214;
+      border-color: #ffe8a1; box-shadow: 0 1px 6px rgba(212, 175, 55, 0.35);
+    }
+    .land-color-mode-desc {
+      font-size: 0.76rem; color: var(--mtg-colorless-silver); line-height: 1.4; margin: 0;
+    }
+    .land-color-mode-card.strict-active .land-color-mode-desc {
+      color: var(--mtg-plains-parchment);
+    }
+    .land-color-mode-toggle-wrap {
+      display: flex; align-items: center; gap: 0.65rem; user-select: none;
+    }
+    .land-switch-label {
+      font-family: var(--font-head); font-size: 0.82rem; color: var(--mtg-colorless-silver);
+      letter-spacing: 0.4px; text-transform: uppercase; font-weight: bold; cursor: pointer;
+    }
+    .land-color-mode-card.strict-active .land-switch-label {
+      color: var(--accent-bright);
+    }
+    /* Gilded Switch */
+    .land-switch-ctrl {
+      position: relative; display: inline-block; width: 44px; height: 24px; cursor: pointer;
+    }
+    .land-switch-ctrl input { opacity: 0; width: 0; height: 0; }
+    .land-switch-slider {
+      position: absolute; cursor: pointer; inset: 0;
+      background-color: var(--mtg-swamp-surface); border: 1px solid var(--mtg-colorless-border);
+      border-radius: 24px; transition: all 0.25s ease;
+    }
+    .land-switch-slider::before {
+      position: absolute; content: ""; height: 16px; width: 16px; left: 3px; bottom: 3px;
+      background-color: var(--mtg-colorless-silver); border-radius: 50%;
+      transition: all 0.25s ease; box-shadow: 0 1px 3px rgba(0,0,0,0.4);
+    }
+    .land-switch-ctrl input:checked + .land-switch-slider {
+      background: linear-gradient(180deg, #d4af37 0%, #8a6d1c 100%);
+      border-color: #ffe8a1; box-shadow: 0 0 10px rgba(212, 175, 55, 0.4);
+    }
+    .land-switch-ctrl input:checked + .land-switch-slider::before {
+      transform: translateX(20px); background-color: #121214;
+    }
+
+    /* 2. Speed / Condition Toggle Cards */
+    .land-speeds-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.85rem; }
+    .land-speed-card {
+      background: var(--mtg-swamp-surface); border: 1px solid var(--mtg-colorless-border);
+      border-radius: 6px; padding: 1rem 1.15rem; cursor: pointer; transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+      display: flex; flex-direction: column; gap: 0.45rem; user-select: none; position: relative;
+    }
+    .land-speed-card:hover {
+      border-color: var(--mtg-colorless-silver); transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(0,0,0,0.4);
+    }
+    .speed-card-top { display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; }
+    .speed-card-title-group { display: flex; align-items: center; gap: 0.45rem; }
+    .speed-indicator-dot, .land-speed-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; display: inline-block; }
+    .dot-untapped { background: var(--mtg-forest-bright); box-shadow: 0 0 8px var(--mtg-forest-bright); }
+    .dot-conditional { background: var(--mtg-plains-parchment); box-shadow: 0 0 8px var(--mtg-plains-parchment); }
+    .dot-tapped { background: var(--mtg-mountain-bright); box-shadow: 0 0 8px var(--mtg-mountain-bright); }
+
+    .speed-card-heading {
+      font-family: var(--font-head); font-size: 0.82rem; text-transform: uppercase;
+      letter-spacing: 0.6px; color: var(--mtg-plains-pure); font-weight: bold;
+    }
+    /* Top-right custom toggle switch */
+    .speed-card-switch {
+      width: 32px; height: 18px; border-radius: 10px; background: var(--mtg-swamp-panel);
+      border: 1px solid var(--mtg-colorless-border); position: relative; pointer-events: none;
+      transition: all 0.2s;
+    }
+    .speed-card-switch input { display: none; }
+    .speed-switch-handle {
+      position: absolute; top: 2px; left: 2px; width: 12px; height: 12px;
+      border-radius: 50%; background: var(--mtg-colorless-muted); transition: all 0.2s;
+    }
+
+    /* Speed Card Active Accents */
+    .land-speed-card.speed-untapped.active {
+      border-color: var(--mtg-forest-bright); background: rgba(26, 158, 88, 0.08);
+      box-shadow: 0 0 14px rgba(26, 158, 88, 0.25);
+    }
+    .land-speed-card.speed-untapped.active .speed-card-switch {
+      background: var(--mtg-forest-bright); border-color: var(--mtg-forest-bright);
+    }
+    .land-speed-card.speed-untapped.active .speed-switch-handle {
+      left: 16px; background: var(--mtg-plains-pure);
+    }
+
+    .land-speed-card.speed-conditional.active {
+      border-color: var(--mtg-plains-parchment); background: rgba(229, 227, 216, 0.08);
+      box-shadow: 0 0 14px rgba(229, 227, 216, 0.2);
+    }
+    .land-speed-card.speed-conditional.active .speed-card-switch {
+      background: var(--mtg-plains-pure); border-color: var(--mtg-plains-pure);
+    }
+    .land-speed-card.speed-conditional.active .speed-switch-handle {
+      left: 16px; background: var(--mtg-swamp-base);
+    }
+
+    .land-speed-card.speed-tapped.active {
+      border-color: var(--mtg-mountain-bright); background: rgba(211, 32, 42, 0.08);
+      box-shadow: 0 0 14px rgba(211, 32, 42, 0.25);
+    }
+    .land-speed-card.speed-tapped.active .speed-card-switch {
+      background: var(--mtg-mountain-bright); border-color: var(--mtg-mountain-bright);
+    }
+    .land-speed-card.speed-tapped.active .speed-switch-handle {
+      left: 16px; background: var(--mtg-plains-pure);
+    }
+
+    .speed-card-desc { font-size: 0.74rem; color: var(--mtg-colorless-silver); line-height: 1.4; margin: 0; }
+    .speed-card-tags {
+      font-size: 0.65rem; color: var(--mtg-colorless-muted); font-family: var(--font-mono);
+      margin-top: auto; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    }
+
+    /* 3. Cycle-Specific Overrides */
+    .land-cycles-actions { display: flex; gap: 0.4rem; flex-wrap: wrap; margin-bottom: 0.65rem; }
+    .land-cycles-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 0.55rem; max-height: 380px; overflow-y: auto; padding-right: 0.3rem;
+    }
+    .land-cycle-item {
+      background: var(--mtg-swamp-panel); border: 1px solid var(--mtg-colorless-border);
+      border-radius: 4px; padding: 0.55rem 0.75rem; display: flex; align-items: flex-start;
+      gap: 0.6rem; cursor: pointer; transition: all 0.15s; user-select: none;
+    }
+    .land-cycle-item:hover {
+      border-color: var(--accent); background: var(--mtg-swamp-hover);
+    }
+    .land-cycle-item.active {
+      border-color: var(--accent); background: rgba(212, 175, 55, 0.1);
+      box-shadow: 0 0 8px rgba(212, 175, 55, 0.2);
+    }
+    .land-cycle-item input[type="checkbox"] { margin-top: 3px; accent-color: var(--accent); cursor: pointer; }
+    .land-cycle-body { flex: 1; min-width: 0; }
+    .land-cycle-head { display: flex; justify-content: space-between; align-items: center; gap: 0.3rem; margin-bottom: 0.15rem; }
+    .land-cycle-name { font-size: 0.8rem; font-weight: bold; color: var(--mtg-plains-pure); }
+    .land-cycle-pill {
+      font-size: 0.62rem; padding: 1px 5px; border-radius: 2px;
+      font-family: var(--font-mono); letter-spacing: 0; text-transform: uppercase;
+    }
+    .pill-untapped { background: rgba(26, 158, 88, 0.18); color: #2EE07D; border: 1px solid rgba(26, 158, 88, 0.4); }
+    .pill-conditional { background: rgba(229, 227, 216, 0.12); color: #F8F6F0; border: 1px solid rgba(229, 227, 216, 0.35); }
+    .pill-tapped { background: rgba(211, 32, 42, 0.18); color: #F07575; border: 1px solid rgba(211, 32, 42, 0.4); }
+    .land-cycle-meta { font-size: 0.68rem; color: var(--mtg-colorless-silver); display: flex; justify-content: space-between; gap: 0.3rem; }
+    .land-cycle-example { color: var(--mtg-plains-parchment); font-style: italic; }
+
+    /* 4. Budget Filter */
+    .land-budget-row { display: flex; gap: 0.4rem; flex-wrap: wrap; align-items: center; }
+    .land-budget-btn {
+      padding: 0.38rem 0.85rem; font-size: 0.78rem; font-family: var(--font-head);
+      background: var(--mtg-swamp-panel); border: 1px solid var(--mtg-colorless-border);
+      color: var(--mtg-colorless-silver); border-radius: 4px; cursor: pointer; transition: all 0.15s;
+    }
+    .land-budget-btn:hover:not(.active) {
+      color: var(--accent-bright); border-color: var(--accent); background: var(--mtg-swamp-hover);
+    }
+    .land-budget-btn.active {
+      background: linear-gradient(180deg, #f0d060 0%, #d4af37 100%); color: #121214;
+      border-color: #ffe8a1; font-weight: bold;
+      box-shadow: 0 2px 8px rgba(212, 175, 55, 0.4); text-shadow: 0 1px 0 rgba(255, 255, 255, 0.3);
+    }
+
+    /* 5. Developer Terminal Query Console & Action CTA */
+    .land-terminal-box {
+      background: var(--mtg-swamp-base); border: 1px solid var(--mtg-colorless-border);
+      border-radius: 6px; overflow: hidden; display: flex; flex-direction: column;
+    }
+    .land-terminal-header {
+      background: #18171B; border-bottom: 1px solid var(--mtg-colorless-border);
+      padding: 0.45rem 0.85rem; display: flex; justify-content: space-between; align-items: center;
+    }
+    .terminal-dots { display: inline-flex; gap: 4px; align-items: center; }
+    .tdot { width: 8px; height: 8px; border-radius: 50%; }
+    .tdot.red { background: var(--mtg-mountain-bright); }
+    .tdot.yellow { background: var(--accent-bright); }
+    .tdot.green { background: var(--mtg-forest-bright); }
+    .terminal-label {
+      font-family: var(--font-mono); font-size: 0.72rem; color: var(--accent-bright);
+      letter-spacing: 0.5px; text-transform: uppercase; margin-left: 0.4rem; font-weight: bold;
+    }
+    .land-terminal-actions { display: flex; gap: 0.35rem; }
+    .terminal-btn {
+      background: var(--mtg-swamp-panel); border: 1px solid var(--mtg-colorless-border);
+      color: var(--mtg-colorless-silver); font-family: var(--font-mono); font-size: 0.68rem;
+      padding: 0.2rem 0.55rem; border-radius: 3px; cursor: pointer; transition: all 0.15s;
+    }
+    .terminal-btn:hover {
+      background: var(--mtg-swamp-hover); color: var(--accent-bright); border-color: var(--accent);
+    }
+    .land-terminal-body {
+      padding: 0.75rem 1rem; font-family: var(--font-mono); font-size: 0.85rem;
+      color: var(--mtg-plains-parchment); line-height: 1.5; word-break: break-all;
+    }
+
+    /* High-Impact Golden Primary CTA Button */
+    .land-cta-row { display: flex; justify-content: flex-start; margin-top: 0.25rem; }
+    .land-cta-button {
+      background: linear-gradient(180deg, #f0d060 0%, #d4af37 45%, #a48220 100%);
+      border: 1px solid #ffe8a1; color: #121214;
+      font-family: var(--font-head); font-size: 1rem; font-weight: bold; text-transform: uppercase;
+      letter-spacing: 1px; padding: 0.8rem 2.2rem; border-radius: 4px; cursor: pointer;
+      display: inline-flex; align-items: center; gap: 0.65rem; transition: all 0.15s ease;
+      box-shadow: 0 4px 18px rgba(212, 175, 55, 0.45); text-shadow: 0 1px 0 rgba(255, 255, 255, 0.4);
+    }
+    .land-cta-button:hover:not(:disabled) {
+      filter: brightness(1.12); transform: translateY(-1px);
+      box-shadow: 0 6px 24px rgba(212, 175, 55, 0.65);
+    }
+    .land-cta-button:active:not(:disabled) { transform: translateY(1px); }
+
+    /* 6. Filter Toolbar & Sliders */
+    .land-results-stats {
+      display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;
+      gap: 0.75rem; padding: 0.85rem 1.15rem; background: var(--mtg-swamp-surface);
+      border: 1px solid var(--mtg-colorless-border); border-radius: 6px;
+    }
+    .land-stats-left { display: flex; align-items: baseline; gap: 1rem; flex-wrap: wrap; }
+    .land-stats-count { font-size: 1.15rem; font-family: var(--font-head); color: var(--mtg-plains-pure); }
+    .land-stats-count strong { color: var(--accent-bright); }
+    .land-stats-value { font-size: 0.88rem; font-family: var(--font-mono); color: var(--accent-bright); font-weight: bold; }
+    .land-breakdown-chips { display: flex; gap: 0.4rem; flex-wrap: wrap; align-items: center; }
+    .land-bchip {
+      font-size: 0.7rem; padding: 2px 8px; border-radius: 12px; font-family: var(--font-body);
+      display: inline-flex; align-items: center; gap: 0.3rem; border: 1px solid transparent;
+    }
+    .bchip-untapped { background: rgba(26, 158, 88, 0.12); color: #2EE07D; border-color: rgba(26, 158, 88, 0.4); }
+    .bchip-conditional { background: rgba(229, 227, 216, 0.12); color: #F8F6F0; border-color: rgba(229, 227, 216, 0.35); }
+    .bchip-tapped { background: rgba(211, 32, 42, 0.12); color: #F07575; border-color: rgba(211, 32, 42, 0.4); }
+    .bchip-basic { background: rgba(14, 104, 171, 0.15); color: #7ABCF5; border-color: rgba(14, 104, 171, 0.4); }
+
+    /* Unified 38px Filter Toolbar */
+    .land-client-bar {
+      display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap;
+      background: var(--mtg-swamp-surface); padding: 0.75rem 1rem;
+      border: 1px solid var(--mtg-colorless-border); border-radius: 6px;
+    }
+    .land-search-input {
+      height: 38px; flex: 1 1 200px; min-width: 0; background: var(--mtg-swamp-base);
+      border: 1px solid var(--mtg-colorless-border); border-radius: 4px;
+      color: var(--mtg-plains-pure); font-family: var(--font-body); font-size: 0.85rem;
+      padding: 0 0.75rem; outline: none; transition: border-color 0.15s;
+    }
+    .land-search-input:focus { border-color: var(--accent); box-shadow: 0 0 8px rgba(212, 175, 55, 0.25); }
+    .land-client-bar .sort-select {
+      height: 38px; background: var(--mtg-swamp-base); border: 1px solid var(--mtg-colorless-border);
+      border-radius: 4px; color: var(--mtg-plains-pure); font-family: var(--font-body);
+      font-size: 0.82rem; padding: 0 0.65rem; outline: none;
+    }
+    .land-client-bar .sort-select:focus { border-color: var(--accent); }
+
+    .land-toolbar-btn {
+      height: 38px; padding: 0 0.85rem; font-family: var(--font-head); font-size: 0.78rem;
+      border-radius: 4px; text-transform: uppercase; letter-spacing: 0.5px;
+      display: inline-flex; align-items: center; justify-content: center; gap: 0.35rem;
+      cursor: pointer; transition: all 0.15s;
+    }
+    .land-toolbar-btn.primary {
+      background: linear-gradient(180deg, #f0d060 0%, #d4af37 100%);
+      color: #121214; font-weight: bold;
+      border: 1px solid #ffe8a1;
+      box-shadow: 0 2px 8px rgba(212, 175, 55, 0.3);
+      text-shadow: 0 1px 0 rgba(255, 255, 255, 0.3);
+    }
+    .land-toolbar-btn.primary:hover {
+      filter: brightness(1.12);
+    }
+    .land-toolbar-btn.ghost {
+      background: var(--mtg-swamp-panel); color: var(--mtg-colorless-silver);
+      border: 1px solid var(--mtg-colorless-border);
+    }
+    .land-toolbar-btn.ghost:hover {
+      background: var(--mtg-swamp-hover); color: var(--accent-bright);
+      border-color: var(--accent);
+    }
+
+    /* Modern Price Slider */
+    .land-slider-wrap {
+      display: flex; align-items: center; gap: 0.85rem; padding: 0.55rem 1rem;
+      background: var(--mtg-swamp-panel); border: 1px solid var(--mtg-colorless-border);
+      border-radius: 4px; font-size: 0.78rem;
+    }
+    .land-slider-label {
+      color: var(--mtg-plains-pure); font-family: var(--font-head);
+      text-transform: uppercase; letter-spacing: 0.5px; white-space: nowrap;
+    }
+    .land-slider-rail {
+      flex: 1; height: 5px; accent-color: var(--accent); cursor: pointer;
+    }
+    .land-slider-val {
+      font-family: var(--font-mono); font-size: 0.82rem; color: var(--accent-bright); font-weight: bold;
+      min-width: 65px; text-align: right;
+    }
+
+    /* 7. Results Grid & Land Card (NO BADGE CLIPPING FIX) */
+    .land-grid-view {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 1rem; width: 100%;
+    }
+    .land-card-item {
+      background: var(--mtg-swamp-surface); border: 1px solid var(--mtg-colorless-border);
+      border-radius: 8px; overflow: hidden; display: flex; flex-direction: column;
+      transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1); box-shadow: 0 4px 14px rgba(0,0,0,0.4);
+    }
+    .land-card-item:hover {
+      transform: translateY(-4px); border-color: var(--accent);
+      box-shadow: 0 12px 28px rgba(0,0,0,0.7), 0 0 12px var(--accent-glow);
+    }
+
+    /* Completely clean artwork container with zero badge overlap */
+    .land-card-img-wrap {
+      aspect-ratio: 488 / 680; width: 100%; background: var(--mtg-swamp-base);
+      cursor: pointer; overflow: hidden; position: relative;
+    }
+    .land-card-img {
+      width: 100%; height: 100%; object-fit: cover; display: block;
+      transition: transform 0.25s ease;
+    }
+    .land-card-item:hover .land-card-img { transform: scale(1.03); }
+
+    /* Dedicated Status Bar (Immediately below artwork, zero overlap) */
+    .land-card-status-bar {
+      display: flex; flex-wrap: wrap; gap: 4px; padding: 0.45rem 0.6rem;
+      background: var(--mtg-swamp-panel); border-bottom: 1px solid var(--mtg-colorless-border);
+      align-items: center;
+    }
+    .land-status-pill {
+      font-size: 0.62rem; padding: 2px 6px; border-radius: 3px;
+      font-family: var(--font-mono); text-transform: uppercase; letter-spacing: 0.3px;
+      display: inline-flex; align-items: center; gap: 3px; font-weight: 600;
+    }
+    .land-status-pill.pill-untapped { background: rgba(26, 158, 88, 0.18); color: #2EE07D; border: 1px solid rgba(26, 158, 88, 0.4); }
+    .land-status-pill.pill-conditional { background: rgba(229, 227, 216, 0.12); color: #F8F6F0; border: 1px solid rgba(229, 227, 216, 0.35); }
+    .land-status-pill.pill-tapped { background: rgba(211, 32, 42, 0.18); color: #F07575; border: 1px solid rgba(211, 32, 42, 0.4); }
+    .land-status-pill.pill-basics { background: rgba(14, 104, 171, 0.18); color: #7ABCF5; border: 1px solid rgba(14, 104, 171, 0.4); }
+    .land-status-pill.pill-cycle { background: var(--mtg-swamp-surface); color: var(--mtg-colorless-silver); border: 1px solid var(--mtg-colorless-border); }
+
+    /* Card Details */
+    .land-card-info { padding: 0.65rem 0.75rem; display: flex; flex-direction: column; gap: 0.35rem; flex: 1; }
+    .land-card-title-row {
+      display: flex; justify-content: space-between; align-items: baseline; gap: 0.4rem;
+    }
+    .land-card-title {
+      font-size: 0.85rem; font-weight: bold; color: var(--mtg-plains-pure);
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-decoration: none; flex: 1;
+    }
+    .land-card-title:hover { color: var(--accent-bright); }
+    .land-card-price {
+      font-family: var(--font-mono); font-size: 0.82rem; color: var(--accent-bright); font-weight: bold;
+    }
+    .land-card-etb-desc {
+      font-size: 0.7rem; color: var(--mtg-colorless-silver); line-height: 1.35;
+    }
+    .land-card-btns {
+      display: flex; gap: 0.35rem; margin-top: auto; padding-top: 0.5rem;
+      border-top: 1px solid var(--mtg-colorless-border-subtle);
+    }
+    .land-btn-mini {
+      flex: 1; padding: 0.3rem 0.45rem; font-size: 0.7rem; font-family: var(--font-body);
+      border-radius: 3px; border: 1px solid var(--mtg-colorless-border); background: var(--mtg-swamp-panel);
+      color: var(--mtg-colorless-silver); cursor: pointer; text-align: center; text-transform: none; letter-spacing: 0;
+      transition: all 0.15s;
+    }
+    .land-btn-mini:hover {
+      color: var(--accent-bright); border-color: var(--accent); background: var(--mtg-swamp-hover);
+    }
+    .land-btn-mini.want {
+      color: var(--accent-bright); border-color: rgba(212, 175, 55, 0.45); background: rgba(212, 175, 55, 0.12); font-weight: bold;
+    }
+    .land-btn-mini.want:hover {
+      background: linear-gradient(180deg, #f0d060 0%, #d4af37 100%); color: #121214; border-color: #ffe8a1;
+    }
+
+    /* Floating Hover Zoom Preview */
+    #land-preview {
+      position: fixed; z-index: 9500; pointer-events: none; display: none;
+      width: 260px; border-radius: 12px; box-shadow: 0 16px 40px rgba(0,0,0,0.85);
+      border: 1px solid var(--mtg-colorless-border);
+    }
+
+    @media (max-width: 768px) {
+      .land-speeds-grid { grid-template-columns: 1fr; }
+      .land-cycles-grid { grid-template-columns: 1fr; max-height: 280px; }
+      .land-grid-view { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 0.65rem; }
+      .land-preset-category { min-width: 100%; margin-bottom: 0.2rem; }
+    }
+
+    @media (max-width: 768px) {
+      .land-speeds-grid { grid-template-columns: 1fr; }
+      .land-cycles-grid { grid-template-columns: 1fr; max-height: 280px; }
+      .land-grid-view { grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 0.5rem; }
+      .tab-btn { padding: 0.5rem 0.55rem; font-size: 0.76rem; letter-spacing: 0.2px; }
+      .codex-charts { grid-template-columns: 1fr; }
+      .codex-tiles { grid-template-columns: repeat(2, 1fr); }
+      .codex-tile strong { font-size: 1.05rem; }
+      .codex-table .hide-sm { display: none; }
+      .codex-grid { grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 0.5rem; }
+      .codex-toolbar .sort-select { flex: 1 1 45%; }
+      .codex-pager { justify-content: center; }
+      .treasure-list { grid-template-columns: 1fr; }
+    }
   </style>
 </head>
 <body>
@@ -354,6 +1090,8 @@
   <button class="tab-btn" data-tab="compare">⚖️ Compare Lists</button>
   <button class="tab-btn" data-tab="diff">🔄 Diff Precon</button>
   <button class="tab-btn" data-tab="wanted">🛒 Wanted List</button>
+  <button class="tab-btn" data-tab="codex">📚 Collection Codex</button>
+  <button class="tab-btn" data-tab="lands">🗺️ Land Station</button>
 </div>
 
 <!-- ════════════════════════════════════════════════════
@@ -674,6 +1412,7 @@ The app will subtract these from your Wanted list to automatically figure out 'W
       </div>
       <div style="display:flex; gap: 1rem; flex-wrap:wrap; align-items:center;">
         <div style="display:flex; gap: 0.4rem; flex-wrap:wrap;">
+          <button class="btn-ghost btn-sm" id="btn-wanted-copy-names" title="Copy card names and quantities as plaintext">📋 Names</button>
           <button class="btn-ghost btn-sm" id="btn-wanted-copy-arts" title="Copy just the card images to clipboard">📋 Arts</button>
           <button class="btn-ghost btn-sm" id="btn-wanted-copy-full" title="Copy names and card images to clipboard">📋 Names + Arts</button>
           <button class="btn-ghost btn-sm" id="btn-wanted-copy-links" title="Copy names and Scryfall links as text">📋 Links</button>
@@ -694,6 +1433,525 @@ The app will subtract these from your Wanted list to automatically figure out 'W
   </div>
 
 </div><!-- /tab-wanted -->
+
+<!-- ════════════════════════════════════════════════════
+     TAB 6 — COLLECTION CODEX
+     ════════════════════════════════════════════════════ -->
+<div class="tab-panel" id="tab-codex">
+
+  <!-- UPLOAD STATE -->
+  <div class="card" id="codex-upload-card">
+    <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+      <div style="flex:1;">
+        <h2 style="font-family:var(--font-head); font-weight:normal; color:var(--accent); font-size:1.3rem; margin-bottom:0.4rem;">Collection Codex</h2>
+        <p style="font-size:0.85rem; color:var(--text-dim); line-height:1.5; margin-bottom:1rem; max-width:600px;">
+          Turn your raw CSV exports (ManaBox, Moxfield, Deckbox) into an interactive, sortable, and searchable visual database with live market pricing and analytics.
+        </p>
+      </div>
+    </div>
+    
+    <label for="codex-file" id="codex-dropzone" class="codex-drop">
+      <div class="codex-drop-title">Drop your Collection CSV here</div>
+      <div class="codex-drop-sub">or click to browse files</div>
+      <input type="file" id="codex-file" accept=".csv,.txt,.dec" style="display:none">
+    </label>
+    
+    <div style="text-align:center; font-family:var(--font-head); font-style:italic; color:var(--text-dim); margin: 0.5rem 0;">&mdash; OR PASTE RAW DATA &mdash;</div>
+    
+    <textarea id="codex-input" spellcheck="false" placeholder="Paste your CSV data directly..."></textarea>
+    
+    <div class="btn-row" style="margin-top:0.75rem;">
+      <button class="btn-primary" id="btn-codex-load">📖 Process Codex</button>
+      <button class="btn-ghost" id="btn-codex-clear">✕ Clear</button>
+    </div>
+    
+    <div class="progress-wrap" id="codex-progress-wrap">
+      <div class="progress-label">
+        <span id="codex-progress-text">Analyzing collection...</span>
+        <span id="codex-progress-count">0 / 0</span>
+      </div>
+      <div class="progress-bar-bg"><div class="progress-bar-fill" id="codex-progress-fill"></div></div>
+    </div>
+    <div class="errors-section" id="codex-errors-section">
+      <h3>&#9888; Cards not found</h3>
+      <ul class="error-list" id="codex-error-list"></ul>
+    </div>
+  </div>
+
+  <!-- CODEX DASHBOARD STATE -->
+  <div id="codex-dashboard" style="display:none; width: 100%; max-width: 1000px; display: flex; flex-direction: column; gap: 1rem;">
+    
+    <!-- Header / Summary -->
+    <div class="card" style="padding: 1rem 1.5rem; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem;">
+      <div>
+        <h2 style="font-family:var(--font-head); font-weight:normal; color:var(--accent); font-size:1.4rem; margin:0;">My Collection</h2>
+        <div id="codex-timestamp" style="font-size:0.75rem; color:var(--text-dim); font-family:var(--font-mono); margin-top:0.2rem;"></div>
+      </div>
+      <div style="display:flex; gap:0.5rem;">
+        <button class="btn-secondary btn-sm" id="btn-codex-close">✕ Close Codex</button>
+      </div>
+    </div>
+
+    <!-- Top Tiles -->
+    <div class="codex-tiles">
+      <div class="codex-tile">Total Cards <strong id="codex-stat-total">0</strong></div>
+      <div class="codex-tile">Unique Prints <strong id="codex-stat-unique">0</strong></div>
+      <div class="codex-tile gold">Est. Value <strong id="codex-stat-value">$0.00</strong></div>
+      <div class="codex-tile">Rares / Mythics <strong id="codex-stat-rares">0</strong></div>
+      <div class="codex-tile">Foils <strong id="codex-stat-foils">0</strong></div>
+    </div>
+
+    <!-- Charts Row -->
+    <div class="codex-charts">
+      <div class="codex-chart">
+        <div class="codex-chart-title">Color Identity <span>(Card Count)</span></div>
+        <div class="donut-wrap" id="codex-chart-colors"></div>
+      </div>
+      <div class="codex-chart">
+        <div class="codex-chart-title">Top Sets <span>(By Volume)</span></div>
+        <div id="codex-chart-sets" style="min-height: 120px;"></div>
+      </div>
+      <div class="codex-chart wide codex-curve">
+        <div class="codex-chart-title">Mana Curve <span>(Non-Land Cards)</span></div>
+        <div id="codex-chart-curve" style="min-height: 110px;"></div>
+      </div>
+      <div class="codex-chart wide">
+        <div class="codex-chart-title">The Vault <span>(Most Valuable Cards)</span></div>
+        <div class="treasure-list" id="codex-vault"></div>
+      </div>
+    </div>
+
+    <!-- Database View (Toolbar + Table/Grid) -->
+    <div class="card" style="padding: 1rem 1.5rem;" id="codex-database-anchor">
+      
+      <div class="codex-toolbar">
+        <input type="text" class="codex-search" id="codex-search" placeholder="Search name, type, set, oracle text...">
+        
+        <select class="sort-select" id="codex-filter-rarity">
+          <option value="">Any Rarity</option>
+          <option value="common">Common</option>
+          <option value="uncommon">Uncommon</option>
+          <option value="rare">Rare</option>
+          <option value="mythic">Mythic</option>
+        </select>
+        
+        <div class="color-chips" id="codex-filter-colors">
+          <button class="color-chip pip-W" data-color="W" title="White">W</button>
+          <button class="color-chip pip-U" data-color="U" title="Blue">U</button>
+          <button class="color-chip pip-B" data-color="B" title="Black">B</button>
+          <button class="color-chip pip-R" data-color="R" title="Red">R</button>
+          <button class="color-chip pip-G" data-color="G" title="Green">G</button>
+          <button class="color-chip pip-C" data-color="C" title="Colorless">C</button>
+        </div>
+        
+        <div style="flex: 1; text-align: right; display:flex; justify-content:flex-end; gap:0.3rem;">
+          <button class="btn-secondary btn-sm" id="btn-codex-view-table" style="border-color:var(--accent); color:var(--accent);">☰ Table</button>
+          <button class="btn-ghost btn-sm" id="btn-codex-view-grid">⚏ Grid</button>
+        </div>
+      </div>
+      
+      <div class="codex-summary">Showing <strong id="codex-view-count">0</strong> cards.</div>
+      
+      <div id="codex-view-table-container" class="codex-table-wrap">
+        <table class="codex-table" id="codex-table">
+          <thead>
+            <tr>
+              <th data-sort="qty" class="num">#</th>
+              <th data-sort="name" class="sorted asc">Card Name</th>
+              <th data-sort="set">Set</th>
+              <th data-sort="type" class="hide-sm">Type Line</th>
+              <th data-sort="mv" class="num">MV</th>
+              <th data-sort="price" class="num">Price</th>
+              <th data-sort="total" class="num">Total</th>
+            </tr>
+          </thead>
+          <tbody id="codex-tbody"></tbody>
+        </table>
+      </div>
+      
+      <div id="codex-view-grid-container" class="codex-grid" style="display:none;"></div>
+      
+      <div class="codex-pager">
+        <div id="codex-pager-info">Page 1 of 1</div>
+        <div class="codex-pager-btns">
+          <button class="btn-secondary btn-sm" id="btn-codex-prev">◄ Prev</button>
+          <button class="btn-secondary btn-sm" id="btn-codex-next">Next ►</button>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+  
+  <img id="codex-preview" src="" alt="">
+  
+</div><!-- /tab-codex -->
+
+<!-- ════════════════════════════════════════════════════
+     TAB 7 — LAND STATION
+     ════════════════════════════════════════════════════ -->
+<div class="tab-panel" id="tab-lands">
+  <div class="land-container">
+
+    <!-- Land Station Header & Eyebrow -->
+    <div class="land-header-bar">
+      <div>
+        <div class="land-header-eyebrow">
+          <span class="land-header-dot"></span>
+          <span>COMMANDER MANA BASE ARCHITECT</span>
+        </div>
+        <h2 class="land-header-title">Land Station</h2>
+        <p class="land-header-desc">
+          Precision land base optimizer powered by Scryfall. Filter by color identity, speed conditions, and staple land cycles with real-time budget controls.
+        </p>
+      </div>
+      <button type="button" class="land-btn-reset" id="btn-land-reset" title="Reset questionnaire to default">
+        ↺ Reset Filters
+      </button>
+    </div>
+
+    <!-- 1. Commander Identity Block -->
+    <div class="land-section-block">
+      <div class="land-section-header">
+        <div class="land-section-title-wrap">
+          <span class="land-step-num">01</span>
+          <h3 class="land-section-heading">Commander Color Identity</h3>
+        </div>
+        <span class="land-section-badge" id="land-identity-label">Orzhov (W/B) · ci&lt;=wb</span>
+      </div>
+      <p class="land-section-sub">Select the mana colors in your commander's identity to filter land legality (<code>ci&lt;=</code>).</p>
+      
+      <!-- Tactile Mana Selectors -->
+      <div class="land-mana-row" id="land-mana-selector">
+        <button type="button" class="land-mana-pip pip-white active" data-color="w" title="White (Plains)">W</button>
+        <button type="button" class="land-mana-pip pip-blue" data-color="u" title="Blue (Island)">U</button>
+        <button type="button" class="land-mana-pip pip-black active" data-color="b" title="Black (Swamp)">B</button>
+        <button type="button" class="land-mana-pip pip-red" data-color="r" title="Red (Mountain)">R</button>
+        <button type="button" class="land-mana-pip pip-green" data-color="g" title="Green (Forest)">G</button>
+        <button type="button" class="land-mana-pip pip-colorless" data-color="c" title="Colorless (Artifact)">◇</button>
+      </div>
+
+      <!-- Categorized Preset Rows -->
+      <div class="land-presets-catalog" id="land-presets-row">
+        <div class="land-preset-group">
+          <span class="land-preset-category">Guilds (2-Color)</span>
+          <div class="land-preset-chips">
+            <button type="button" class="land-preset-chip" data-colors="wu">Azorius</button>
+            <button type="button" class="land-preset-chip" data-colors="ub">Dimir</button>
+            <button type="button" class="land-preset-chip" data-colors="br">Rakdos</button>
+            <button type="button" class="land-preset-chip" data-colors="rg">Gruul</button>
+            <button type="button" class="land-preset-chip" data-colors="gw">Selesnya</button>
+            <button type="button" class="land-preset-chip active" data-colors="wb">Orzhov</button>
+            <button type="button" class="land-preset-chip" data-colors="ur">Izzet</button>
+            <button type="button" class="land-preset-chip" data-colors="bg">Golgari</button>
+            <button type="button" class="land-preset-chip" data-colors="wr">Boros</button>
+            <button type="button" class="land-preset-chip" data-colors="gu">Simic</button>
+          </div>
+        </div>
+
+        <div class="land-preset-group">
+          <span class="land-preset-category">Shards &amp; Wedges</span>
+          <div class="land-preset-chips">
+            <button type="button" class="land-preset-chip" data-colors="wub">Esper</button>
+            <button type="button" class="land-preset-chip" data-colors="ubr">Grixis</button>
+            <button type="button" class="land-preset-chip" data-colors="brg">Jund</button>
+            <button type="button" class="land-preset-chip" data-colors="rgw">Naya</button>
+            <button type="button" class="land-preset-chip" data-colors="gwu">Bant</button>
+            <button type="button" class="land-preset-chip" data-colors="wbg">Abzan</button>
+            <button type="button" class="land-preset-chip" data-colors="urw">Jeskai</button>
+            <button type="button" class="land-preset-chip" data-colors="bgu">Sultai</button>
+            <button type="button" class="land-preset-chip" data-colors="rwb">Mardu</button>
+            <button type="button" class="land-preset-chip" data-colors="gur">Temur</button>
+          </div>
+        </div>
+
+        <div class="land-preset-group">
+          <span class="land-preset-category">Universal</span>
+          <div class="land-preset-chips">
+            <button type="button" class="land-preset-chip" data-colors="wubrg">5-Color (WUBRG)</button>
+            <button type="button" class="land-preset-chip" data-colors="c">Colorless Only</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Color Match Switch (Any Selected vs Must Produce ALL Selected) -->
+      <div class="land-color-mode-card" id="land-color-mode-card">
+        <div class="land-color-mode-info">
+          <div class="land-color-mode-title-row">
+            <span class="land-color-mode-title">Color Match Mode</span>
+            <span class="land-color-mode-pill" id="land-color-mode-pill">Any Selected Colors</span>
+          </div>
+          <p class="land-color-mode-desc" id="land-color-mode-desc">
+            Any Selected Colors (Commander Legality): Allows any lands legal in your deck (e.g. 2-color duals and triomes in 3+ color decks).
+          </p>
+        </div>
+        <div class="land-color-mode-toggle-wrap">
+          <label class="land-switch-ctrl" title="Toggle between Any Selected Colors and Must Produce ALL Selected Colors">
+            <input type="checkbox" id="land-switch-strict-colors">
+            <span class="land-switch-slider"></span>
+          </label>
+          <span class="land-switch-label" id="land-switch-label-text">Must Produce ALL Selected</span>
+        </div>
+      </div>
+
+      <div style="display:flex; align-items:center; gap:0.5rem; margin-top:0.25rem;">
+        <label style="display:flex; align-items:center; gap:0.45rem; font-size:0.75rem; cursor:pointer; color:var(--mtg-colorless-silver); user-select:none;">
+          <input type="checkbox" id="land-check-produce-only" checked style="accent-color:var(--accent);">
+          <span>In 'Any Colors' mode: Exclude colorless / mono utility lands when querying color pairs</span>
+        </label>
+      </div>
+    </div>
+
+    <!-- 2. Speed / Condition Toggle Cards Block -->
+    <div class="land-section-block">
+      <div class="land-section-header">
+        <div class="land-section-title-wrap">
+          <span class="land-step-num">02</span>
+          <h3 class="land-section-heading">Speed &amp; ETB Condition</h3>
+        </div>
+        <span class="land-section-badge" id="land-speeds-count">Active: 2 Speeds</span>
+      </div>
+      <p class="land-section-sub">Toggle speed conditions to instantly include their corresponding land cycles.</p>
+
+      <div class="land-speeds-grid">
+        <!-- Always Untapped -->
+        <div class="land-speed-card speed-untapped active" data-speed="untapped" id="speed-card-untapped">
+          <div class="speed-card-top">
+            <div class="speed-card-title-group">
+              <span class="speed-indicator-dot dot-untapped"></span>
+              <span class="speed-card-heading">Always Untapped</span>
+            </div>
+            <div class="speed-card-switch">
+              <input type="checkbox" checked tabindex="-1">
+              <span class="speed-switch-handle"></span>
+            </div>
+          </div>
+          <p class="speed-card-desc">Enters the battlefield ready to tap. Zero tempo loss on curve.</p>
+          <div class="speed-card-tags">painland · filterland · horizon · duals</div>
+        </div>
+
+        <!-- Conditional Untapped -->
+        <div class="land-speed-card speed-conditional active" data-speed="conditional" id="speed-card-conditional">
+          <div class="speed-card-top">
+            <div class="speed-card-title-group">
+              <span class="speed-indicator-dot dot-conditional"></span>
+              <span class="speed-card-heading">Conditional Untapped</span>
+            </div>
+            <div class="speed-card-switch">
+              <input type="checkbox" checked tabindex="-1">
+              <span class="speed-switch-handle"></span>
+            </div>
+          </div>
+          <p class="speed-card-desc">Enters untapped if requirements are met (life payment, land count, opponents).</p>
+          <div class="speed-card-tags">shockland · fastland · checkland · slowland · bondland</div>
+        </div>
+
+        <!-- Always Tapped -->
+        <div class="land-speed-card speed-tapped" data-speed="tapped" id="speed-card-tapped">
+          <div class="speed-card-top">
+            <div class="speed-card-title-group">
+              <span class="speed-indicator-dot dot-tapped"></span>
+              <span class="speed-card-heading">Always Tapped</span>
+            </div>
+            <div class="speed-card-switch">
+              <input type="checkbox" tabindex="-1">
+              <span class="speed-switch-handle"></span>
+            </div>
+          </div>
+          <p class="speed-card-desc">Trades speed for high utility, color fixing, scrying, or card bounce.</p>
+          <div class="speed-card-tags">triome · bounceland · scryland · surveilland</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. Specific Cycles Overrides Block -->
+    <div class="land-section-block">
+      <div class="land-section-header">
+        <div class="land-section-title-wrap">
+          <span class="land-step-num">03</span>
+          <h3 class="land-section-heading">Cycle-Specific Overrides</h3>
+        </div>
+        <span class="land-section-badge" id="land-cycles-count">0 Specific Cycles</span>
+      </div>
+      <p class="land-section-sub">Optionally pinpoint exact land cycles. If checked, results will prioritize or filter to these cycles:</p>
+
+      <div class="land-cycles-actions">
+        <button type="button" class="btn-ghost btn-sm" id="btn-cycle-untapped">Select All Untapped</button>
+        <button type="button" class="btn-ghost btn-sm" id="btn-cycle-conditional">Select All Conditional</button>
+        <button type="button" class="btn-ghost btn-sm" id="btn-cycle-tapped">Select All Tapped</button>
+        <button type="button" class="btn-ghost btn-sm" id="btn-cycle-fetchable">Select Fetchable (Basic Types)</button>
+        <button type="button" class="btn-ghost btn-sm" id="btn-cycle-clear">Clear Cycles</button>
+      </div>
+
+      <div class="land-cycles-grid" id="land-cycles-container">
+        <!-- Populated dynamically via JS from LAND_CYCLES_DATA -->
+      </div>
+
+      <div style="display:flex; align-items:center; gap:0.5rem; margin-top:0.4rem;">
+        <label style="display:flex; align-items:center; gap:0.45rem; font-size:0.75rem; cursor:pointer; color:var(--mtg-colorless-silver); user-select:none;">
+          <input type="checkbox" id="land-check-fetch-oncolor" checked style="accent-color:var(--accent);">
+          <span>For Fetchlands: Restrict to fetches that can search for your identity's basic land types</span>
+        </label>
+      </div>
+    </div>
+
+    <!-- 4. Budget Filter Block -->
+    <div class="land-section-block">
+      <div class="land-section-header">
+        <div class="land-section-title-wrap">
+          <span class="land-step-num">04</span>
+          <h3 class="land-section-heading">Budget Filter</h3>
+        </div>
+        <span class="land-section-badge" id="land-budget-label">No Price Cap</span>
+      </div>
+      <p class="land-section-sub">Filter initial Scryfall query by USD market pricing. You can also fine-tune prices with the in-browser slider after searching:</p>
+
+      <div class="land-budget-row" id="land-budget-selector">
+        <button type="button" class="land-budget-btn active" data-budget="none">Any Budget</button>
+        <button type="button" class="land-budget-btn" data-budget="1">&lt; $1.00 (Ultra Budget)</button>
+        <button type="button" class="land-budget-btn" data-budget="5">&lt; $5.00 (Budget)</button>
+        <button type="button" class="land-budget-btn" data-budget="10">&lt; $10.00 (Mid-Range)</button>
+        <button type="button" class="land-budget-btn" data-budget="20">&lt; $20.00 (High-End)</button>
+      </div>
+    </div>
+
+    <!-- 5. Dynamic Query Console & Action CTA -->
+    <div class="land-terminal-box">
+      <div class="land-terminal-header">
+        <div style="display:flex; align-items:center;">
+          <span class="terminal-dots">
+            <span class="tdot red"></span>
+            <span class="tdot yellow"></span>
+            <span class="tdot green"></span>
+          </span>
+          <span class="terminal-label">Scryfall Query (GET /cards/search)</span>
+        </div>
+        <div class="land-terminal-actions">
+          <button type="button" class="terminal-btn" id="btn-land-copy-query">📋 Copy Query</button>
+          <button type="button" class="terminal-btn" id="btn-land-open-scryfall">↗ Open in Scryfall</button>
+        </div>
+      </div>
+      <div class="land-terminal-body" id="land-query-preview">
+        t:land -t:basic -is:funny ci&lt;=wb ((is:painland OR is:filterland OR otag:cycle-horizon-land OR is:dual) OR (is:shockland OR is:fastland OR is:checkland OR is:slowland OR is:bondland))
+      </div>
+    </div>
+
+    <!-- High-Impact Primary CTA Button -->
+    <div class="land-cta-row">
+      <button type="button" class="land-cta-button" id="btn-land-search">
+        <span>🔍</span>
+        <span>Search Land Base</span>
+      </button>
+    </div>
+
+    <!-- Progress / Loading -->
+    <div class="progress-wrap" id="land-progress-wrap" style="margin-top:0.5rem;">
+      <div class="progress-label">
+        <span id="land-progress-text">Querying Scryfall API...</span>
+        <span id="land-progress-count">0 / 0</span>
+      </div>
+      <div class="progress-bar-bg"><div class="progress-bar-fill" id="land-progress-fill"></div></div>
+    </div>
+
+    <!-- Error message -->
+    <div class="errors-section" id="land-errors-section" style="margin-top:0.5rem;">
+      <h3>⚠️ Search Notice</h3>
+      <p id="land-error-msg" style="font-size:0.85rem; color:var(--mtg-colorless-silver); margin-top:0.3rem;"></p>
+    </div>
+
+    <!-- 6. RESULTS SECTION -->
+    <div id="land-results-section" style="display:none; flex-direction:column; gap:1rem; width:100%;">
+
+      <!-- Stats Banner -->
+      <div class="land-results-stats">
+        <div class="land-stats-left">
+          <div class="land-stats-count">Found <strong id="land-stat-total">0</strong> matching lands</div>
+          <div class="land-stats-value" id="land-stat-value">Est. Total: $0.00</div>
+        </div>
+        <div class="land-breakdown-chips" id="land-stat-chips">
+          <span class="land-bchip bchip-untapped" id="land-stat-untapped">🟢 0 Untapped</span>
+          <span class="land-bchip bchip-conditional" id="land-stat-conditional">🟡 0 Conditional</span>
+          <span class="land-bchip bchip-tapped" id="land-stat-tapped">🔴 0 Tapped</span>
+          <span class="land-bchip bchip-basic" id="land-stat-basic">🏞️ 0 Fetchable</span>
+        </div>
+      </div>
+
+      <!-- Unified 38px Filter Toolbar -->
+      <div class="land-client-bar">
+        <input type="text" class="land-search-input" id="land-client-search" placeholder="Filter by land name, cycle, type, rules text...">
+
+        <select class="sort-select" id="land-client-speed" style="min-width:130px;">
+          <option value="all">All Speeds</option>
+          <option value="untapped">Untapped Only</option>
+          <option value="conditional">Conditional Only</option>
+          <option value="tapped">Tapped Only</option>
+        </select>
+
+        <select class="sort-select" id="land-client-sort" style="min-width:160px;">
+          <option value="price-asc">Price: Low to High</option>
+          <option value="price-desc">Price: High to Low</option>
+          <option value="name-asc">Card Name (A-Z)</option>
+          <option value="speed-asc">Speed: Fast to Slow</option>
+          <option value="cycle-asc">Cycle Type</option>
+        </select>
+
+        <label style="display:inline-flex; align-items:center; gap:0.35rem; font-size:0.75rem; text-transform:none; cursor:pointer; color:var(--mtg-colorless-silver); margin-bottom:0; user-select:none;">
+          <input type="checkbox" id="land-client-fetchable" style="accent-color:var(--accent);">
+          <span>Fetchable Only</span>
+        </label>
+
+        <label style="display:inline-flex; align-items:center; gap:0.35rem; font-size:0.75rem; text-transform:none; cursor:pointer; color:var(--mtg-colorless-silver); margin-bottom:0; user-select:none;" title="Only show lands that can produce ALL selected colors simultaneously">
+          <input type="checkbox" id="land-client-strict-match" style="accent-color:var(--accent);">
+          <span id="land-client-strict-label">Produce All Selected</span>
+        </label>
+
+        <div style="display:flex; align-items:center; gap:0.5rem; margin-left:auto; flex-wrap:wrap;">
+          <!-- View Switcher -->
+          <div style="display:inline-flex; border:1px solid var(--mtg-colorless-border); border-radius:4px; overflow:hidden;">
+            <button type="button" class="btn-ghost btn-sm" id="btn-land-view-grid" style="border:none; border-radius:0; background:rgba(212,175,55,0.2); color:var(--accent-bright); padding:0 0.75rem; height:38px;">⚏ Grid</button>
+            <button type="button" class="btn-ghost btn-sm" id="btn-land-view-table" style="border:none; border-radius:0; color:var(--mtg-colorless-silver); padding:0 0.75rem; height:38px;">☰ Table</button>
+          </div>
+
+          <!-- Batch Action Buttons -->
+          <button type="button" class="land-toolbar-btn primary" id="btn-land-export-wanted" title="Send all visible lands to Tab 5 Wanted List">🛒 +Wanted List</button>
+          <button type="button" class="land-toolbar-btn ghost" id="btn-land-copy-decklist" title="Copy all cards formatted as decklist to clipboard">📋 Copy All</button>
+        </div>
+      </div>
+
+      <!-- Modern In-Browser Price Slider -->
+      <div class="land-slider-wrap">
+        <span class="land-slider-label">Max Price Limit:</span>
+        <input type="range" class="land-slider-rail" id="land-client-slider" min="0" max="100" step="0.5" value="100">
+        <span class="land-slider-val" id="land-client-slider-label">No Limit</span>
+      </div>
+
+      <!-- Grid Container -->
+      <div id="land-results-grid" class="land-grid-view"></div>
+
+      <!-- Table Container -->
+      <div id="land-results-table-wrap" class="codex-table-wrap" style="display:none;">
+        <table class="codex-table" id="land-table">
+          <thead>
+            <tr>
+              <th data-sort="name">Card Name</th>
+              <th data-sort="cycle">Cycle</th>
+              <th data-sort="speed">ETB Speed</th>
+              <th data-sort="types" class="hide-sm">Basic Types</th>
+              <th data-sort="price" class="num sorted asc">Price (USD)</th>
+              <th style="text-align:right;">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="land-table-tbody"></tbody>
+        </table>
+      </div>
+
+    </div><!-- /land-results-section -->
+
+  </div><!-- /land-container -->
+
+  <!-- Floating Hover Zoom Preview -->
+  <img id="land-preview" src="" alt="Card Preview">
+
+</div><!-- /tab-lands -->
 
 
 <footer>
@@ -791,14 +2049,16 @@ function parseStandardLine(raw) {
       return { raw: line, qty, name, set: setCode || null, number: num, flags: '', isBasic };
     }
     
-    // Format B: ManaBox (Name, Set code, Set name, Collector number, Foil, Rarity, Quantity, ...)
+    // Format B: ManaBox (Name, Set code, Set name, Collector number, Foil, Rarity, Quantity, ManaBox ID, Scryfall ID)
     if (cols.length >= 10 && /^\d+$/.test(cols[6]) && /^[a-zA-Z0-9]{2,5}$/.test(cols[1]) && line.length < 500) {
       const name = normalizeCardName(cols[0]);
       const setCode = cols[1].toLowerCase();
       const num = cols[3];
       const qty = cols[6];
       const isBasic = /^(?:Snow-Covered\s+)?(?:Plains|Island|Swamp|Mountain|Forest|Wastes)$/i.test(name);
-      return { raw: line, qty, name, set: setCode || null, number: num, flags: '', isBasic };
+      const foil = cols[4] ? cols[4].toLowerCase() : null;
+      const scryId = cols[8] && /^[0-9a-f\-]{36}$/.test(cols[8]) ? cols[8] : null;
+      return { raw: line, qty, name, set: setCode || null, number: num, flags: '', isBasic, foil, id: scryId };
     }
   }
 
@@ -816,6 +2076,10 @@ function parseStandardLine(raw) {
 
   const m = line.match(CARD_RE);
   if (m) return { raw: line, qty: m[1] || '1', name: normalizeCardName(m[2].trim()), set: m[3].toLowerCase(), number: m[4], flags: '', isBasic: false };
+
+  // Set code in parentheses without collector number, e.g. "1 Black Panther's Claws (MSC)"
+  const mSetOnly = line.match(/^\s*[-*\u2022]?\s*(?:(\d{1,4})x?\s+)?(.+?)\s+\(([A-Za-z0-9_]{2,6})\)(?:\s.*)?$/i);
+  if (mSetOnly) return { raw: line, qty: mSetOnly[1] || '1', name: normalizeCardName(mSetOnly[2].trim()), set: mSetOnly[3].toLowerCase(), number: null, flags: '', isBasic: false };
 
   const mb = line.match(BASIC_RE);
   if (mb) return { raw: line, qty: mb[1] || '1', name: mb[2], set: null, number: null, flags: '', isBasic: true };
@@ -835,6 +2099,7 @@ function parseAnyLine(raw) {
 
 function getCardKey(p) {
   if (p.key) return p.key; // Tab 2 sets p.key directly
+  if (p.id) return 'id/' + p.id;
   if (p.isBasic && !p.set) return 'name/' + p.name.toLowerCase();
   if (p.set && p.number) return p.set.toLowerCase() + '/' + p.number;
   return 'name/' + p.name.toLowerCase();
@@ -897,14 +2162,16 @@ function extractCardsFromText(text) {
         continue;
       }
 
-      // Format B: ManaBox (Name, Set code, Set name, Collector number, Foil, Rarity, Quantity, ...)
+      // Format B: ManaBox (Name, Set code, Set name, Collector number, Foil, Rarity, Quantity, ManaBox ID, Scryfall ID)
       if (cols.length >= 10 && /^\d+$/.test(cols[6]) && /^[a-zA-Z0-9]{2,5}$/.test(cols[1]) && line.length < 500) {
         const cleanName = normalizeCardName(cols[0]);
         const setCode = cols[1].toLowerCase();
         const num = cols[3] || null;
         const isBasic = /^(?:Snow-Covered\s+)?(?:Plains|Island|Swamp|Mountain|Forest|Wastes)$/i.test(cleanName);
-        const key = setCode && num ? setCode + '/' + num : 'name/' + cleanName.toLowerCase();
-        addOrUpdate({ qty: cols[6], name: cleanName, set: setCode || null, number: num, isBasic, key });
+        const foil = cols[4] ? cols[4].toLowerCase() : null;
+        const scryId = cols[8] && /^[0-9a-f\-]{36}$/.test(cols[8]) ? cols[8] : null;
+        const key = scryId ? 'id/' + scryId : (setCode && num ? setCode + '/' + num : 'name/' + cleanName.toLowerCase());
+        addOrUpdate({ qty: cols[6], name: cleanName, set: setCode || null, number: num, isBasic, key, foil, id: scryId });
         continue;
       }
     }
@@ -919,6 +2186,23 @@ function extractCardsFromText(text) {
         number: mFull[4], 
         isBasic: false, 
         key: mFull[3].toLowerCase() + '/' + mFull[4] 
+      });
+      continue;
+    }
+
+    // 1.5 Try Format with Set code only (e.g. "1 Black Panther's Claws (MSC)")
+    const mSetOnly = line.match(/^\s*[-*\u2022]?\s*(?:(\d{1,4})x?\s+)?(.+?)\s+\(([A-Za-z0-9_]{2,6})\)(?:\s.*)?$/i);
+    if (mSetOnly) {
+      const cleanName = normalizeCardName(mSetOnly[2].trim());
+      const setCode = mSetOnly[3].toLowerCase();
+      const isBasic = /^(?:Snow-Covered\s+)?(?:Plains|Island|Swamp|Mountain|Forest|Wastes)$/i.test(cleanName);
+      addOrUpdate({
+        qty: mSetOnly[1] || '1',
+        name: cleanName,
+        set: setCode,
+        number: null,
+        isBasic,
+        key: 'name/' + cleanName.toLowerCase()
       });
       continue;
     }
@@ -976,7 +2260,9 @@ function extractCardsFromText(text) {
 }
 
 async function fetchBatch(items) {
+  const requestedIds = new Set();
   const identifiers = items.map(i => {
+    if (i.id) { requestedIds.add(i.id); return { id: i.id }; }
     if (i.set && i.number) return { set: i.set, collector_number: i.number };
     // Scryfall's collection endpoint only supports front-face names for split/MDFC cards
     return { name: i.name.split('//')[0].trim() };
@@ -1018,13 +2304,24 @@ async function fetchBatch(items) {
       for (const card of (data.data || [])) {
         found.set(card.set + '/' + card.collector_number, card);
         found.set('name/' + card.name.toLowerCase(), card);
+        if (requestedIds.has(card.id)) found.set('id/' + card.id, card);
         
         if (card.name.includes('//')) {
           found.set('name/' + card.name.split('//')[0].trim().toLowerCase(), card);
         }
+        if (card.flavor_name) {
+          found.set('name/' + card.flavor_name.toLowerCase(), card);
+          if (card.flavor_name.includes('//')) {
+            found.set('name/' + card.flavor_name.split('//')[0].trim().toLowerCase(), card);
+          }
+        }
+        if (card.printed_name) {
+          found.set('name/' + card.printed_name.toLowerCase(), card);
+        }
       }
       const notFound = new Set();
       for (const nf of (data.not_found || [])) {
+        if (nf.id) notFound.add('id/' + nf.id);
         if (nf.set && nf.collector_number) {
           notFound.add(nf.set.toLowerCase() + '/' + nf.collector_number);
         }
@@ -1159,6 +2456,140 @@ async function clearCacheDB() {
 }
 // ─────────────────────────────────────────────────────────────────────────────
 
+// Register all search aliases for a card (including flavor / alternate names, set/number, UUID)
+function registerCardInMaps(card, origItem, cardMap, notFoundKeys, cacheEntries) {
+  const origKey = getCardKey(origItem);
+  notFoundKeys.delete(origKey);
+  notFoundKeys.delete('name/' + origItem.name.toLowerCase());
+
+  // 1. Original requested key (e.g. 'name/black panther\'s claws')
+  cardMap.set(origKey, card);
+  if (cacheEntries) cacheEntries.push([origKey, card]);
+
+  // 2. Original name key
+  const origNameKey = 'name/' + origItem.name.toLowerCase();
+  cardMap.set(origNameKey, card);
+  if (cacheEntries) cacheEntries.push([origNameKey, card]);
+
+  // 3. Official canonical Scryfall card name
+  if (card.name) {
+    const canonKey = 'name/' + card.name.toLowerCase();
+    cardMap.set(canonKey, card);
+    if (cacheEntries) cacheEntries.push([canonKey, card]);
+
+    if (card.name.includes('//')) {
+      const frontKey = 'name/' + card.name.split('//')[0].trim().toLowerCase();
+      cardMap.set(frontKey, card);
+      if (cacheEntries) cacheEntries.push([frontKey, card]);
+    }
+  }
+
+  // 4. Set / collector_number
+  if (card.set && card.collector_number) {
+    const setNumKey = card.set.toLowerCase() + '/' + card.collector_number;
+    cardMap.set(setNumKey, card);
+    if (cacheEntries) cacheEntries.push([setNumKey, card]);
+  }
+
+  // 5. Scryfall UUID
+  if (card.id) {
+    cardMap.set('id/' + card.id, card);
+    if (cacheEntries) cacheEntries.push(['id/' + card.id, card]);
+  }
+
+  // 6. Flavor name (Universes Beyond, Secret Lair alternate skin name)
+  if (card.flavor_name) {
+    const flavorKey = 'name/' + card.flavor_name.toLowerCase();
+    cardMap.set(flavorKey, card);
+    if (cacheEntries) cacheEntries.push([flavorKey, card]);
+
+    if (card.flavor_name.includes('//')) {
+      const flavorFront = 'name/' + card.flavor_name.split('//')[0].trim().toLowerCase();
+      cardMap.set(flavorFront, card);
+      if (cacheEntries) cacheEntries.push([flavorFront, card]);
+    }
+  }
+
+  // 7. Printed name (if present)
+  if (card.printed_name) {
+    const printedKey = 'name/' + card.printed_name.toLowerCase();
+    cardMap.set(printedKey, card);
+    if (cacheEntries) cacheEntries.push([printedKey, card]);
+  }
+}
+
+// Single-card fallback: Scryfall's /cards/collection bulk endpoint rejects flavor names,
+// but Scryfall's /cards/named endpoint natively resolves flavor names (Secret Lair, Marvel, Godzilla, etc.)
+async function resolveSingleCardFallback(item) {
+  const rawName = (item.name || '').trim();
+  if (!rawName) return null;
+
+  const candidates = [];
+  candidates.push(rawName);
+
+  if (rawName.includes('//')) {
+    const parts = rawName.split('//').map(s => s.trim()).filter(Boolean);
+    parts.forEach(p => candidates.push(p));
+  }
+
+  const bracketMatch = rawName.match(/^(.+?)\s*[\[\(](.+?)[\]\)]$/);
+  if (bracketMatch) {
+    candidates.push(bracketMatch[1].trim());
+    candidates.push(bracketMatch[2].trim());
+  }
+
+  const uniqueCandidates = [...new Set(candidates.filter(c => c && c.length >= 2))];
+
+  for (const nameCandidate of uniqueCandidates) {
+    // A. If set is specified, try /cards/named?exact=...&set=...
+    if (item.set) {
+      try {
+        const url = `https://api.scryfall.com/cards/named?exact=${encodeURIComponent(nameCandidate)}&set=${encodeURIComponent(item.set)}`;
+        const res = await fetch(url, { headers: { 'Accept': 'application/json' } });
+        if (res.ok) {
+          const card = await res.json();
+          if (card && card.id) return card;
+        }
+      } catch (e) {}
+    }
+
+    // B. Try /cards/named?exact=... (Scryfall natively supports Universes Beyond & Secret Lair flavor names here)
+    try {
+      const url = `https://api.scryfall.com/cards/named?exact=${encodeURIComponent(nameCandidate)}`;
+      const res = await fetch(url, { headers: { 'Accept': 'application/json' } });
+      if (res.ok) {
+        const card = await res.json();
+        if (card && card.id) return card;
+      }
+    } catch (e) {}
+
+    // C. Try /cards/named?fuzzy=... (handles slight typos, accents, punctuation differences)
+    try {
+      const url = `https://api.scryfall.com/cards/named?fuzzy=${encodeURIComponent(nameCandidate)}`;
+      const res = await fetch(url, { headers: { 'Accept': 'application/json' } });
+      if (res.ok) {
+        const card = await res.json();
+        if (card && card.id) return card;
+      }
+    } catch (e) {}
+
+    // D. Try /cards/search?q=!"..." or flavor_name:"..."
+    try {
+      const q = `!"${nameCandidate}" or flavor_name:"${nameCandidate}"`;
+      const url = `https://api.scryfall.com/cards/search?q=${encodeURIComponent(q)}`;
+      const res = await fetch(url, { headers: { 'Accept': 'application/json' } });
+      if (res.ok) {
+        const data = await res.json();
+        if (Array.isArray(data.data) && data.data.length > 0) {
+          return data.data[0];
+        }
+      }
+    } catch (e) {}
+  }
+
+  return null;
+}
+
 async function runBatchFetch(toFetch, onProgress) {
   const cardMap      = new Map();
   const notFoundKeys = new Set();
@@ -1184,6 +2615,15 @@ async function runBatchFetch(toFetch, onProgress) {
         cardMap.set('name/' + cached.name.toLowerCase(), cached);
         if (cached.name.includes('//')) {
           cardMap.set('name/' + cached.name.split('//')[0].trim().toLowerCase(), cached);
+        }
+        if (cached.flavor_name) {
+          cardMap.set('name/' + cached.flavor_name.toLowerCase(), cached);
+          if (cached.flavor_name.includes('//')) {
+            cardMap.set('name/' + cached.flavor_name.split('//')[0].trim().toLowerCase(), cached);
+          }
+        }
+        if (cached.printed_name) {
+          cardMap.set('name/' + cached.printed_name.toLowerCase(), cached);
         }
         cacheHits++;
       } else {
@@ -1230,6 +2670,52 @@ async function runBatchFetch(toFetch, onProgress) {
 
     onProgress(i+1, batches.length, '');
     if (i < batches.length - 1) await sleep(BATCH_DELAY_MS);
+  }
+
+  // ── 3.5. Fallback for alternate / flavor / special printing names ─────────
+  if (notFoundKeys.size > 0) {
+    const missingItems = toFetch.filter(item => {
+      const k = getCardKey(item);
+      return notFoundKeys.has(k) || notFoundKeys.has('name/' + item.name.toLowerCase());
+    });
+
+    if (missingItems.length > 0) {
+      addLog(`Attempting single-card fallback for ${missingItems.length} card(s) (checking flavor names, Secret Lair, Universes Beyond)...`);
+      onProgress(batches.length, batches.length, `Checking special names for ${missingItems.length} card(s)...`);
+
+      const fallbackEntries = [];
+      const seenNames = new Set();
+
+      for (let mIdx = 0; mIdx < missingItems.length; mIdx++) {
+        const item = missingItems[mIdx];
+        const norm = item.name.trim().toLowerCase();
+        if (seenNames.has(norm)) {
+          const prevCard = cardMap.get('name/' + norm);
+          if (prevCard) {
+            registerCardInMaps(prevCard, item, cardMap, notFoundKeys, fallbackEntries);
+          }
+          continue;
+        }
+        seenNames.add(norm);
+
+        const card = await resolveSingleCardFallback(item);
+        if (card) {
+          registerCardInMaps(card, item, cardMap, notFoundKeys, fallbackEntries);
+          addLog(`✓ Resolved special/flavor name "${item.name}" -> "${card.name}" [${(card.set || '').toUpperCase()} #${card.collector_number || ''}]${card.flavor_name ? ' (flavor: ' + card.flavor_name + ')' : ''}`);
+        } else {
+          addLog(`✗ Could not resolve name "${item.name}" after all fallback attempts.`);
+        }
+
+        if (mIdx < missingItems.length - 1) {
+          await sleep(100);
+        }
+      }
+
+      if (db && fallbackEntries.length > 0) {
+        await setCachedCards(db, fallbackEntries);
+        $('btn-clear-cache').style.display = 'inline-block';
+      }
+    }
   }
 
   addLog(`Fetch complete. cardMap: ${cardMap.size}, notFound: ${notFoundKeys.size}, cacheHits: ${cacheHits}`);
@@ -2884,6 +4370,21 @@ $('btn-wanted-dl-pdf').addEventListener('click', async () => {
   }
 });
 
+$('btn-wanted-copy-names').addEventListener('click', async () => {
+  if (!currentWantedCards.length) return;
+  const btn = $('btn-wanted-copy-names');
+  const prevText = btn.textContent;
+  
+  const text = currentWantedCards.map(c => `${c.qty} ${c.name}`).join('\n');
+  try {
+    await navigator.clipboard.writeText(text);
+    btn.textContent = '✓ Copied!';
+    setTimeout(() => { btn.textContent = prevText; }, 1800);
+  } catch {
+    alert('Copy failed. Browser blocked clipboard access.');
+  }
+});
+
 $('btn-wanted-copy-links').addEventListener('click', async () => {
   if (!currentWantedCards.length) return;
   const btn = $('btn-wanted-copy-links');
@@ -3000,6 +4501,1635 @@ $('btn-wanted-clear').addEventListener('click', () => {
 
 setupFileUpload('wanted-input', 'file-wanted');
 setupFileUpload('wanted-input-owned', 'file-wanted-owned');
+// =========================================================
+// TAB 6: COLLECTION CODEX LOGIC
+// =========================================================
+
+let codexCards = []; // Original parsed + fetched array
+let codexFiltered = []; // After search/filter
+let codexSort = { key: 'total', asc: false };
+
+$('btn-codex-load').addEventListener('click', async () => {
+  const text = $('codex-input').value.trim();
+  if (!text) return alert('Paste CSV data first.');
+
+  // Extract cards
+  const lines = text.split('\n').filter(l => l.trim() !== '');
+  let extracted = [];
+  const headerIdx = lines.findIndex(l => l.toLowerCase().startsWith('name,set code,set name'));
+  let dataLines = lines;
+  if (headerIdx !== -1) {
+    dataLines = lines.slice(headerIdx + 1);
+  }
+  
+  const moxfieldHeaderIdx = lines.findIndex(l => l.toLowerCase().startsWith('count,name,edition,condition'));
+  if (moxfieldHeaderIdx !== -1) {
+      dataLines = lines.slice(moxfieldHeaderIdx + 1);
+  }
+
+  extracted = extractCardsFromText(dataLines.join('\n'));
+  
+  if (extracted.length === 0) return alert('No valid cards found in data.');
+
+  $('codex-progress-wrap').classList.add('visible');
+  $('codex-errors-section').classList.remove('visible');
+  $('codex-error-list').innerHTML = '';
+  $('codex-progress-text').textContent = 'Fetching from Scryfall...';
+  
+  // Try to use id directly if present (to avoid set/num collisions and get exact printing)
+  let itemsToFetch = extracted.map(e => {
+    let q = { qty: parseInt(e.qty, 10) || 1, name: e.name, set: e.set, number: e.number, foil: e.foil };
+    if (e.id) q.id = e.id;
+    return q;
+  });
+
+  const { cardMap } = await runBatchFetch(itemsToFetch, (done, total) => {
+    $('codex-progress-count').textContent = `${done} / ${total}`;
+    const pct = total > 0 ? (done / total) * 100 : 0;
+    $('codex-progress-fill').style.width = pct + '%';
+  });
+
+  let resolved = [];
+  let missing = [];
+  itemsToFetch.forEach(item => {
+    const key = getCardKey(item);
+    const data = cardMap.get(key);
+    if (data) {
+       resolved.push({ qty: item.qty, foil: item.foil, data: data });
+    } else {
+       missing.push(item);
+    }
+  });
+
+  if (missing.length > 0) {
+    $('codex-errors-section').classList.add('visible');
+    missing.forEach(m => {
+      let li = document.createElement('li');
+      li.textContent = m.name + (m.set ? ` (${m.set.toUpperCase()}) ${m.number || ''}` : '');
+      $('codex-error-list').appendChild(li);
+    });
+  }
+
+  $('codex-progress-wrap').classList.remove('visible');
+  
+  // Build final array
+  codexCards = resolved.map(item => {
+    const d = item.data;
+    const isFoil = item.foil === 'foil' || item.foil === 'true' || item.foil === 'etched';
+    // Price logic
+    let priceStr = '0';
+    if (isFoil) {
+      priceStr = d.prices?.usd_etched || d.prices?.usd_foil || d.prices?.usd || '0';
+    } else {
+      priceStr = d.prices?.usd || d.prices?.usd_foil || '0';
+    }
+    const price = parseFloat(priceStr) || 0;
+    
+    // Extracted colors
+    const colors = d.colors || [];
+    const typeLine = d.type_line || '';
+    const isLand = typeLine.toLowerCase().includes('land');
+    const mv = d.cmc || 0;
+    
+    return {
+      qty: item.qty,
+      name: d.name,
+      set: d.set,
+      type: typeLine,
+      mv: mv,
+      rarity: d.rarity || 'common',
+      price: price,
+      total: price * item.qty,
+      colors: colors,
+      isLand: isLand,
+      isFoil: isFoil,
+      image: d.image_uris?.normal || (d.card_faces && d.card_faces[0].image_uris?.normal) || '',
+      scryfall_uri: d.scryfall_uri
+    };
+  });
+
+  if (codexCards.length > 0) {
+    $('codex-upload-card').style.display = 'none';
+    $('codex-dashboard').style.display = 'flex';
+    let d = new Date();
+    $('codex-timestamp').textContent = `Imported on ${d.toLocaleDateString()} at ${d.toLocaleTimeString()}`;
+    applyCodexFilters();
+  }
+});
+
+$('btn-codex-clear').addEventListener('click', () => {
+  $('codex-input').value = '';
+  $('codex-errors-section').classList.remove('visible');
+  $('codex-error-list').innerHTML = '';
+});
+
+$('btn-codex-close').addEventListener('click', () => {
+  $('codex-upload-card').style.display = 'block';
+  $('codex-dashboard').style.display = 'none';
+  codexCards = [];
+  codexFiltered = [];
+});
+
+setupFileUpload('codex-input', 'codex-file');
+
+// -- Dashboard Rendering & Logic --
+
+function updateCodexDashboard() {
+  // 1. Stats
+  let totalCards = 0;
+  let totalValue = 0;
+  let uniqueCards = codexFiltered.length;
+  let foils = 0;
+  let rares = 0;
+  
+  let colorsCount = { W: 0, U: 0, B: 0, R: 0, G: 0, C: 0 };
+  let setCounts = {};
+  let curve = {};
+
+  codexFiltered.forEach(c => {
+    totalCards += c.qty;
+    totalValue += c.total;
+    if (c.isFoil) foils += c.qty;
+    if (c.rarity === 'rare' || c.rarity === 'mythic') rares += c.qty;
+    
+    // Colors
+    if (c.colors.length === 0 && !c.isLand) { colorsCount.C += c.qty; }
+    else { c.colors.forEach(col => { if(colorsCount[col] !== undefined) colorsCount[col] += c.qty; }); }
+    
+    // Sets
+    const s = c.set.toUpperCase();
+    setCounts[s] = (setCounts[s] || 0) + c.qty;
+    
+    // Curve (Non-lands)
+    if (!c.isLand) {
+      let m = Math.floor(c.mv);
+      if (m > 7) m = '8+';
+      curve[m] = (curve[m] || 0) + c.qty;
+    }
+  });
+
+  $('codex-stat-total').textContent = totalCards.toLocaleString();
+  $('codex-stat-unique').textContent = uniqueCards.toLocaleString();
+  $('codex-stat-value').textContent = '$' + totalValue.toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2});
+  $('codex-stat-rares').textContent = rares.toLocaleString();
+  $('codex-stat-foils').textContent = foils.toLocaleString();
+
+  // 2. Charts
+  renderDonutChart('codex-chart-colors', colorsCount);
+  renderBarChart('codex-chart-sets', setCounts, 5);
+  
+  // Curve mapping (ensure 0 to 8+ exist)
+  let curveOrdered = {};
+  [0,1,2,3,4,5,6,7,'8+'].forEach(k => { curveOrdered[k] = curve[k] || 0; });
+  renderBarChart('codex-chart-curve', curveOrdered, 9);
+  
+  // Vault
+  renderVault();
+
+  // 3. Table/Grid
+  $('codex-view-count').textContent = codexFiltered.length.toLocaleString();
+  renderCodexView();
+}
+
+const colorMap = { W:'#f8e7b9', U:'#b3ceea', B:'#a69f9d', R:'#eb9f82', G:'#c4d3ca', C:'#cccccc' };
+
+function renderDonutChart(id, dataObj) {
+  const container = $(id);
+  container.innerHTML = '';
+  
+  let total = Object.values(dataObj).reduce((a,b)=>a+b, 0);
+  if (total === 0) {
+    container.innerHTML = '<div style="text-align:center;color:var(--text-dim);font-size:0.8rem;padding:2rem 0;">No data</div>';
+    return;
+  }
+  
+  let conicArr = [];
+  let currentPct = 0;
+  
+  for (let [key, val] of Object.entries(dataObj)) {
+    if (val === 0) continue;
+    let pct = (val / total) * 100;
+    conicArr.push(`${colorMap[key]} ${currentPct}% ${currentPct + pct}%`);
+    currentPct += pct;
+  }
+  
+  let donut = document.createElement('div');
+  donut.style.width = '120px';
+  donut.style.height = '120px';
+  donut.style.borderRadius = '50%';
+  donut.style.background = `conic-gradient(${conicArr.join(', ')})`;
+  donut.style.position = 'relative';
+  donut.style.margin = '0 auto';
+  
+  let hole = document.createElement('div');
+  hole.style.position = 'absolute';
+  hole.style.inset = '25%';
+  hole.style.background = 'var(--panel)';
+  hole.style.borderRadius = '50%';
+  donut.appendChild(hole);
+  
+  container.appendChild(donut);
+}
+
+function renderBarChart(id, dataObj, maxLimit = null) {
+  const container = $(id);
+  container.innerHTML = '';
+  
+  let entries = Object.entries(dataObj);
+  // If maxLimit is 5, sort by value descending
+  if (maxLimit === 5) {
+    entries.sort((a,b) => b[1] - a[1]);
+    entries = entries.slice(0, 5);
+  }
+  
+  if (entries.length === 0) {
+    container.innerHTML = '<div style="text-align:center;color:var(--text-dim);font-size:0.8rem;padding:1rem 0;">No data</div>';
+    return;
+  }
+  
+  let maxVal = Math.max(...entries.map(e => e[1]));
+  
+  entries.forEach(([label, val]) => {
+    let pct = maxVal > 0 ? (val / maxVal) * 100 : 0;
+    
+    let wrap = document.createElement('div');
+    wrap.className = 'hbar';
+    
+    let lbl = document.createElement('div');
+    lbl.className = 'hbar-label';
+    lbl.textContent = label;
+    
+    let track = document.createElement('div');
+    track.className = 'hbar-track';
+    let fill = document.createElement('div');
+    fill.className = 'hbar-fill';
+    fill.style.width = pct + '%';
+    track.appendChild(fill);
+    
+    let v = document.createElement('div');
+    v.className = 'hbar-val';
+    v.textContent = val.toLocaleString();
+    
+    wrap.appendChild(lbl);
+    wrap.appendChild(track);
+    wrap.appendChild(v);
+    container.appendChild(wrap);
+  });
+}
+
+function renderVault() {
+  const container = $('codex-vault');
+  container.innerHTML = '';
+  
+  // Sort all cards by price, take top 5
+  let top = [...codexCards].sort((a,b) => b.price - a.price).slice(0, 5);
+  
+  if (top.length === 0 || top[0].price === 0) {
+    container.innerHTML = '<div style="text-align:center;color:var(--text-dim);font-size:0.8rem;padding:1rem 0;">No valuable cards found.</div>';
+    return;
+  }
+  
+  top.forEach(c => {
+    let wrap = document.createElement('div');
+    wrap.className = 'hbar clickable';
+    wrap.onclick = () => window.open(c.scryfall_uri, '_blank');
+    
+    let lbl = document.createElement('div');
+    lbl.className = 'hbar-label';
+    lbl.innerHTML = `${c.name} <span style="color:var(--text-dim);font-size:0.65rem;">(${c.set.toUpperCase()}) ${c.isFoil ? '✨' : ''}</span>`;
+    
+    let track = document.createElement('div');
+    track.className = 'hbar-track';
+    let fill = document.createElement('div');
+    fill.className = 'hbar-fill';
+    fill.style.width = (c.price / top[0].price * 100) + '%';
+    track.appendChild(fill);
+    
+    let v = document.createElement('div');
+    v.className = 'hbar-val';
+    v.style.color = 'var(--accent)';
+    v.textContent = '$' + c.price.toFixed(2);
+    
+    wrap.appendChild(lbl);
+    wrap.appendChild(track);
+    wrap.appendChild(v);
+    container.appendChild(wrap);
+  });
+}
+
+
+// -- Filtering & Sorting --
+
+let codexActiveColors = new Set();
+let currentCodexView = 'table'; // 'table' or 'grid'
+
+document.querySelectorAll('#codex-filter-colors .color-chip').forEach(btn => {
+  btn.addEventListener('click', (e) => {
+    const col = e.target.dataset.color;
+    if (codexActiveColors.has(col)) {
+      codexActiveColors.delete(col);
+      e.target.style.opacity = '0.5';
+      e.target.style.transform = 'scale(1)';
+    } else {
+      codexActiveColors.add(col);
+      e.target.style.opacity = '1';
+      e.target.style.transform = 'scale(1.1)';
+    }
+    applyCodexFilters();
+  });
+  // Init visual state
+  btn.style.opacity = '0.5';
+});
+
+$('codex-search').addEventListener('input', applyCodexFilters);
+$('codex-filter-rarity').addEventListener('change', applyCodexFilters);
+
+function applyCodexFilters() {
+  const q = $('codex-search').value.toLowerCase();
+  const rarity = $('codex-filter-rarity').value;
+  
+  codexFiltered = codexCards.filter(c => {
+    if (q && !(c.name.toLowerCase().includes(q) || c.type.toLowerCase().includes(q) || c.set.toLowerCase().includes(q))) return false;
+    if (rarity && c.rarity !== rarity) return false;
+    if (codexActiveColors.size > 0) {
+      if (c.colors.length === 0) {
+         if (!codexActiveColors.has('C')) return false;
+      } else {
+         let match = false;
+         for (let col of c.colors) {
+           if (codexActiveColors.has(col)) match = true;
+         }
+         if (!match) return false;
+      }
+    }
+    return true;
+  });
+  
+  sortCodexData();
+  updateCodexDashboard();
+}
+
+document.querySelectorAll('#codex-table th[data-sort]').forEach(th => {
+  th.addEventListener('click', () => {
+    const key = th.dataset.sort;
+    if (codexSort.key === key) {
+      codexSort.asc = !codexSort.asc;
+    } else {
+      codexSort.key = key;
+      codexSort.asc = (key === 'name' || key === 'set');
+    }
+    
+    // Update visuals
+    document.querySelectorAll('#codex-table th').forEach(el => {
+      el.classList.remove('sorted', 'asc', 'desc');
+    });
+    th.classList.add('sorted', codexSort.asc ? 'asc' : 'desc');
+    
+    sortCodexData();
+    renderCodexView();
+  });
+});
+
+function sortCodexData() {
+  const key = codexSort.key;
+  const mod = codexSort.asc ? 1 : -1;
+  codexFiltered.sort((a, b) => {
+    let valA = a[key];
+    let valB = b[key];
+    if (typeof valA === 'string') {
+      return valA.localeCompare(valB) * mod;
+    }
+    return (valA - valB) * mod;
+  });
+}
+
+// -- View Rendering (Table / Grid) --
+let codexPage = 1;
+const ITEMS_PER_PAGE = 50;
+
+$('btn-codex-prev').addEventListener('click', () => {
+  if (codexPage > 1) { codexPage--; renderCodexView(); }
+});
+$('btn-codex-next').addEventListener('click', () => {
+  if (codexPage < Math.ceil(codexFiltered.length / ITEMS_PER_PAGE)) { codexPage++; renderCodexView(); }
+});
+
+$('btn-codex-view-table').addEventListener('click', () => {
+  currentCodexView = 'table';
+  $('btn-codex-view-table').style.borderColor = 'var(--accent)';
+  $('btn-codex-view-table').style.color = 'var(--accent)';
+  $('btn-codex-view-grid').style.borderColor = 'transparent';
+  $('btn-codex-view-grid').style.color = 'var(--text-dim)';
+  $('codex-view-table-container').style.display = 'block';
+  $('codex-view-grid-container').style.display = 'none';
+  renderCodexView();
+});
+
+$('btn-codex-view-grid').addEventListener('click', () => {
+  currentCodexView = 'grid';
+  $('btn-codex-view-grid').style.borderColor = 'var(--accent)';
+  $('btn-codex-view-grid').style.color = 'var(--accent)';
+  $('btn-codex-view-table').style.borderColor = 'transparent';
+  $('btn-codex-view-table').style.color = 'var(--text-dim)';
+  $('codex-view-table-container').style.display = 'none';
+  $('codex-view-grid-container').style.display = 'grid';
+  renderCodexView();
+});
+
+function renderCodexView() {
+  const totalPages = Math.max(1, Math.ceil(codexFiltered.length / ITEMS_PER_PAGE));
+  if (codexPage > totalPages) codexPage = totalPages;
+  $('codex-pager-info').textContent = `Page ${codexPage} of ${totalPages}`;
+  
+  const start = (codexPage - 1) * ITEMS_PER_PAGE;
+  const pageData = codexFiltered.slice(start, start + ITEMS_PER_PAGE);
+  
+  if (currentCodexView === 'table') {
+    const tbody = $('codex-tbody');
+    tbody.innerHTML = '';
+    
+    pageData.forEach(c => {
+      let tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td class="num">${c.qty}</td>
+        <td>
+          <a href="${c.scryfall_uri}" target="_blank" class="codex-name" data-img="${c.image}">${c.name}</a>
+          ${c.isFoil ? '<span style="color:#d4af37; font-size:0.75rem; margin-left:0.25rem;" title="Foil">✨</span>' : ''}
+        </td>
+        <td style="text-transform:uppercase; font-size:0.75rem;">${c.set}</td>
+        <td class="hide-sm" style="font-size:0.75rem; color:var(--text-dim);">${c.type}</td>
+        <td class="num">${c.mv}</td>
+        <td class="num">$${c.price.toFixed(2)}</td>
+        <td class="num" style="color:var(--accent);">$${c.total.toFixed(2)}</td>
+      `;
+      tbody.appendChild(tr);
+    });
+    
+    // Hover Preview logic for table
+    const preview = $('codex-preview');
+    document.querySelectorAll('.codex-name').forEach(a => {
+      a.addEventListener('mouseenter', e => {
+        const img = e.target.dataset.img;
+        if(img) {
+          preview.src = img;
+          preview.style.display = 'block';
+          preview.style.top = (e.pageY + 15) + 'px';
+          // Ensure it doesn't go off-screen right
+          const rightEdge = e.pageX + 15 + 240;
+          if (rightEdge > window.innerWidth) {
+            preview.style.left = (e.pageX - 255) + 'px';
+          } else {
+            preview.style.left = (e.pageX + 15) + 'px';
+          }
+        }
+      });
+      a.addEventListener('mouseleave', () => {
+        preview.style.display = 'none';
+      });
+      a.addEventListener('mousemove', e => {
+        preview.style.top = (e.pageY + 15) + 'px';
+        const rightEdge = e.pageX + 15 + 240;
+        if (rightEdge > window.innerWidth) {
+          preview.style.left = (e.pageX - 255) + 'px';
+        } else {
+          preview.style.left = (e.pageX + 15) + 'px';
+        }
+      });
+    });
+    
+  } else {
+    // GRID
+    const grid = $('codex-view-grid-container');
+    grid.innerHTML = '';
+    pageData.forEach(c => {
+      let div = document.createElement('div');
+      div.className = 'grid-item';
+      
+      let badge = document.createElement('div');
+      badge.className = 'grid-item-badge';
+      badge.textContent = c.qty + 'x';
+      
+      let img = document.createElement('img');
+      img.src = c.image || 'data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs='; // placeholder
+      img.alt = c.name;
+      img.loading = 'lazy';
+      img.onclick = () => window.open(c.scryfall_uri, '_blank');
+      
+      let cap = document.createElement('div');
+      cap.className = 'grid-item-cap';
+      cap.innerHTML = `<div>${c.name}</div><div style="color:var(--accent); font-family:var(--font-mono); font-size:0.75rem;">$${c.price.toFixed(2)}${c.isFoil ? ' ✨' : ''}</div>`;
+      
+      div.appendChild(badge);
+      div.appendChild(img);
+      div.appendChild(cap);
+      grid.appendChild(div);
+    });
+  }
+}
+
+// =========================================================
+// TAB 7: LAND STATION LOGIC
+// =========================================================
+
+const LAND_CYCLES_DATA = [
+  { id: 'fetchland', name: 'Fetchlands', tag: 'is:fetchland', speed: 'untapped', basicTypes: false, example: 'Polluted Delta', desc: 'Pay 1 life, sac to fetch basic land types' },
+  { id: 'shockland', name: 'Shocklands', tag: 'is:shockland', speed: 'conditional', basicTypes: true, example: 'Watery Grave', desc: 'Pay 2 life to enter untapped, has 2 basic types' },
+  { id: 'painland', name: 'Painlands', tag: 'is:painland', speed: 'untapped', basicTypes: false, example: 'Caves of Koilos', desc: 'Taps for colorless or colored for 1 damage' },
+  { id: 'checkland', name: 'Checklands', tag: 'is:checkland', speed: 'conditional', basicTypes: false, example: 'Isolated Chapel', desc: 'Enters untapped if you control a matching basic type' },
+  { id: 'fastland', name: 'Fastlands', tag: 'is:fastland', speed: 'conditional', basicTypes: false, example: 'Concealed Courtyard', desc: 'Enters untapped if you control ≤ 2 other lands' },
+  { id: 'slowland', name: 'Slowlands', tag: 'is:slowland', speed: 'conditional', basicTypes: false, example: 'Shattered Sanctum', desc: 'Enters untapped if you control ≥ 2 other lands' },
+  { id: 'bondland', name: 'Bondlands', tag: 'is:bondland', speed: 'conditional', basicTypes: false, example: 'Vault of Champions', desc: 'Enters untapped if you have 2+ opponents' },
+  { id: 'filterland', name: 'Filterlands', tag: 'is:filterland', speed: 'untapped', basicTypes: false, example: 'Fetid Heath', desc: 'Filters 1 mana into 2 hybrid mana' },
+  { id: 'triome', name: 'Triomes', tag: 'is:triome', speed: 'tapped', basicTypes: true, example: 'Savai Triome', desc: 'Has 3 basic land types, enters tapped, cycling {3}' },
+  { id: 'bounceland', name: 'Bouncelands', tag: 'is:bounceland', speed: 'tapped', basicTypes: false, example: 'Orzhov Basilica', desc: 'Enters tapped, returns land to hand, taps for 2 mana' },
+  { id: 'horizon', name: 'Horizon Lands', tag: 'otag:cycle-horizon-land', speed: 'untapped', basicTypes: false, example: 'Silent Clearing', desc: 'Untapped painland that can be sacrificed to draw a card' },
+  { id: 'dual', name: 'Original Duals', tag: 'is:dual', speed: 'untapped', basicTypes: true, example: 'Scrubland', desc: 'Reserved List true dual lands with basic types' },
+  { id: 'surveilland', name: 'Surveillance Lands', tag: 'is:surveilland', speed: 'tapped', basicTypes: true, example: 'Shadowy Backstreet', desc: 'Enters tapped, surveil 1, has 2 basic types' },
+  { id: 'scryland', name: 'Scrylands / Temples', tag: 'is:scryland', speed: 'tapped', basicTypes: false, example: 'Temple of Silence', desc: 'Enters tapped, scry 1' },
+  { id: 'tangoland', name: 'Battle / Tango Lands', tag: 'is:tangoland', speed: 'conditional', basicTypes: true, example: 'Sunken Hollow', desc: 'Enters untapped if you control 2+ basic lands' },
+  { id: 'pathway', name: 'Pathway Lands', tag: 'is:pathway', speed: 'untapped', basicTypes: false, example: 'Brightclimb Pathway', desc: 'Modal Double-Faced Lands (MDFC), enters untapped' }
+];
+
+const LAND_COLOR_NAMES = {
+  '': 'Colorless',
+  'c': 'Colorless',
+  'w': 'Mono-White',
+  'u': 'Mono-Blue',
+  'b': 'Mono-Black',
+  'r': 'Mono-Red',
+  'g': 'Mono-Green',
+  'wu': 'Azorius (W/U)',
+  'ub': 'Dimir (U/B)',
+  'br': 'Rakdos (B/R)',
+  'rg': 'Gruul (R/G)',
+  'gw': 'Selesnya (G/W)',
+  'wb': 'Orzhov (W/B)',
+  'ur': 'Izzet (U/R)',
+  'bg': 'Golgari (B/G)',
+  'wr': 'Boros (R/W)',
+  'gu': 'Simic (G/U)',
+  'wub': 'Esper (W/U/B)',
+  'ubr': 'Grixis (U/B/R)',
+  'brg': 'Jund (B/R/G)',
+  'rgw': 'Naya (R/G/W)',
+  'gwu': 'Bant (G/W/U)',
+  'wbg': 'Abzan (W/B/G)',
+  'urw': 'Jeskai (U/R/W)',
+  'bgu': 'Sultai (B/G/U)',
+  'rwb': 'Mardu (R/W/B)',
+  'gur': 'Temur (G/U/R)',
+  'wubrg': '5-Color (W/U/B/R/G)'
+};
+
+const LAND_COLOR_TO_BASIC = {
+  w: 'Plains',
+  u: 'Island',
+  b: 'Swamp',
+  r: 'Mountain',
+  g: 'Forest'
+};
+
+// Land Station State Machine
+const landStationState = {
+  colors: new Set(['w', 'b']), // Default Orzhov
+  produceOnly: true,
+  strictColorMatch: false,
+  speeds: new Set(['untapped', 'conditional']),
+  cycles: new Set(),
+  fetchOnColorOnly: true,
+  budget: 'none', // 'none' | '1' | '5' | '10' | '20'
+  // Results & Client Filter
+  rawLands: [],
+  enrichedLands: [],
+  filteredLands: [],
+  viewMode: 'grid', // 'grid' | 'table'
+  sortKey: 'price-asc',
+  maxClientPrice: null
+};
+
+// Populate the Specific Cycles Grid in DOM
+function initLandCyclesGrid() {
+  const container = $('land-cycles-container');
+  if (!container) return;
+  container.innerHTML = '';
+
+  LAND_CYCLES_DATA.forEach(cycle => {
+    const item = document.createElement('label');
+    item.className = 'land-cycle-item';
+    item.dataset.cycleId = cycle.id;
+
+    const pillClass = cycle.speed === 'untapped' ? 'pill-untapped' : (cycle.speed === 'conditional' ? 'pill-conditional' : 'pill-tapped');
+    const pillText = cycle.speed === 'untapped' ? 'Untapped' : (cycle.speed === 'conditional' ? 'Cond. Untapped' : 'Always Tapped');
+
+    item.innerHTML = `
+      <input type="checkbox" value="${cycle.id}">
+      <div class="land-cycle-body">
+        <div class="land-cycle-head">
+          <span class="land-cycle-name">${cycle.name}</span>
+          <span class="land-cycle-pill ${pillClass}">${pillText}</span>
+        </div>
+        <div class="land-cycle-meta">
+          <span>${cycle.basicTypes ? '🏞️ Has Basics' : 'No Basic Types'}</span>
+          <span class="land-cycle-example">${cycle.example}</span>
+        </div>
+      </div>
+    `;
+
+    const chk = item.querySelector('input');
+    chk.addEventListener('change', () => {
+      if (chk.checked) {
+        landStationState.cycles.add(cycle.id);
+        item.classList.add('active');
+      } else {
+        landStationState.cycles.delete(cycle.id);
+        item.classList.remove('active');
+      }
+      updateLandStationUI();
+    });
+
+    container.appendChild(item);
+  });
+}
+
+// Build Dynamic Scryfall Land Query String
+function buildScryfallLandQuery() {
+  const parts = ['t:land', '-t:basic', '-is:funny'];
+  const sortedColors = ['w', 'u', 'b', 'r', 'g'].filter(c => landStationState.colors.has(c)).join('');
+
+  // 1. Color Identity & Production Constraints
+  if (landStationState.colors.has('c') && landStationState.colors.size === 1) {
+    parts.push('ci:c');
+    if (landStationState.strictColorMatch) {
+      parts.push('(produces:c OR produces>=c)');
+    }
+  } else if (landStationState.colors.size > 0) {
+    if (sortedColors) {
+      parts.push(`ci<=${sortedColors}`);
+      if (landStationState.strictColorMatch) {
+        // Strict match: Land MUST be capable of producing ALL selected colors simultaneously
+        parts.push(`produces>=${sortedColors}`);
+      } else if (landStationState.produceOnly && landStationState.colors.size >= 2 && landStationState.cycles.size === 0) {
+        // Any color mode: Exclude cards producing none of the selected colors
+        const valid = ['w', 'u', 'b', 'r', 'g'].filter(c => landStationState.colors.has(c));
+        if (valid.length > 0) {
+          parts.push(`(${valid.map(c => `produces>=${c}`).join(' or ')})`);
+        }
+      }
+    } else {
+      parts.push('ci:c');
+    }
+  }
+
+  // 2. Speed Toggles Clauses
+  const speedClauses = [];
+  const isStrictMulti = landStationState.strictColorMatch && landStationState.colors.size >= 3;
+
+  if (isStrictMulti) {
+    // 3+ colors in strict mode: 2-color cycles cannot produce 3+ colors, so match broader rules
+    if (landStationState.speeds.has('untapped')) {
+      speedClauses.push('(-o:"enters tapped" -o:"enters the battlefield tapped")');
+    }
+    if (landStationState.speeds.has('conditional')) {
+      speedClauses.push('(o:"enters tapped unless" OR o:"enters the battlefield tapped unless" OR o:"pay 2 life")');
+    }
+    if (landStationState.speeds.has('tapped')) {
+      speedClauses.push('(is:triome OR otag:cycle-shard-land OR o:"enters tapped" OR o:"enters the battlefield tapped")');
+    }
+  } else {
+    // Standard cycles for 1 or 2 color identities
+    if (landStationState.speeds.has('untapped')) {
+      speedClauses.push('(is:painland OR is:filterland OR otag:cycle-horizon-land OR is:dual)');
+    }
+    if (landStationState.speeds.has('conditional')) {
+      speedClauses.push('(is:shockland OR is:fastland OR is:checkland OR is:slowland OR is:bondland)');
+    }
+    if (landStationState.speeds.has('tapped')) {
+      speedClauses.push('(is:triome OR is:bounceland OR is:scryland)');
+    }
+  }
+
+  // 3. Cycle Specific Overrides
+  const cycleClauses = [];
+  for (const cycleId of landStationState.cycles) {
+    const cycle = LAND_CYCLES_DATA.find(c => c.id === cycleId);
+    if (cycle) {
+      if (cycleId === 'fetchland' && landStationState.fetchOnColorOnly && landStationState.colors.size > 0 && !landStationState.colors.has('c')) {
+        const basics = ['w', 'u', 'b', 'r', 'g']
+          .filter(c => landStationState.colors.has(c))
+          .map(c => `o:${LAND_COLOR_TO_BASIC[c]}`);
+        if (basics.length > 0) {
+          cycleClauses.push(`(is:fetchland (${basics.join(' or ')}))`);
+        } else {
+          cycleClauses.push('is:fetchland');
+        }
+      } else {
+        cycleClauses.push(cycle.tag);
+      }
+    }
+  }
+
+  // Combine Speed and Cycle filters
+  if (cycleClauses.length > 0 && speedClauses.length > 0) {
+    parts.push(`((${speedClauses.join(' OR ')}) OR (${cycleClauses.join(' OR ')}))`);
+  } else if (cycleClauses.length > 0) {
+    parts.push(`(${cycleClauses.join(' OR ')})`);
+  } else if (speedClauses.length > 0) {
+    if (speedClauses.length === 1) {
+      parts.push(speedClauses[0]);
+    } else {
+      parts.push(`(${speedClauses.join(' OR ')})`);
+    }
+  }
+
+  // 4. Budget Filter
+  if (landStationState.budget && landStationState.budget !== 'none') {
+    parts.push(`usd<${landStationState.budget}`);
+  }
+
+  return parts.join(' ');
+}
+
+// Update UI and Live Query Preview
+function updateLandStationUI() {
+  const query = buildScryfallLandQuery();
+  const preview = $('land-query-preview');
+  if (preview) preview.textContent = query;
+
+  // Sync checkboxes and cards
+  const strictSwitch = $('land-switch-strict-colors');
+  if (strictSwitch && strictSwitch.checked !== landStationState.strictColorMatch) {
+    strictSwitch.checked = landStationState.strictColorMatch;
+  }
+  const clientStrict = $('land-client-strict-match');
+  if (clientStrict && clientStrict.checked !== landStationState.strictColorMatch) {
+    clientStrict.checked = landStationState.strictColorMatch;
+  }
+  const colorModeCard = $('land-color-mode-card');
+  if (colorModeCard) {
+    colorModeCard.classList.toggle('strict-active', landStationState.strictColorMatch);
+  }
+
+  // Pill & Description
+  const pill = $('land-color-mode-pill');
+  const desc = $('land-color-mode-desc');
+  const activeColorNames = ['W', 'U', 'B', 'R', 'G'].filter(c => landStationState.colors.has(c.toLowerCase())).join('/');
+
+  if (pill) {
+    pill.textContent = landStationState.strictColorMatch ? 'Must Produce ALL Selected' : 'Any Selected Colors';
+    if (landStationState.strictColorMatch) {
+      pill.style.background = 'rgba(212, 175, 55, 0.2)';
+      pill.style.borderColor = 'var(--accent-bright)';
+      pill.style.color = 'var(--accent-bright)';
+    } else {
+      pill.style.background = 'rgba(110, 109, 115, 0.2)';
+      pill.style.borderColor = 'var(--mtg-colorless-border)';
+      pill.style.color = 'var(--mtg-colorless-silver)';
+    }
+  }
+
+  if (desc) {
+    if (landStationState.strictColorMatch) {
+      if (landStationState.colors.has('c') && landStationState.colors.size === 1) {
+        desc.innerHTML = '<strong>Strict Production Mode:</strong> Scryfall will only return lands that specifically tap to produce <em>{C}</em> colorless mana.';
+      } else {
+        desc.innerHTML = `<strong>Strict Production Mode (produces&gt;=${activeColorNames.toLowerCase().replace(/\\//g,'')}):</strong> Scryfall will only return lands that can produce <em>ALL</em> selected colors (${activeColorNames || 'chosen colors'}) simultaneously (e.g. rainbow lands, 3-color shard/triomes for 3-color, or duals for 2-color). Dual lands are strictly excluded for 3+ colors!`;
+      }
+    } else {
+      desc.innerHTML = '<strong>Any Selected Colors (Commander Legality):</strong> Allows any lands legal in your deck (e.g. 2-color dual lands, fetchlands, and triomes in 3+ color decks).';
+    }
+  }
+
+  // Identity Label
+  const identityLabel = $('land-identity-label');
+  if (identityLabel) {
+    if (landStationState.colors.has('c') && landStationState.colors.size === 1) {
+      identityLabel.textContent = landStationState.strictColorMatch ? 'Colorless · ci:c · produces:c' : 'Colorless · ci:c';
+    } else {
+      const sorted = ['w', 'u', 'b', 'r', 'g'].filter(c => landStationState.colors.has(c)).join('');
+      const name = LAND_COLOR_NAMES[sorted] || (sorted ? sorted.toUpperCase() : 'Colorless');
+      if (landStationState.strictColorMatch) {
+        identityLabel.textContent = `${name} · ci<=${sorted || 'c'} · produces>=${sorted || 'c'}`;
+      } else {
+        identityLabel.textContent = `${name} · ci<=${sorted || 'c'}`;
+      }
+    }
+  }
+
+  // Speeds Count
+  const speedsCount = $('land-speeds-count');
+  if (speedsCount) {
+    speedsCount.textContent = `Active: ${landStationState.speeds.size} speed${landStationState.speeds.size === 1 ? '' : 's'}`;
+  }
+
+  // Cycles Count
+  const cyclesCount = $('land-cycles-count');
+  if (cyclesCount) {
+    cyclesCount.textContent = `${landStationState.cycles.size} specific cycle${landStationState.cycles.size === 1 ? '' : 's'}`;
+  }
+
+  // Budget Label
+  const budgetLabel = $('land-budget-label');
+  if (budgetLabel) {
+    budgetLabel.textContent = landStationState.budget === 'none' ? 'No Price Cap' : `< $${landStationState.budget}.00 USD`;
+  }
+}
+
+// Metadata Detection for Display & Sorting
+function detectLandCardMeta(card) {
+  const name = card.name;
+  const oracle = (card.oracle_text || (card.card_faces ? card.card_faces.map(f=>f.oracle_text).join(' // ') : '')).toLowerCase();
+  const typeLine = card.type_line || '';
+  
+  // Basic land types
+  const basics = [];
+  ['Plains', 'Island', 'Swamp', 'Mountain', 'Forest'].forEach(b => {
+    if (typeLine.includes(b)) basics.push(b);
+  });
+  const hasBasicTypes = basics.length > 0;
+
+  // Detect cycle & speed
+  let cycle = 'Other Land';
+  let speed = 'untapped';
+  let etbDesc = 'Enters untapped';
+
+  if (oracle.includes('pay 2 life') && (oracle.includes('enters tapped') || oracle.includes('enters the battlefield tapped'))) {
+    cycle = 'Shockland';
+    speed = 'conditional';
+    etbDesc = 'Pay 2 life';
+  } else if (oracle.includes('pay 1 life, sacrifice') && (oracle.includes('search your library for a') || oracle.includes('search your library for an'))) {
+    cycle = 'Fetchland';
+    speed = 'untapped';
+    etbDesc = 'Untapped (Fetch)';
+  } else if ((oracle.includes('deals 1 damage to you') || oracle.includes('you take 1 damage')) && oracle.includes('add {c}')) {
+    cycle = 'Painland';
+    speed = 'untapped';
+    etbDesc = 'Untapped (Pain)';
+  } else if (oracle.includes('enters tapped unless you control a plains') || oracle.includes('unless you control an island') || oracle.includes('unless you control a swamp') || oracle.includes('unless you control a mountain') || oracle.includes('unless you control a forest')) {
+    cycle = 'Checkland';
+    speed = 'conditional';
+    etbDesc = 'Controls basic';
+  } else if (oracle.includes('two or fewer other lands')) {
+    cycle = 'Fastland';
+    speed = 'conditional';
+    etbDesc = '≤ 2 other lands';
+  } else if (oracle.includes('two or more other lands')) {
+    cycle = 'Slowland';
+    speed = 'conditional';
+    etbDesc = '≥ 2 other lands';
+  } else if (oracle.includes('two or more opponents')) {
+    cycle = 'Bondland';
+    speed = 'conditional';
+    etbDesc = '2+ opponents';
+  } else if (oracle.includes('{1}, {t}: add') && (oracle.includes('{w}{w}') || oracle.includes('{u}{u}') || oracle.includes('{b}{b}') || oracle.includes('{r}{r}') || oracle.includes('{g}{g}') || oracle.includes('{w}{u}') || oracle.includes('{w}{b}') || oracle.includes('{u}{b}') || oracle.includes('{u}{r}') || oracle.includes('{b}{r}') || oracle.includes('{b}{g}') || oracle.includes('{r}{g}') || oracle.includes('{r}{w}') || oracle.includes('{g}{w}') || oracle.includes('{g}{u}'))) {
+    cycle = 'Filterland';
+    speed = 'untapped';
+    etbDesc = 'Untapped (Filter)';
+  } else if (oracle.includes('cycling {3}') && basics.length === 3) {
+    cycle = 'Triome';
+    speed = 'tapped';
+    etbDesc = 'Always Tapped';
+  } else if (oracle.includes('return a land you control to its owner\'s hand') || oracle.includes('return an untapped land')) {
+    cycle = 'Bounceland';
+    speed = 'tapped';
+    etbDesc = 'Always Tapped';
+  } else if (oracle.includes('{1}, {t}, sacrifice') && oracle.includes('draw a card') && oracle.includes('deals 1 damage to you')) {
+    cycle = 'Horizon Land';
+    speed = 'untapped';
+    etbDesc = 'Untapped (Horizon)';
+  } else if (['Badlands', 'Bayou', 'Plateau', 'Savannah', 'Scrubland', 'Taiga', 'Tropical Island', 'Tundra', 'Underground Sea', 'Volcanic Island'].includes(name)) {
+    cycle = 'Original Dual';
+    speed = 'untapped';
+    etbDesc = 'Untapped (True Dual)';
+  } else if (oracle.includes('surveil 1') && (oracle.includes('enters tapped') || oracle.includes('enters the battlefield tapped'))) {
+    cycle = 'Surveillance Land';
+    speed = 'tapped';
+    etbDesc = 'Always Tapped';
+  } else if (oracle.includes('scry 1') && (oracle.includes('enters tapped') || oracle.includes('enters the battlefield tapped'))) {
+    cycle = 'Scryland';
+    speed = 'tapped';
+    etbDesc = 'Always Tapped';
+  } else if (oracle.includes('unless you control two or more basic lands')) {
+    cycle = 'Battle / Tango Land';
+    speed = 'conditional';
+    etbDesc = '2+ basics';
+  } else if (name.endsWith('Pathway')) {
+    cycle = 'Pathway Land';
+    speed = 'untapped';
+    etbDesc = 'Untapped (MDFC)';
+  } else if (oracle.includes('enters tapped') || oracle.includes('enters the battlefield tapped')) {
+    speed = 'tapped';
+    etbDesc = 'Always Tapped';
+  }
+
+  const usdPrice = parseFloat(card.prices?.usd || 0);
+  const usdFoil = parseFloat(card.prices?.usd_foil || card.prices?.usd_etched || 0);
+  const imgUri = card.image_uris?.normal || (card.card_faces && card.card_faces[0]?.image_uris?.normal) || '';
+
+  // Extract produced mana colors for client-side filtering
+  let producedMana = Array.isArray(card.produced_mana) ? [...card.produced_mana] : [];
+  if (oracle.includes('any color') || oracle.includes('mana of any type') || oracle.includes('chosen color') || oracle.includes('any type') || oracle.includes('one mana of that color')) {
+    producedMana = ['W', 'U', 'B', 'R', 'G'];
+  }
+
+  return {
+    id: card.id,
+    name: card.name,
+    type_line: typeLine,
+    oracle_text: card.oracle_text || '',
+    cycle,
+    speed,
+    etbDesc,
+    basics,
+    hasBasicTypes,
+    produced_mana: producedMana,
+    usd: usdPrice,
+    usdFoil: usdFoil,
+    imgUri,
+    scryfallUri: card.scryfall_uri || `https://scryfall.com/card/${card.set}/${card.collector_number}`,
+    raw: card
+  };
+}
+
+// Fetch from Scryfall API (GET /cards/search)
+async function executeLandStationSearch() {
+  const query = buildScryfallLandQuery();
+  if (!query) return;
+
+  const btnSearch = $('btn-land-search');
+  const progressWrap = $('land-progress-wrap');
+  const progressFill = $('land-progress-fill');
+  const progressText = $('land-progress-text');
+  const progressCount = $('land-progress-count');
+  const errorSection = $('land-errors-section');
+  const errorMsg = $('land-error-msg');
+  const resultsSection = $('land-results-section');
+
+  btnSearch.disabled = true;
+  progressWrap.classList.add('visible');
+  progressFill.style.width = '30%';
+  progressText.textContent = 'Querying Scryfall API...';
+  progressCount.textContent = '';
+  errorSection.classList.remove('visible');
+
+  let allCards = [];
+  let page = 1;
+  let hasMore = true;
+  let nextUrl = `https://api.scryfall.com/cards/search?q=${encodeURIComponent(query)}&order=usd&dir=asc`;
+
+  try {
+    while (hasMore && nextUrl && page <= 3) {
+      progressText.textContent = `Fetching page ${page}...`;
+      progressFill.style.width = `${30 + (page * 20)}%`;
+
+      const response = await fetch(nextUrl, {
+        headers: { 'Accept': 'application/json' }
+      });
+
+      if (response.status === 404) {
+        // No matching cards found
+        allCards = [];
+        break;
+      }
+
+      if (!response.ok) {
+        const errJson = await response.json().catch(() => ({}));
+        throw new Error(errJson.details || `Scryfall API error: HTTP ${response.status}`);
+      }
+
+      const data = await response.json();
+      if (Array.isArray(data.data)) {
+        allCards = allCards.concat(data.data);
+      }
+
+      hasMore = Boolean(data.has_more);
+      nextUrl = data.next_page || null;
+      page++;
+
+      if (hasMore && nextUrl) {
+        // Respect Scryfall 100ms polite rate limit
+        await new Promise(r => setTimeout(r, 120));
+      }
+    }
+
+    progressFill.style.width = '100%';
+    progressWrap.classList.remove('visible');
+    btnSearch.disabled = false;
+
+    if (allCards.length === 0) {
+      errorSection.classList.add('visible');
+      errorMsg.textContent = 'No lands found matching these criteria. Try loosening budget or cycle restrictions.';
+      resultsSection.style.display = 'none';
+      return;
+    }
+
+    // Deduplicate by card name
+    const uniqueMap = new Map();
+    allCards.forEach(c => {
+      const baseName = c.name.split('//')[0].trim();
+      if (!uniqueMap.has(baseName)) {
+        uniqueMap.set(baseName, c);
+      }
+    });
+
+    landStationState.rawLands = Array.from(uniqueMap.values());
+    landStationState.enrichedLands = landStationState.rawLands.map(detectLandCardMeta);
+
+    // Setup max price slider
+    const prices = landStationState.enrichedLands.map(l => l.usd).filter(p => p > 0);
+    const maxFoundPrice = prices.length > 0 ? Math.ceil(Math.max(...prices)) : 100;
+    const slider = $('land-client-slider');
+    if (slider) {
+      slider.max = Math.max(20, maxFoundPrice);
+      slider.value = slider.max;
+      landStationState.maxClientPrice = null;
+      const label = $('land-client-slider-label');
+      if (label) label.textContent = 'No Limit';
+    }
+
+    resultsSection.style.display = 'flex';
+    applyLandClientFilters();
+
+    // Scroll to results cleanly
+    resultsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+  } catch (err) {
+    console.error('Land Station Search Error:', err);
+    progressWrap.classList.remove('visible');
+    btnSearch.disabled = false;
+    errorSection.classList.add('visible');
+    errorMsg.textContent = err.message || 'Failed to fetch lands from Scryfall. Please check your internet connection.';
+  }
+}
+
+// In-Browser Client Filtering & Sorting
+function applyLandClientFilters() {
+  const searchTerm = ($('land-client-search')?.value || '').trim().toLowerCase();
+  const speedFilter = $('land-client-speed')?.value || 'all';
+  const fetchableOnly = $('land-client-fetchable')?.checked || false;
+  const strictFilter = $('land-client-strict-match')?.checked ?? landStationState.strictColorMatch;
+  const sortKey = $('land-client-sort')?.value || 'price-asc';
+
+  let list = landStationState.enrichedLands.filter(land => {
+    // 1. Search term
+    if (searchTerm) {
+      const matchName = land.name.toLowerCase().includes(searchTerm);
+      const matchType = land.type_line.toLowerCase().includes(searchTerm);
+      const matchOracle = land.oracle_text.toLowerCase().includes(searchTerm);
+      const matchCycle = land.cycle.toLowerCase().includes(searchTerm);
+      if (!matchName && !matchType && !matchOracle && !matchCycle) return false;
+    }
+
+    // 2. Speed filter
+    if (speedFilter !== 'all' && land.speed !== speedFilter) {
+      return false;
+    }
+
+    // 3. Fetchable only
+    if (fetchableOnly && !land.hasBasicTypes) {
+      return false;
+    }
+
+    // 4. Client Price Slider
+    if (landStationState.maxClientPrice !== null && land.usd > landStationState.maxClientPrice) {
+      return false;
+    }
+
+    // 5. Client Strict Color Production Match
+    if (strictFilter) {
+      if (landStationState.colors.has('c') && landStationState.colors.size === 1) {
+        const prod = (land.produced_mana || []).map(c => c.toUpperCase());
+        if (!prod.includes('C')) return false;
+      } else if (landStationState.colors.size > 0) {
+        const required = ['W', 'U', 'B', 'R', 'G'].filter(c => landStationState.colors.has(c.toLowerCase()));
+        const prod = (land.produced_mana || []).map(c => c.toUpperCase());
+        const canProduceAll = required.every(c => prod.includes(c));
+        if (!canProduceAll) return false;
+      }
+    }
+
+    return true;
+  });
+
+  // Sorting
+  list.sort((a, b) => {
+    switch (sortKey) {
+      case 'price-asc':
+        return (a.usd || 9999) - (b.usd || 9999);
+      case 'price-desc':
+        return (b.usd || 0) - (a.usd || 0);
+      case 'name-asc':
+        return a.name.localeCompare(b.name);
+      case 'speed-asc': {
+        const order = { untapped: 1, conditional: 2, tapped: 3 };
+        return (order[a.speed] || 4) - (order[b.speed] || 4);
+      }
+      case 'cycle-asc':
+        return a.cycle.localeCompare(b.cycle);
+      default:
+        return 0;
+    }
+  });
+
+  landStationState.filteredLands = list;
+  renderLandResults();
+}
+
+// Render Results (Stats, Grid, Table)
+function renderLandResults() {
+  const list = landStationState.filteredLands;
+
+  // Stats calculation
+  let totalVal = 0;
+  let untappedCount = 0;
+  let condCount = 0;
+  let tappedCount = 0;
+  let basicCount = 0;
+
+  list.forEach(l => {
+    totalVal += (l.usd || 0);
+    if (l.speed === 'untapped') untappedCount++;
+    else if (l.speed === 'conditional') condCount++;
+    else if (l.speed === 'tapped') tappedCount++;
+    if (l.hasBasicTypes) basicCount++;
+  });
+
+  $('land-stat-total').textContent = list.length;
+  $('land-stat-value').textContent = `Est. Total: $${totalVal.toFixed(2)}`;
+  $('land-stat-untapped').textContent = `🟢 ${untappedCount} Untapped`;
+  $('land-stat-conditional').textContent = `🟡 ${condCount} Conditional`;
+  $('land-stat-tapped').textContent = `🔴 ${tappedCount} Tapped`;
+  $('land-stat-basic').textContent = `🏞️ ${basicCount} Fetchable`;
+
+  // Render Grid
+  const gridContainer = $('land-results-grid');
+  gridContainer.innerHTML = '';
+
+  if (list.length === 0) {
+    gridContainer.innerHTML = '<div style="grid-column:1/-1; padding:2rem; text-align:center; color:var(--mtg-colorless-silver); font-style:italic;">No lands match current in-browser filters.</div>';
+  } else {
+    list.forEach(land => {
+      const cardEl = document.createElement('div');
+      cardEl.className = 'land-card-item';
+
+      const speedPillClass = land.speed === 'untapped' ? 'pill-untapped' : (land.speed === 'conditional' ? 'pill-conditional' : 'pill-tapped');
+      const speedPillText = land.speed === 'untapped' ? 'Untapped' : (land.speed === 'conditional' ? 'Conditional' : 'Tapped');
+
+      cardEl.innerHTML = `
+        <div class="land-card-img-wrap" data-img="${land.imgUri}">
+          <img class="land-card-img" src="${land.imgUri}" alt="${land.name}" loading="lazy">
+        </div>
+        <div class="land-card-status-bar">
+          <span class="land-status-pill ${speedPillClass}">${speedPillText}</span>
+          ${land.hasBasicTypes ? `<span class="land-status-pill pill-basics" title="${land.basics.join(', ')}">🏞️ ${land.basics.join('/')}</span>` : ''}
+          <span class="land-status-pill pill-cycle">${land.cycle}</span>
+        </div>
+        <div class="land-card-info">
+          <div class="land-card-title-row">
+            <a href="${land.scryfallUri}" target="_blank" rel="noopener" class="land-card-title" title="${land.name}">${land.name}</a>
+            <span class="land-card-price">$${land.usd > 0 ? land.usd.toFixed(2) : '—'}</span>
+          </div>
+          <div class="land-card-etb-desc">${land.etbDesc}</div>
+          <div class="land-card-btns">
+            <button type="button" class="land-btn-mini want" data-name="${land.name}" title="Add to Tab 5 Wanted List">+ Want</button>
+            <button type="button" class="land-btn-mini" data-copy="${land.name}" title="Copy Card Name">Copy</button>
+            <a href="${land.scryfallUri}" target="_blank" rel="noopener" class="land-btn-mini" title="Open on Scryfall">↗ Scryfall</a>
+          </div>
+        </div>
+      `;
+
+      gridContainer.appendChild(cardEl);
+    });
+  }
+
+  // Render Table
+  const tbody = $('land-table-tbody');
+  tbody.innerHTML = '';
+  list.forEach(land => {
+    const tr = document.createElement('tr');
+    const speedDotClass = land.speed === 'untapped' ? 'dot-untapped' : (land.speed === 'conditional' ? 'dot-conditional' : 'dot-tapped');
+
+    tr.innerHTML = `
+      <td>
+        <a href="${land.scryfallUri}" target="_blank" rel="noopener" class="land-link" data-img="${land.imgUri}" style="color:var(--mtg-plains-pure); text-decoration:none; font-weight:bold;">
+          ${land.name}
+        </a>
+      </td>
+      <td style="color:var(--accent); font-size:0.75rem;">${land.cycle}</td>
+      <td style="font-size:0.75rem;">
+        <span class="land-speed-dot ${speedDotClass}" style="display:inline-block; vertical-align:middle; margin-right:4px;"></span>
+        ${land.etbDesc}
+      </td>
+      <td class="hide-sm" style="font-size:0.75rem; color:var(--mtg-colorless-silver);">${land.basics.length ? land.basics.join(', ') : '—'}</td>
+      <td class="num" style="color:var(--accent-bright); font-weight:bold; font-family:var(--font-mono);">$${land.usd > 0 ? land.usd.toFixed(2) : '—'}</td>
+      <td style="text-align:right;">
+        <button type="button" class="land-btn-mini want" data-name="${land.name}" style="display:inline-block;">+ Want</button>
+        <button type="button" class="land-btn-mini" data-copy="${land.name}" style="display:inline-block;">Copy</button>
+      </td>
+    `;
+    tbody.appendChild(tr);
+  });
+
+  // Attach Hover Previews for both Grid and Table
+  attachLandHoverPreviews();
+}
+
+// Hover Preview Handler
+function attachLandHoverPreviews() {
+  const preview = $('land-preview');
+  if (!preview) return;
+
+  const hoverTargets = document.querySelectorAll('.land-card-img-wrap, .land-link');
+  hoverTargets.forEach(el => {
+    el.addEventListener('mouseenter', e => {
+      const img = el.dataset.img;
+      if (img) {
+        preview.src = img;
+        preview.style.display = 'block';
+        positionLandPreview(e);
+      }
+    });
+    el.addEventListener('mousemove', positionLandPreview);
+    el.addEventListener('mouseleave', () => {
+      preview.style.display = 'none';
+    });
+  });
+}
+
+function positionLandPreview(e) {
+  const preview = $('land-preview');
+  if (!preview) return;
+  const offset = 16;
+  let x = e.clientX + offset;
+  let y = e.clientY + offset;
+
+  if (x + 260 > window.innerWidth) {
+    x = e.clientX - 260 - offset;
+  }
+  if (y + 360 > window.innerHeight) {
+    y = window.innerHeight - 370;
+  }
+  preview.style.left = `${Math.max(10, x)}px`;
+  preview.style.top = `${Math.max(10, y)}px`;
+}
+
+// Individual Land Actions (+Want & Copy)
+document.addEventListener('click', e => {
+  // +Want button
+  const wantBtn = e.target.closest('.land-btn-mini.want');
+  if (wantBtn) {
+    const cardName = wantBtn.dataset.name;
+    if (cardName) {
+      addCardsToWantedList([cardName]);
+      wantBtn.textContent = '✓ Added';
+      wantBtn.style.color = '#6be08c';
+      setTimeout(() => {
+        wantBtn.textContent = '🛒 +Want';
+        wantBtn.style.color = 'var(--accent)';
+      }, 1500);
+    }
+    return;
+  }
+
+  // Copy button
+  const copyBtn = e.target.closest('[data-copy]');
+  if (copyBtn) {
+    const cardName = copyBtn.dataset.copy;
+    if (cardName) {
+      navigator.clipboard.writeText(cardName).then(() => {
+        const orig = copyBtn.textContent;
+        copyBtn.textContent = '✓';
+        setTimeout(() => { copyBtn.textContent = orig; }, 1200);
+      });
+    }
+  }
+});
+
+// Helper: Add Cards to Tab 5 (Wanted List)
+function addCardsToWantedList(names) {
+  if (!names || !names.length) return;
+  const wantedInput = $('wanted-input');
+  if (!wantedInput) return;
+
+  const current = wantedInput.value.trim();
+  const linesToAdd = names.map(n => `1 ${n}`).join('\n');
+  wantedInput.value = current ? `${current}\n${linesToAdd}` : linesToAdd;
+}
+
+// Batch Add All Visible Lands to Wanted List & Switch Tab
+$('btn-land-export-wanted')?.addEventListener('click', () => {
+  if (!landStationState.filteredLands.length) {
+    alert('No lands visible to export.');
+    return;
+  }
+  const names = landStationState.filteredLands.map(l => l.name);
+  addCardsToWantedList(names);
+
+  // Switch to Tab 5 (Wanted List)
+  const tabBtnWanted = document.querySelector('.tab-btn[data-tab="wanted"]');
+  if (tabBtnWanted) {
+    tabBtnWanted.click();
+    $('wanted-input')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+});
+
+// Batch Copy All Visible Lands as Decklist
+$('btn-land-copy-decklist')?.addEventListener('click', () => {
+  if (!landStationState.filteredLands.length) {
+    alert('No lands visible to copy.');
+    return;
+  }
+  const text = landStationState.filteredLands.map(l => `1 ${l.name}`).join('\n');
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = $('btn-land-copy-decklist');
+    const orig = btn.textContent;
+    btn.textContent = '✓ Copied Decklist!';
+    btn.style.color = '#6be08c';
+    setTimeout(() => {
+      btn.textContent = orig;
+      btn.style.color = 'var(--text-dim)';
+    }, 1500);
+  });
+});
+
+// Setup Questionnaire Event Listeners
+function setupLandStationEvents() {
+  initLandCyclesGrid();
+
+  // Mana Pips Click
+  document.querySelectorAll('#land-mana-selector .land-mana-pip').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const color = btn.dataset.color;
+      if (color === 'c') {
+        // Toggle colorless exclusive
+        if (landStationState.colors.has('c')) {
+          landStationState.colors.delete('c');
+          btn.classList.remove('active');
+        } else {
+          landStationState.colors.clear();
+          document.querySelectorAll('#land-mana-selector .land-mana-pip').forEach(b => b.classList.remove('active'));
+          landStationState.colors.add('c');
+          btn.classList.add('active');
+        }
+      } else {
+        // Remove colorless if regular color picked
+        landStationState.colors.delete('c');
+        const cBtn = document.querySelector('#land-mana-selector .land-mana-pip[data-color="c"]');
+        if (cBtn) cBtn.classList.remove('active');
+
+        if (landStationState.colors.has(color)) {
+          landStationState.colors.delete(color);
+          btn.classList.remove('active');
+        } else {
+          landStationState.colors.add(color);
+          btn.classList.add('active');
+        }
+      }
+
+      // Update preset pills active state
+      updatePresetsActiveState();
+      updateLandStationUI();
+    });
+  });
+
+  // Presets Click
+  document.querySelectorAll('#land-presets-row .land-preset-chip').forEach(tag => {
+    tag.addEventListener('click', () => {
+      const cols = tag.dataset.colors;
+      landStationState.colors.clear();
+
+      document.querySelectorAll('#land-mana-selector .land-mana-pip').forEach(b => {
+        b.classList.remove('active');
+      });
+
+      if (cols === 'c') {
+        landStationState.colors.add('c');
+        document.querySelector('#land-mana-selector .land-mana-pip[data-color="c"]')?.classList.add('active');
+      } else {
+        for (const char of cols) {
+          landStationState.colors.add(char);
+          document.querySelector(`#land-mana-selector .land-mana-pip[data-color="${char}"]`)?.classList.add('active');
+        }
+      }
+
+      updatePresetsActiveState();
+      updateLandStationUI();
+    });
+  });
+
+  function updatePresetsActiveState() {
+    const sorted = ['w', 'u', 'b', 'r', 'g'].filter(c => landStationState.colors.has(c)).join('');
+    const currentCode = landStationState.colors.has('c') ? 'c' : sorted;
+    document.querySelectorAll('#land-presets-row .land-preset-chip').forEach(tag => {
+      tag.classList.toggle('active', tag.dataset.colors === currentCode);
+    });
+  }
+
+  // Strict Color Mode Switch (Step 1)
+  $('land-switch-strict-colors')?.addEventListener('change', e => {
+    landStationState.strictColorMatch = e.target.checked;
+    const clientStrict = $('land-client-strict-match');
+    if (clientStrict) clientStrict.checked = landStationState.strictColorMatch;
+    updateLandStationUI();
+    if (landStationState.enrichedLands.length > 0) {
+      applyLandClientFilters();
+    }
+  });
+
+  // Produce Only Checkbox
+  $('land-check-produce-only')?.addEventListener('change', e => {
+    landStationState.produceOnly = e.target.checked;
+    updateLandStationUI();
+  });
+
+  // Fetch On-Color Checkbox
+  $('land-check-fetch-oncolor')?.addEventListener('change', e => {
+    landStationState.fetchOnColorOnly = e.target.checked;
+    updateLandStationUI();
+  });
+
+  // Speed Cards Click
+  document.querySelectorAll('.land-speed-card').forEach(card => {
+    card.addEventListener('click', () => {
+      const speed = card.dataset.speed;
+      const chk = card.querySelector('input[type="checkbox"]');
+      if (landStationState.speeds.has(speed)) {
+        landStationState.speeds.delete(speed);
+        card.classList.remove('active');
+        if (chk) chk.checked = false;
+      } else {
+        landStationState.speeds.add(speed);
+        card.classList.add('active');
+        if (chk) chk.checked = true;
+      }
+      updateLandStationUI();
+    });
+  });
+
+  // Budget Segmented Buttons
+  document.querySelectorAll('#land-budget-selector .land-budget-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('#land-budget-selector .land-budget-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      landStationState.budget = btn.dataset.budget;
+      updateLandStationUI();
+    });
+  });
+
+  // Cycle Quick Helper Buttons
+  $('btn-cycle-untapped')?.addEventListener('click', () => {
+    LAND_CYCLES_DATA.filter(c => c.speed === 'untapped').forEach(c => landStationState.cycles.add(c.id));
+    syncCyclesCheckboxes();
+    updateLandStationUI();
+  });
+
+  $('btn-cycle-conditional')?.addEventListener('click', () => {
+    LAND_CYCLES_DATA.filter(c => c.speed === 'conditional').forEach(c => landStationState.cycles.add(c.id));
+    syncCyclesCheckboxes();
+    updateLandStationUI();
+  });
+
+  $('btn-cycle-tapped')?.addEventListener('click', () => {
+    LAND_CYCLES_DATA.filter(c => c.speed === 'tapped').forEach(c => landStationState.cycles.add(c.id));
+    syncCyclesCheckboxes();
+    updateLandStationUI();
+  });
+
+  $('btn-cycle-fetchable')?.addEventListener('click', () => {
+    LAND_CYCLES_DATA.filter(c => c.basicTypes).forEach(c => landStationState.cycles.add(c.id));
+    syncCyclesCheckboxes();
+    updateLandStationUI();
+  });
+
+  $('btn-cycle-clear')?.addEventListener('click', () => {
+    landStationState.cycles.clear();
+    syncCyclesCheckboxes();
+    updateLandStationUI();
+  });
+
+  function syncCyclesCheckboxes() {
+    document.querySelectorAll('#land-cycles-container .land-cycle-item').forEach(item => {
+      const id = item.dataset.cycleId;
+      const chk = item.querySelector('input');
+      const active = landStationState.cycles.has(id);
+      if (chk) chk.checked = active;
+      item.classList.toggle('active', active);
+    });
+  }
+
+  // Copy Query & Open in Scryfall
+  $('btn-land-copy-query')?.addEventListener('click', () => {
+    const q = buildScryfallLandQuery();
+    navigator.clipboard.writeText(q).then(() => {
+      const btn = $('btn-land-copy-query');
+      const orig = btn.textContent;
+      btn.textContent = '✓ Copied!';
+      btn.style.color = '#6be08c';
+      setTimeout(() => { btn.textContent = orig; btn.style.color = ''; }, 1200);
+    });
+  });
+
+  $('btn-land-open-scryfall')?.addEventListener('click', () => {
+    const q = buildScryfallLandQuery();
+    window.open(`https://scryfall.com/search?q=${encodeURIComponent(q)}`, '_blank');
+  });
+
+  // Reset Questionnaire
+  $('btn-land-reset')?.addEventListener('click', () => {
+    landStationState.colors = new Set(['w', 'b']);
+    landStationState.speeds = new Set(['untapped', 'conditional']);
+    landStationState.cycles.clear();
+    landStationState.budget = 'none';
+    landStationState.produceOnly = true;
+    landStationState.strictColorMatch = false;
+    landStationState.fetchOnColorOnly = true;
+
+    // Reset strict switch & client checkbox
+    const switchStrict = $('land-switch-strict-colors');
+    if (switchStrict) switchStrict.checked = false;
+    const clientStrict = $('land-client-strict-match');
+    if (clientStrict) clientStrict.checked = false;
+
+    // Reset mana buttons
+    document.querySelectorAll('#land-mana-selector .land-mana-pip').forEach(b => {
+      b.classList.toggle('active', b.dataset.color === 'w' || b.dataset.color === 'b');
+    });
+    updatePresetsActiveState();
+
+    // Reset speed cards
+    $('speed-card-untapped')?.classList.add('active');
+    $('speed-card-untapped')?.querySelector('input') && ($('speed-card-untapped').querySelector('input').checked = true);
+    $('speed-card-conditional')?.classList.add('active');
+    $('speed-card-conditional')?.querySelector('input') && ($('speed-card-conditional').querySelector('input').checked = true);
+    $('speed-card-tapped')?.classList.remove('active');
+    $('speed-card-tapped')?.querySelector('input') && ($('speed-card-tapped').querySelector('input').checked = false);
+
+    // Reset budget buttons
+    document.querySelectorAll('#land-budget-selector .land-budget-btn').forEach(b => {
+      b.classList.toggle('active', b.dataset.budget === 'none');
+    });
+
+    syncCyclesCheckboxes();
+    updateLandStationUI();
+  });
+
+  // Search Button Click
+  $('btn-land-search')?.addEventListener('click', executeLandStationSearch);
+
+  // Client Filter Events
+  $('land-client-search')?.addEventListener('input', applyLandClientFilters);
+  $('land-client-speed')?.addEventListener('change', applyLandClientFilters);
+  $('land-client-sort')?.addEventListener('change', applyLandClientFilters);
+  $('land-client-fetchable')?.addEventListener('change', applyLandClientFilters);
+  $('land-client-strict-match')?.addEventListener('change', e => {
+    landStationState.strictColorMatch = e.target.checked;
+    const switchStrict = $('land-switch-strict-colors');
+    if (switchStrict) switchStrict.checked = landStationState.strictColorMatch;
+    updateLandStationUI();
+    applyLandClientFilters();
+  });
+
+  // Client Price Slider
+  $('land-client-slider')?.addEventListener('input', e => {
+    const val = parseFloat(e.target.value);
+    const max = parseFloat(e.target.max);
+    const label = $('land-client-slider-label');
+    if (val >= max) {
+      landStationState.maxClientPrice = null;
+      if (label) label.textContent = 'No Limit';
+    } else {
+      landStationState.maxClientPrice = val;
+      if (label) label.textContent = `≤ $${val.toFixed(2)}`;
+    }
+    applyLandClientFilters();
+  });
+
+  // View Switch (Grid vs Table)
+  $('btn-land-view-grid')?.addEventListener('click', () => {
+    landStationState.viewMode = 'grid';
+    $('btn-land-view-grid').style.background = 'rgba(212, 175, 55, 0.2)';
+    $('btn-land-view-grid').style.color = 'var(--accent-bright)';
+    $('btn-land-view-table').style.background = 'transparent';
+    $('btn-land-view-table').style.color = 'var(--mtg-colorless-silver)';
+    $('land-results-grid').style.display = 'grid';
+    $('land-results-table-wrap').style.display = 'none';
+  });
+
+  $('btn-land-view-table')?.addEventListener('click', () => {
+    landStationState.viewMode = 'table';
+    $('btn-land-view-table').style.background = 'rgba(212, 175, 55, 0.2)';
+    $('btn-land-view-table').style.color = 'var(--accent-bright)';
+    $('btn-land-view-grid').style.background = 'transparent';
+    $('btn-land-view-grid').style.color = 'var(--mtg-colorless-silver)';
+    $('land-results-grid').style.display = 'none';
+    $('land-results-table-wrap').style.display = 'block';
+  });
+
+  // Initial update
+  updateLandStationUI();
+}
+
+// Initialize on Load
+setupLandStationEvents();
 </script>
 </body>
 </html>
